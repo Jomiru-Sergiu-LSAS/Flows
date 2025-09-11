@@ -1,0 +1,215 @@
+{
+  "name": "mail-spam-cleaner",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "labelIds": [
+            "SPAM"
+          ]
+        }
+      },
+      "id": "e8eb600c-9b45-44e2-8ee6-409c9b61b171",
+      "name": "Fetch SPAM Emails (Gmail)",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        624,
+        448
+      ],
+      "webhookId": "c47419de-278c-40d1-a5da-c9414d3f89c6",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "96a0fd3c-63bd-48f4-87d7-7eda528b50a3",
+      "name": "Pause Before Deletion (5s)",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        848,
+        448
+      ],
+      "webhookId": "0b2f9902-fd7b-4a98-87a3-f36c74b0af32",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $json.id }}"
+      },
+      "id": "e172bbb8-069c-4c68-b72f-cf2a7f304f0b",
+      "name": "Delete Fetched SPAM Emails",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1072,
+        448
+      ],
+      "webhookId": "46b0fe0f-cc00-4994-8364-9048c888e9ef",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Starts the workflow automatically on the 1st of every month to perform email cleanup.",
+        "height": 264,
+        "width": 218,
+        "color": 3
+      },
+      "id": "a07dd87f-1216-44de-91b8-a6d7d36877e8",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        352,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Uses Gmail API to retrieve all emails in the SPAM folder for authenticated Gmail account.",
+        "height": 264,
+        "width": 202,
+        "color": 5
+      },
+      "id": "0de7be15-2ebe-4c28-ab52-59f35f6a3135",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        576,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Introduces a short delay to avoid hitting Gmail’s API rate limits or ensure all emails are fetched properly.",
+        "height": 264,
+        "width": 218
+      },
+      "id": "11c0f2f1-1480-4512-ad4d-1d9544838e2c",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        784,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Permanently deletes all emails retrieved from the spam folder to free up the Gmail space.\n",
+        "height": 264,
+        "width": 266,
+        "color": 4
+      },
+      "id": "0600f919-8315-431a-8420-9c0931b9c097",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "id": "e214c477-6d39-426f-8a34-cd38bb6f5ae2",
+      "name": "Monthly Trigger (1st)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        416,
+        448
+      ],
+      "typeVersion": 1.2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Fetch SPAM Emails (Gmail)": {
+      "main": [
+        [
+          {
+            "node": "Pause Before Deletion (5s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pause Before Deletion (5s)": {
+      "main": [
+        [
+          {
+            "node": "Delete Fetched SPAM Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monthly Trigger (1st)": {
+      "main": [
+        [
+          {
+            "node": "Fetch SPAM Emails (Gmail)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionOrder": "v0",
+    "timeSavedPerExecution": 10
+  },
+  "versionId": "0a47ab4f-16c8-4b8b-9847-f15b0d471351",
+  "meta": {
+    "templateId": "6122",
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "penMMNPrl3jphZRQ",
+  "tags": [
+    {
+      "createdAt": "2025-09-08T07:55:19.208Z",
+      "updatedAt": "2025-09-08T07:55:19.208Z",
+      "id": "8mzLwVwaYcqGeRXd",
+      "name": "email"
+    },
+    {
+      "createdAt": "2025-09-08T07:55:22.137Z",
+      "updatedAt": "2025-09-08T07:55:22.137Z",
+      "id": "VPDBXUiMYIm0ZfUI",
+      "name": "spam"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    }
+  ]
+}
