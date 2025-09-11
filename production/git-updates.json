@@ -1,0 +1,598 @@
+{
+  "name": "git-updates",
+  "nodes": [
+    {
+      "parameters": {
+        "command": "={{ $json.batchCommand }}"
+      },
+      "id": "fdf85678-f09e-4e34-80e1-cca5c3fad663",
+      "name": "Execute Status Check",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        -1056,
+        -32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the JSON output from the PowerShell script and split repos that need updates\nconst inputData = $input.first();\nconst stdout = inputData.json.stdout || '';\n\ntry {\n  // Parse the JSON output from PowerShell\n  const statusData = JSON.parse(stdout);\n  const results = [];\n  \n  // Create separate items for repos that are behind (need updates)\n  Object.keys(statusData.repositories).forEach(repoName => {\n    const repo = statusData.repositories[repoName];\n    if (repo.status === 'BEHIND') {\n      results.push({\n        json: {\n          name: repoName,\n          path: repo.path,\n          status: repo.status,\n          behind: repo.behind,\n          ahead: repo.ahead,\n          lastCommit: repo.lastCommit,\n          needsUpdate: true\n        }\n      });\n    }\n  });\n  \n  // If no repos need updates, return a single status summary\n  if (results.length === 0) {\n    return [{\n      json: {\n        timestamp: statusData.timestamp,\n        summary: statusData.summary,\n        message: 'All repositories are up to date',\n        needsUpdate: false\n      }\n    }];\n  }\n  \n  return results;\n} catch (error) {\n  // Fallback if JSON parsing fails\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      error: 'Failed to parse PowerShell output',\n      rawOutput: stdout,\n      parseError: error.message,\n      needsUpdate: false\n    }\n  }];\n}"
+      },
+      "id": "b3cf79c8-7fc9-4c58-9435-537b7c92f361",
+      "name": "Parse JSON Status",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -864,
+        -32
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Process repos and split flow: pull updates OR go to summary\nconst inputData = $input.all();\nconsole.log('Route for Updates input:', JSON.stringify(inputData, null, 2));\n\n// Check if we have any repos that actually need updates\nconst reposWithUpdates = inputData.filter(item => item.json.needsUpdate === true);\nconsole.log(`Found ${reposWithUpdates.length} repos with needsUpdate=true`);\n\nconst results = [];\n\nif (reposWithUpdates.length > 0) {\n  // We have repos that need updates - create pull commands for each\n  console.log('Creating pull commands for repositories:');\n  \n  reposWithUpdates.forEach(repo => {\n    console.log(`- Processing ${repo.json.name}: ${repo.json.behind} commits behind`);\n    \n    // Create pull command for this repo\n    const pullCommand = `powershell -Command \"git config --global --add safe.directory '${repo.json.path}'; cd '${repo.json.path}'; git fetch origin; if (-not (git branch --list main)) { git checkout -b main origin/main } else { git checkout main }; git pull origin main\"`;\n    \n    results.push({\n      json: {\n        name: repo.json.name,\n        path: repo.json.path,\n        pullCommand: pullCommand,\n        behind: repo.json.behind,\n        status: 'PULLING_UPDATES'\n      }\n    });\n  });\n  \n  console.log(`Created ${results.length} pull commands`);\n  return results;\n} else {\n  // No repos need updates\n  console.log('No repositories need updates - creating summary');\n  return [{\n    json: {\n      message: 'All repositories are up to date',\n      timestamp: new Date().toISOString(),\n      totalRepos: 0,\n      status: 'ALL_UP_TO_DATE'\n    }\n  }];\n}"
+      },
+      "id": "18838ad0-f66e-4cbe-823b-fb14c7646d7a",
+      "name": "Route for Updates",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -480,
+        -32
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter repos that need pulling vs summary-only\nconst inputData = $input.all();\nconsole.log('Filter input:', JSON.stringify(inputData.map(item => ({name: item.json.name || 'N/A', status: item.json.status, message: item.json.message})), null, 2));\n\nconst reposForPulling = inputData.filter(item => item.json.status === 'PULLING_UPDATES');\nconst allUpToDate = inputData.filter(item => item.json.status === 'ALL_UP_TO_DATE');\n\nconsole.log(`${reposForPulling.length} repos need pulling, ${allUpToDate.length} items indicate all up to date`);\n\nif (reposForPulling.length > 0) {\n  // Return repos for pulling\n  console.log('Routing to pull operations:');\n  reposForPulling.forEach(repo => {\n    console.log(`- ${repo.json.name} will be pulled`);\n  });\n  return reposForPulling;\n} else if (allUpToDate.length > 0) {\n  // All repos are up to date - create a summary item that bypasses pull command\n  console.log('All repositories are up to date - creating summary for no updates');\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      summary: 'No repositories required updates - all are up to date',\n      updatedRepos: [],\n      totalUpdated: 0,\n      successCount: 0,\n      failureCount: 0,\n      message: allUpToDate[0].json.message,\n      totalRepos: allUpToDate[0].json.totalRepos,\n      skipPullCommand: true\n    }\n  }];\n} else {\n  // Fallback case\n  console.log('No clear status found - defaulting to no updates summary');\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      summary: 'No repositories required updates',\n      updatedRepos: [],\n      totalUpdated: 0,\n      successCount: 0,\n      failureCount: 0,\n      skipPullCommand: true\n    }\n  }];\n}"
+      },
+      "id": "3156471e-590d-4e7a-94e8-9d40660b30da",
+      "name": "Filter by Status",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -288,
+        -32
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Route based on whether we have pull commands or summary data\nconst inputData = $input.all();\nconsole.log('Check Skip Pull input:', JSON.stringify(inputData.map(item => ({\n  name: item.json.name || 'N/A',\n  pullCommand: item.json.pullCommand ? 'EXISTS' : 'MISSING',\n  skipPullCommand: item.json.skipPullCommand,\n  summary: item.json.summary\n})), null, 2));\n\nconst itemsWithPullCommands = inputData.filter(item => \n  item.json.pullCommand && typeof item.json.pullCommand === 'string'\n);\n\nconst summaryItems = inputData.filter(item => \n  item.json.skipPullCommand === true || \n  item.json.summary || \n  !item.json.pullCommand\n);\n\nconsole.log(`${itemsWithPullCommands.length} items have pull commands, ${summaryItems.length} items are summary-only`);\n\nif (itemsWithPullCommands.length > 0) {\n  // Route to pull command execution\n  console.log('Routing to Execute Pull Command:');\n  itemsWithPullCommands.forEach(item => {\n    console.log(`- ${item.json.name}: has pullCommand`);\n  });\n  return itemsWithPullCommands;\n} else if (summaryItems.length > 0) {\n  // Route directly to summary\n  console.log('Routing directly to Generate Update Summary (no pulls needed)');\n  return summaryItems;\n} else {\n  // Fallback - create empty summary\n  console.log('No valid items found - creating empty summary');\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      summary: 'No repositories processed',\n      updatedRepos: [],\n      totalUpdated: 0,\n      successCount: 0,\n      failureCount: 0\n    }\n  }];\n}"
+      },
+      "id": "c9013980-4272-4b8b-897d-9bff5b487474",
+      "name": "Route Pull or Summary",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -96,
+        -32
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.pullCommand }}",
+              "rightValue": "",
+              "operator": {
+                "operation": "exists",
+                "type": "string"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "329e78e3-78a5-431b-af00-d108833d8811",
+      "name": "Has Pull Command",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        112,
+        -32
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "executeOnce": false,
+        "command": "={{ $json.pullCommand }}"
+      },
+      "id": "cdae5322-bdea-4d8d-8797-21a86daefc96",
+      "name": "Execute Pull Command",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        320,
+        -128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get first input item\nconst data = $input.first();\n\nif (!data || !data.json || !data.json.logContent) {\n  throw new Error('No logContent found in input item.');\n}\n\n// Only replace literal backslash + n that are followed by a space or end-of-string\n// This prevents messing with LaTeX commands\nconst cleanTex = data.json.logContent.replace(/\\\\n(?=\\s|$)/g, \"\\n\");\n\n// Return both viewable JSON and downloadable binary\nreturn {\n  json: {\n    logContent: cleanTex,\n    fileName: \"log.txt\",\n    mimeType: \"text/plain\",\n    size: cleanTex.length\n  },\n  binary: {\n    data: {\n      data: Buffer.from(cleanTex, \"utf8\").toString(\"base64\"),\n      mimeType: \"text/plain\",\n      fileName: \"log.txt\"\n    }\n  }\n};\n"
+      },
+      "id": "7829264f-1562-4e33-ac1d-21bc244efd4f",
+      "name": "Export Log File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 60
+            }
+          ]
+        }
+      },
+      "id": "e5ebd900-4614-4ee3-9049-3a4e3b27bb74",
+      "name": "Check Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1488,
+        80
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Create PowerShell script to check git status and output JSON\n// Repository configurations\nconst inputData = [\n  { name: 'Agent Flows', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Work/Key/AgentWorklfows'},\n  { name: 'Tardigrade', path: 'C:/Repo/Tardigrade' },\n  { name: 'Tardigrade Data', path: 'C:/Users/Jomiru Sergiu/Documents/Terminal' },\n  { name: 'JP-Tardigrade-api', path: 'C:/Repo/JP-Tardigrade-api' },\n  { name: 'JP-Tardigrade', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Tardigrade' },\n  { name: 'JP-Tardigrade-Data', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Tardigrade-Data' },\n  { name: 'JP-Tardigrade-test-actions', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Tardigrade-test-actions' },\n  { name: 'JP-Tardigrade-UPK284', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Tardigrade-UPK284' },\n  { name: 'JP-UMA-License', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-UMA-License' },\n  { name: 'JP-UMA-X-Doc', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-UMAX-Doc' },\n  { name: 'JP-MAX-Toolbox', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-MAX-Toolbox' },\n  { name: 'JP-Template_NetCore_Stk', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Template_NetCore_Stk' },\n  { name: 'JP-umalib', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-umalib' },\n  { name: 'JP-umaLib-old', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-umaLib-old' },\n  { name: 'JP-UMATraining', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-UMATraining' },\n  { name: 'JP-vite-cesium-ion', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-vite-cesium-ion' },\n  { name: 'JP-Walrus', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Walrus' },\n  { name: 'JP-SensorCalibrationTool', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-SensorCalibrationTool' },\n  { name: 'JP-SEGPythonAPI', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-SEGPythonAPI' },\n  { name: 'JP-SatelliteMissionScenarioDesigner', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-SatelliteMissionScenarioDesigner' },\n  { name: 'JP-PENGUIN', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-PENGUIN' },\n  { name: 'JP-ORCA-Validation', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-ORCA-Validation' },\n  { name: 'JP-ORCA', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-ORCA' },\n  { name: 'JP-ODTKPythonAPI', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-ODTKPythonAPI' },\n  { name: 'JP-MolaMola', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-MolaMola' },\n  { name: 'JP-JFD_FileConverter', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-JFD_FileConverter' },\n  { name: 'JP-JFD-demo', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-JFD-demo' },\n  { name: 'JP-JAXA-FCS', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-JAXA-FCS' },\n  { name: 'JP-EOISTJpC', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-EOISTJpC' },\n  { name: 'JP-Dragonfly', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Dragonfly' },\n  { name: 'JP-AutoMP-QualityAssurance', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-AutoMP-QualityAssurance' },\n  { name: 'US-votw', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-votw' },\n  { name: 'US-tardis', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-tardis' },\n  { name: 'US-general', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-general' },\n  { name: 'US-hail-mary', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-hail-mary' },\n  { name: 'US-hott', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-hott' },\n  { name: 'US-ishimura', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-ishimura' },\n  { name: 'US-JCO', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-JCO' }\n].map(repo => ({ json: repo }));\n\n// Build simpler PowerShell command without here-string issues\nconst repos = inputData.map(item => {\n  const name = item.json.name.replace(/'/g, \"''\");\n  const path = item.json.path.replace(/'/g, \"''\");\n  return `@{Name='${name}'; Path='${path}'}`;\n}).join(',');\n\n// Create a direct PowerShell command without file creation\nconst command = `powershell -Command \"` +\n  `$ErrorActionPreference='SilentlyContinue'; ` +\n  `$results = @{timestamp=(Get-Date).ToString('yyyy-MM-ddTHH:mm:ss.fffZ'); repositories=@{}}; ` +\n  `$repos = @(${repos}); ` +\n  `foreach ($repo in $repos) { ` +\n    `try { ` +\n      `git config --global --add safe.directory $repo.Path 2>$null; ` +\n      `Set-Location $repo.Path; ` +\n      `if (Test-Path '.git') { ` +\n        `$current = git rev-parse HEAD 2>$null; ` +\n        `git fetch origin --quiet 2>$null; ` +\n        `$remote = git rev-parse origin/main 2>$null; ` +\n        `$behind = if ($current -and $remote) { (git rev-list HEAD..origin/main --count 2>$null) } else { 0 }; ` +\n        `$ahead = if ($current -and $remote) { (git rev-list origin/main..HEAD --count 2>$null) } else { 0 }; ` +\n        `$lastCommit = git log -1 --format='%H %s' 2>$null; ` +\n        `$status = if ($behind -gt 0) { 'BEHIND' } elseif ($ahead -gt 0) { 'AHEAD' } else { 'UP_TO_DATE' }; ` +\n        `$results.repositories[$repo.Name] = @{path=$repo.Path; status=$status; behind=[int]$behind; ahead=[int]$ahead; lastCommit=$lastCommit; error=$null}; ` +\n      `} else { ` +\n        `$results.repositories[$repo.Name] = @{path=$repo.Path; status='NOT_A_REPO'; behind=0; ahead=0; lastCommit=$null; error='Directory is not a git repository'}; ` +\n      `} ` +\n    `} catch { ` +\n      `$results.repositories[$repo.Name] = @{path=$repo.Path; status='ERROR'; behind=0; ahead=0; lastCommit=$null; error=$_.Exception.Message}; ` +\n    `} ` +\n  `}; ` +\n  `$results.summary = @{totalRepos=$results.repositories.Count; upToDate=($results.repositories.Values | Where-Object { $_.status -eq 'UP_TO_DATE' }).Count; behind=($results.repositories.Values | Where-Object { $_.status -eq 'BEHIND' }).Count; ahead=($results.repositories.Values | Where-Object { $_.status -eq 'AHEAD' }).Count; errors=($results.repositories.Values | Where-Object { $_.status -eq 'ERROR' -or $_.status -eq 'NOT_A_REPO' }).Count}; ` +\n  `$results | ConvertTo-Json -Depth 4` +\n`\"`;\n\nreturn [{\n  json: {\n    totalRepos: inputData.length,\n    batchCommand: command,\n    repoList: inputData.map(item => ({ name: item.json.name, path: item.json.path }))\n  }\n}];"
+      },
+      "id": "44ddb46f-0e8d-4331-b4cc-b5673a11c2b0",
+      "name": "Prepare Repos",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1280,
+        -32
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter and process repositories that need updates\nconst inputData = $input.all();\n\nconst reposNeedingUpdates = [];\nconst reposUpToDate = [];\n\ninputData.forEach(item => {\n  if (item.json.needsUpdate === true) {\n    reposNeedingUpdates.push({\n      json: {\n        name: item.json.name,\n        path: item.json.path,\n        status: item.json.status,\n        behind: item.json.behind,\n        ahead: item.json.ahead,\n        lastCommit: item.json.lastCommit,\n        needsUpdate: true\n      }\n    });\n  } else {\n    reposUpToDate.push(item);\n  }\n});\n\n// If we have repos that need updates, return them for pulling\nif (reposNeedingUpdates.length > 0) {\n  console.log(`Found ${reposNeedingUpdates.length} repositories that need updates:`);\n  reposNeedingUpdates.forEach(repo => {\n    console.log(`- ${repo.json.name}: ${repo.json.behind} commits behind`);\n  });\n  return reposNeedingUpdates;\n}\n\n// If no repos need updates, return a summary\nreturn [{\n  json: {\n    message: 'All repositories are up to date',\n    timestamp: new Date().toISOString(),\n    needsUpdate: false,\n    totalRepos: inputData.length\n  }\n}];"
+      },
+      "id": "ba845475-052c-47f4-b087-044fb1a44b2d",
+      "name": "Filter Needing Updates",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -672,
+        -32
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate summary of update operations\nconst inputData = $input.all();\n\nif (!inputData || inputData.length === 0) {\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      summary: 'No repositories required updates',\n      updatedRepos: [],\n      totalUpdated: 0,\n      successCount: 0,\n      failureCount: 0\n    }\n  }];\n}\n\nconst updatedRepos = inputData.map(item => ({\n  Repo: item.json.stderr\n}));\n\nconst successCount = updatedRepos.filter(repo => repo.success).length;\nconst failureCount = updatedRepos.length - successCount;\n\n// Format Entry\n// Create log entry for updates\nconst data = {\n    timestamp: new Date().toISOString(),\n    summary: `Updated ${successCount} repositories successfully${failureCount > 0 ? `, ${failureCount} failed` : ''}`,\n    updatedRepos: updatedRepos,\n    totalUpdated: updatedRepos.length,\n    successCount: successCount,\n    failureCount: failureCount\n  };\n\nif (data.totalUpdated === 0) {\n  return [{\n    json: {\n      logContent: `\\n=== Repository Status Check - ${data.timestamp} ===\\nNo repositories required updates. All repositories are up to date.\\n`,\n      shouldLog: false\n    }\n  }];\n}\n\nlet logContent = `\\n=== Repository Update Log - ${data.timestamp} ===\\n`;\n    logContent += '---\\n';\n\nif (data.updatedRepos && data.updatedRepos.length > 0) {\n  data.updatedRepos.forEach(repo => {\n\n    \n  if (`${repo.Repo}` == \"undefined\"){\n    logContent += `Summary: No repositories were updated`\n  \n    return [{\n      json: {\n        logContent: logContent\n      }\n      }];\n    };\n    \n    logContent += `Repository: ${repo.Repo}\\n`;\n    logContent += `Status: SUCCESS\\n`;\n    logContent += '---\\n';\n  });\n}\n\n\n  if (!logContent.includes(\"No repositories were updated\")){\n    logContent += `Total repositories updated: ${data.totalUpdated}\\n`;\n  }\n\nreturn [{\n  json: {\n    logContent: logContent\n  }\n}];"
+      },
+      "id": "90786990-3596-412a-ae53-a21720e73fb3",
+      "name": "Generate Summary",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        528,
+        -16
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "events": [
+          "init",
+          "activate"
+        ]
+      },
+      "type": "n8n-nodes-base.n8nTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        -144
+      ],
+      "id": "3a32ae8c-08e3-4616-b87d-d3dd274a392e",
+      "name": "n8n Startup Trigger"
+    },
+    {
+      "parameters": {
+        "content": "Automatically triggers git repository monitoring when n8n starts up or workflow is activated.",
+        "height": 96,
+        "width": 200,
+        "color": 3
+      },
+      "id": "22179d4c-dc83-4607-afb0-107c4b8233b9",
+      "name": "Startup Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1520,
+        -272
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Hourly schedule trigger that automatically checks repository status for updates every 60 minutes.",
+        "height": 96,
+        "width": 216,
+        "color": 3
+      },
+      "id": "439e90ff-0d1e-4902-bb25-dfb35cf36ca5",
+      "name": "Schedule Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1520,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Configures list of 35+ repositories to monitor, including paths for Tardigrade, JP projects, and US projects.",
+        "height": 112,
+        "width": 200,
+        "color": 5
+      },
+      "id": "26e896e9-0905-46f5-b458-5441771fb7b0",
+      "name": "Prepare Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1280,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Executes PowerShell command to check git status across all repositories using batch processing.",
+        "height": 112,
+        "width": 168,
+        "color": 2
+      },
+      "id": "43704bf3-da3a-4930-bf01-9dfd4105d8cc",
+      "name": "Status Check Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1056,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Parses JSON output from PowerShell git status check and splits repos, that need updates.",
+        "height": 112,
+        "width": 168,
+        "color": 6
+      },
+      "id": "366ee453-0ee2-4019-9407-3c58779977d8",
+      "name": "Parse Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -864,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Filters repositories and identifies which ones need updates based on behind status.",
+        "height": 112,
+        "width": 152,
+        "color": 4
+      },
+      "id": "70b9f993-d8a4-4283-bb19-8c4a9889afd8",
+      "name": "Filter Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -672,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Routes data flow with pull commands for repos needing updates or proceeds to summary.",
+        "height": 112,
+        "width": 168,
+        "color": 7
+      },
+      "id": "5794f5f9-c5bb-428c-957a-f9c3847304f2",
+      "name": "Route Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -496,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Conditional node that checks if repositories have pull commands ready for execution.",
+        "height": 112,
+        "width": 168,
+        "color": 4
+      },
+      "id": "c4c8fa3c-ee09-4347-a4a3-2ca1f41f379b",
+      "name": "Pull Check Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        96,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Executes git pull commands for repositories that are behind their remotes.",
+        "height": 112,
+        "width": 152
+      },
+      "id": "dddadebf-5480-494d-8c41-3a73e2e00272",
+      "name": "Execute Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        288,
+        -256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Generate comprehensive summary with repository status, success/failure counts, and logs.",
+        "height": 112,
+        "width": 200
+      },
+      "id": "775d9329-b492-4f47-9342-812bfbd2e1a9",
+      "name": "Summary Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Exports the final log content as a text file for external viewing and analysis.",
+        "height": 112,
+        "width": 168
+      },
+      "id": "ba4fa92b-a8a2-40ac-880b-13ec4fa1d56a",
+      "name": "Export Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Filters repos by status depending if data update is necessary or not and passes further",
+        "height": 112,
+        "width": 168,
+        "color": 7
+      },
+      "id": "70e06c55-0bee-4160-a357-1e7886a11e94",
+      "name": "Route Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -304,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Routes repos that require pull request or generates a summary for no updates needed",
+        "height": 112,
+        "width": 168,
+        "color": 7
+      },
+      "id": "a999ac8e-9827-4f16-903f-d20877a8db3d",
+      "name": "Route Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        -176
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {
+    "n8n Startup Trigger": [
+      {
+        "json": {
+          "parameters": {},
+          "name": "Startup Trigger",
+          "type": "n8n-nodes-base.startupTrigger",
+          "typeVersion": 1,
+          "position": [
+            240,
+            300
+          ]
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Execute Status Check": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON Status": {
+      "main": [
+        [
+          {
+            "node": "Filter Needing Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route for Updates": {
+      "main": [
+        [
+          {
+            "node": "Filter by Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter by Status": {
+      "main": [
+        [
+          {
+            "node": "Route Pull or Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Pull or Summary": {
+      "main": [
+        [
+          {
+            "node": "Has Pull Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Pull Command": {
+      "main": [
+        [
+          {
+            "node": "Execute Pull Command",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Pull Command": {
+      "main": [
+        [
+          {
+            "node": "Generate Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Every Hour": {
+      "main": [
+        [
+          {
+            "node": "Prepare Repos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Repos": {
+      "main": [
+        [
+          {
+            "node": "Execute Status Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Needing Updates": {
+      "main": [
+        [
+          {
+            "node": "Route for Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Summary": {
+      "main": [
+        [
+          {
+            "node": "Export Log File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Startup Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prepare Repos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "timeSavedPerExecution": 15
+  },
+  "versionId": "5d1a9cb0-23c0-4f87-8e67-579b055fea73",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "bk6aMU5sIvjJBQU3",
+  "tags": [
+    {
+      "createdAt": "2025-08-06T08:16:40.300Z",
+      "updatedAt": "2025-08-06T08:16:40.300Z",
+      "id": "QqgjtHKCzqHz0ohR",
+      "name": "git"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    },
+    {
+      "createdAt": "2025-09-01T06:30:47.873Z",
+      "updatedAt": "2025-09-01T06:30:47.873Z",
+      "id": "kEksTeX43RjCoFWx",
+      "name": "repositories"
+    }
+  ]
+}
