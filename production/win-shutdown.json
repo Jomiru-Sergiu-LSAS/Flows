@@ -1,0 +1,164 @@
+{
+  "name": "win-shutdown",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c1ccb747-be85-439e-95d0-4c2a231a9492",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -240,
+        624
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Manually triggers the shutdown command sequence workflow, when executed by the current user.",
+        "height": 112,
+        "width": 166,
+        "color": 3
+      },
+      "id": "0ca0158d-7985-49d2-8e4c-29826138149b",
+      "name": "Manual Trigger Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -272,
+        496
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Executes the PowerShell command sequence to force stop all running applications with windows and shutdown computer.",
+        "height": 112,
+        "width": 200,
+        "color": 4
+      },
+      "id": "c5ddce26-b988-43c7-b3c5-c381c8b289b8",
+      "name": "Shutdown Command Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -64,
+        496
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& {\n    $ErrorActionPreference = 'SilentlyContinue';\n    Get-Process | Where-Object { $_.MainWindowHandle -ne 0 } | ForEach-Object { Stop-Process -Id $_.Id -Force };\n    Stop-Computer -Force\n}\"\n"
+      },
+      "id": "8d8c8097-676f-4719-83f9-801af2d9a999",
+      "name": "Shutdown",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.message }}",
+        "options": {}
+      },
+      "id": "c4c68081-97bc-46c9-a695-66f28d8986d0",
+      "name": "Save as Gmail Draft",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        192,
+        624
+      ],
+      "webhookId": "12345678-90ab-cdef-1234-567890abcdef",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Sends the generated email report as a Gmail draft using Gmail API, ready for manual review and sending.",
+        "height": 112,
+        "width": 180,
+        "color": 5
+      },
+      "id": "81615a1e-8cf7-4f97-8fa8-6246ac5282dc",
+      "name": "Gmail Draft Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        176,
+        496
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {
+    "Manual Trigger": [
+      {
+        "json": {
+          "emailInstructions": "Schedule a meeting to discuss project progress, include available times next week, and ask for agenda items"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Shutdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shutdown": {
+      "main": [
+        [
+          {
+            "node": "Save as Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "timeSavedPerExecution": 5
+  },
+  "versionId": "8ebe5d94-b594-41c1-b31e-8f9853db76fa",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "7ZB5rVzzaBDdMmrg",
+  "tags": [
+    {
+      "createdAt": "2025-09-05T00:45:43.148Z",
+      "updatedAt": "2025-09-05T00:45:43.148Z",
+      "id": "hq8gMlfMkTezxxM8",
+      "name": "script"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    },
+    {
+      "createdAt": "2025-09-05T00:45:44.996Z",
+      "updatedAt": "2025-09-05T00:45:44.996Z",
+      "id": "siFoTFHcL7MlMq13",
+      "name": "shutdown"
+    }
+  ]
+}
