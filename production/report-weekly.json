@@ -1,0 +1,579 @@
+{
+  "name": "report-weekly",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const processedData = $input.first();\nconsole.log('Add Contributors node - Input received:', JSON.stringify(processedData, null, 2));\n\n// Handle multiple input formats from n8n\nlet categories, dateRange, gitContributors = [];\nif (processedData && processedData.json) {\n  categories = processedData.json.categories;\n  dateRange = processedData.json.dateRange;\n  gitContributors = processedData.json.contributors || [];\n} else if (Array.isArray(processedData) && processedData.length > 0) {\n  const firstItem = processedData[0];\n  if (!firstItem || !firstItem.categories) {\n    throw new Error('No categories data found in array input from Process & Categorize Commits node');\n  }\n  categories = firstItem.categories;\n  dateRange = firstItem.dateRange;\n  gitContributors = firstItem.contributors || [];\n} else if (processedData && processedData.categories) {\n  categories = processedData.categories;\n  dateRange = processedData.dateRange;\n  gitContributors = processedData.contributors || [];\n} else {\n  throw new Error('No categories data received from Process & Categorize Commits node. Input structure: ' + JSON.stringify(processedData));\n}\n\nconsole.log('Git contributors from Process Commits node:', gitContributors);\n\n// Contributor mapping - map git usernames/names to proper display names\nconst contributorMapping = {\n  // Sergiu Jomiru mapping (exact match)\n  'Sergiu Jomiru': 'Sergiu Jomiru',\n  \n  // Ivan Lam mapping\n  'ivan-lam': 'Ivan Lam',\n  'ivanlam11703': 'Ivan Lam',\n  \n  // John Thompson mapping\n  'john-lsas': 'John Thompson',\n  'John Thompson': 'John Thompson'\n};\n\n// Function to map contributor names\nconst mapContributorName = (name) => {\n  const trimmed = name.trim();\n  // Try exact match first\n  if (contributorMapping[trimmed]) {\n    return contributorMapping[trimmed];\n  }\n  // Try case-insensitive match\n  const lowerName = trimmed.toLowerCase();\n  for (const [key, value] of Object.entries(contributorMapping)) {\n    if (key.toLowerCase() === lowerName) {\n      return value;\n    }\n  }\n  // Return original name if no mapping found\n  return trimmed;\n};\n\n// Use git contributors if available, otherwise fallback to default\nlet contributorsArray;\nif (gitContributors && gitContributors.length > 0) {\n  // Filter, clean, and map the git contributors\n  const filteredContributors = gitContributors.filter(name => {\n    const trimmed = name.trim();\n    return trimmed.length > 1 && \n           trimmed.length < 50 &&\n           !trimmed.toLowerCase().includes('bot') &&\n           !trimmed.toLowerCase().includes('action') &&\n           !trimmed.includes('noreply') &&\n           !trimmed.includes('@');\n  });\n  \n  // Map to proper display names and remove duplicates\n  const mappedContributors = filteredContributors.map(mapContributorName);\n  contributorsArray = [...new Set(mappedContributors)];\n} else {\n  // Fallback: try to extract from commit messages\n  const contributorSet = new Set();\n  \n  Object.keys(categories).forEach(category => {\n    if (categories[category] && Array.isArray(categories[category])) {\n      categories[category].forEach(commit => {\n        // Pattern 1: \"by @username\" or \"by username\"\n        const byMatch = commit.match(/\\bby\\s+@?([a-zA-Z0-9_-]+)/i);\n        if (byMatch) {\n          contributorSet.add(mapContributorName(byMatch[1]));\n        }\n        \n        // Pattern 2: \"Co-authored-by: Name <email>\"\n        const coAuthorMatch = commit.match(/Co-authored-by:\\s*([^<]+)/i);\n        if (coAuthorMatch) {\n          contributorSet.add(mapContributorName(coAuthorMatch[1].trim()));\n        }\n      });\n    }\n  });\n  \n  contributorsArray = [...new Set(Array.from(contributorSet).filter(name => name.length > 1))];\n}\n\n// If still no contributors found, use default list with proper names\nif (contributorsArray.length === 0) {\n  contributorsArray = ['Sergiu Jomiru', 'Ivan Lam', 'John Thompson'];\n}\n\nconst contributors = contributorsArray.join(', ');\n\n// Create final combined output\nconst finalOutput = {\n  categories: categories,\n  dateRange: dateRange,\n  contributors: contributors\n};\n\nconsole.log('Add Contributors node - Final contributors:', contributorsArray);\nconsole.log('Add Contributors node - Combined output:', JSON.stringify(finalOutput, null, 2));\n\nreturn finalOutput;"
+      },
+      "id": "1c61c2aa-9ade-4eab-a29d-616626a188f3",
+      "name": "Add Contributors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -Command \"cd 'C:\\Repo\\Tardigrade'; git fetch origin; if (-not (git branch --list main)) { git checkout -b main origin/main } else { git checkout main }; git pull origin main\""
+      },
+      "id": "a53ce0ef-f5d4-4dad-9e51-14708954b434",
+      "name": "Fetch Tardigrade",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        320,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -Command \"cd 'C:\\Users\\Jomiru Sergiu\\Documents\\Terminal'; git fetch origin; if (-not (git branch --list main)) { git checkout -b main origin/main } else { git checkout main }; git pull origin main\"; "
+      },
+      "id": "9ba42c01-8b34-4731-8d8a-c90ae68eeb26",
+      "name": "Fetch Data",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        496,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const combinedInput = $input.first();\nlet stdout = combinedInput.json && combinedInput.json.stdout;\n\nif (!stdout) {\n  return [{ categories: { 'Added': [], 'Fixed': [], 'Changed': [], 'Removed': [], 'Other': [] }, contributors: [] }];\n}\n\n// Split the combined output to separate commits and contributors\nconst parts = stdout.split('|||CONTRIBUTORS|||');\nlet commitsData = parts[0] || '';\nlet contributorsData = '';\n\n// Extract contributors from all repositories (Tardigrade, Data, Flows)\nif (parts.length > 1) {\n  const dataParts = parts[1].split('|||DATA_CONTRIBUTORS|||');\n  contributorsData = parts[1];\n  \n  if (dataParts.length > 1) {\n    // Check for Flows contributors too\n    const flowsParts = dataParts[1].split('|||FLOWS_CONTRIBUTORS|||');\n    if (flowsParts.length > 1) {\n      // We have Tardigrade, Data, and Flows contributors\n      contributorsData = dataParts[0] + '\\n' + flowsParts[1]; // Combine all contributors\n      // Add any remaining commits from data and flows repos\n      const dataAndFlowsCommits = flowsParts[0].trim(); // This contains data + flows commits\n      commitsData += '\\n' + dataAndFlowsCommits; // Add data and flows commits\n    } else {\n      // We have Tardigrade and Data contributors only\n      contributorsData = dataParts[0] + '\\n' + dataParts[1]; // Combine both\n      commitsData += '\\n' + dataParts[0]; // Add any remaining commits from data repo\n    }\n  }\n}\n\n// Process commits\nconst lines = commitsData.split(/\\r?\\n/).filter(line => line.trim().length > 0);\n\nlet allCommits = [];\nlines.forEach((line) => {\n  const trimmed = line.trim();\n  if (/^[a-f0-9]{7,}/i.test(trimmed)) {\n    allCommits.push(trimmed);\n  }\n});\n\nconst categories = {\n  'Added': [],\n  'Fixed': [],\n  'Changed': [],\n  'Removed': [],\n  'Other': []\n};\n\nallCommits.forEach((commit) => {\n  const match = commit.match(/^[a-f0-9]{7,}\\s+([A-Za-z]+):/);\n  let category = match ? match[1].toLowerCase() : null;\n  switch (category) {\n    case 'added':\n      categories['Added'].push(commit);\n      break;\n    case 'fixed':\n      categories['Fixed'].push(commit);\n      break;\n    case 'changed':\n    case 'updated':\n    case 'modified':\n      categories['Changed'].push(commit);\n      break;\n    case 'removed':\n    case 'deleted':\n      categories['Removed'].push(commit);\n      break;\n    default:\n      categories['Other'].push(commit);\n  }\n});\n\n// Process contributors\nconst contributorLines = contributorsData.split(/\\r?\\n/).filter(line => {\n  const trimmed = line.trim();\n  return trimmed.length > 0 && \n         !trimmed.includes('|||') && // Filter out our delimiters\n         !/^[a-f0-9]{7,}/i.test(trimmed) && // Filter out commit hashes\n         !trimmed.includes('@') && // Filter out email addresses\n         !/^\\d+$/.test(trimmed) && // Filter out pure numbers\n         trimmed.length > 1 && trimmed.length < 50; // Reasonable name length\n});\n\n// Remove duplicates and filter\nconst uniqueContributors = [...new Set(contributorLines)].filter(name => {\n  const lowerName = name.toLowerCase();\n  return !lowerName.includes('bot') && \n         !lowerName.includes('action') &&\n         !lowerName.includes('github') &&\n         /^[A-Za-z\\s\\-\\.]+$/.test(name); // Only letters, spaces, hyphens, dots\n});\n\nconsole.log('Contributors found:', uniqueContributors);\n\nreturn [{ categories, contributors: uniqueContributors }];"
+      },
+      "id": "74e3744a-c8b2-4dbf-9484-15b9d1b0be9d",
+      "name": "Process Commits",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1296,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first();\nconsole.log('Generate .tex file node - Input received:', JSON.stringify(data, null, 2));\n\n// Check if data exists and handle n8n data structure\nif (!data) {\n  throw new Error('No input data received in Generate .tex file node');\n}\n\nlet actualData = data;\n\n// Handle AI Agent output structure: data.json.message.content contains the actual data\nif (data.json && data.json.message && data.json.message.content) {\n  actualData = data.json.message.content;\n} else if (data.json && !data.categories) {\n  actualData = data.json;\n} else if (data.message && data.message.content) {\n  actualData = data.message.content;\n}\n\nif (!actualData.categories) {\n  throw new Error(\n    'Categories data missing. Available keys: ' + Object.keys(data).join(', ') +\n    (data.json ? '. Keys in json: ' + Object.keys(data.json).join(', ') : '') +\n    (data.json && data.json.message ? '. Keys in message: ' + Object.keys(data.json.message).join(', ') : '')\n  );\n}\n\nconst { categories, contributors, dateRange } = actualData;\n\n// Handle LLM response - extract summaries\nlet generatedSummaries = [];\nif (actualData.summaries && Array.isArray(actualData.summaries)) {\n  generatedSummaries = actualData.summaries;\n} else if (actualData.summaryOverview) {\n  // Legacy format\n  generatedSummaries = actualData.summaryOverview.tasks || [];\n} else if (actualData.response || actualData.text || actualData.output) {\n  // LLM node output format\n  const llmResponse = actualData.response || actualData.text || actualData.output;\n  const responseText = typeof llmResponse === 'string' ? llmResponse : JSON.stringify(llmResponse);\n  const lines = responseText.split(' \\n').filter(line => line.trim().includes('\\\\item '));\n  generatedSummaries = lines.map(line => line.replace(/^\\s*\\\\item\\s*/, '').trim());\n}\n\n// Always build fallback summaries\nconst totalCommits = Object.values(categories).flat().length;\nconst categoryStats = Object.keys(categories)\n  .map(cat => `${categories[cat].length} ${cat.toLowerCase()}`)\n  .filter(stat => !stat.startsWith('0')).join(', ');\n\nconst fallbackTasks = [\n  \n  `\\\\textbf{Completed:} ${totalCommits} Development tasks: ${categoryStats}`,\n  `\\\\textbf{Completed:} Reviewed codebase changes and pull requests for the past week`,\n  `\\\\textbf{Completed:} Maintenance of code quality through testing and validation processes`,\n  `\\\\textbf{Completed:} Documentation updates and resolved technical debt items`,\n  `\\\\textbf{Completed:} Feature improvements and bug fixes for better user experience`\n];\n\n// Merge both: generated + fallback\nconst allTasks = [...fallbackTasks, ...generatedSummaries];\n\nconst summaryOverview = {\n  tasks: allTasks,\n  latexFormatted: allTasks.map(task => {\n    // Ensure consistent bold formatting\n    const formattedTask = task.replace(/^Completed:/, '\\\\textbf{Completed:}');\n    return '  \\\\item  ' + formattedTask;\n  }).join(' \\n'),\n  totalCommits: totalCommits\n};\n\n// Generate LaTeX (.tex) content for LaTeX editors\nconst generateTexContent = () => {\n  // Format commits for LaTeX\n  const formatCommitsForLatex = (categories) => {\n    let latexCommits = '';\n    Object.keys(categories).forEach(category => {\n      if (categories[category] && categories[category].length > 0) {\n        categories[category].forEach(commit => {\n          const parts = commit.split(' ');\n          const hash = parts[0];\n          const message = parts.slice(1).join(' ');\n          \n          // Escape LaTeX special characters properly\n          const escapedMessage = message\n            .replace(/\\\\/g, '\\\\textbackslash{}')\n            .replace(/_/g, '\\\\_')\n            .replace(/\\$/g, '\\\\$')\n            .replace(/%/g, '\\\\%')\n            .replace(/&/g, '\\\\&')\n            .replace(/\\^/g, '\\\\textasciicircum{}')\n            .replace(/~/g, '\\\\textasciitilde{}')\n            .replace(/\\{/g, '\\\\{')\n            .replace(/\\}/g, '\\\\}');\n          \n          latexCommits += `- ${escapedMessage} | ${hash} \\n`;\n        });\n      }\n    });\n    return latexCommits;\n  };\n\n  const formattedCommits = formatCommitsForLatex(categories);\n  const escapedContributors = (contributors || 'Sergiu, Ivan')\n    .replace(/_/g, '\\\\_')\n    .replace(/&/g, '\\\\&');\n  \n  // Use the LaTeX formatted summary from summaryOverview\n  const summaryContent = summaryOverview.latexFormatted || \n    summaryOverview.tasks.map(task => '  \\\\item ' + task).join(' \\n');\n\n  const texContent = '\\\\documentclass[12pt]{article} \\n' +\n    '\\\\usepackage{geometry} \\n' +\n    '\\\\geometry{margin=0.6in} \\n' +\n    '\\\\usepackage{enumitem} \\n' +\n    '\\\\usepackage{titlesec} \\n' +\n    '\\\\usepackage{hyperref} \\n' +\n    '\\\\usepackage{fancyvrb} \\n' +\n    '\\\\usepackage{titling} \\n' +\n    '\\\\usepackage{fancyhdr} \\n \\n' +\n    '\\\\setlength{\\\\droptitle}{-1cm} \\n' +\n    '\\\\setlength{\\\\footskip}{7mm} \\n \\n' +\n    '\\\\title{\\\\textbf{Weekly Progress Report}} \\n' +\n    '\\\\author{Contributors: ' + escapedContributors + '} \\n' +\n    '\\\\begin{document} \\n' +\n    '\\\\maketitle \\n \\n' +\n    '\\\\noindent\\\\vspace{-1.5cm}\\\\section*{※ Project Priorities} \\n' +\n    '\\\\begin{itemize} \\n' +\n    '  \\\\item \\\\textbf{Applications} (Terminal, Training Platform) \\n' +\n    '  \\\\item \\\\textbf{Shared Libs} (Backend Functional Capabilities) \\n' +\n    '  \\\\item \\\\textbf{Maintenance} (Tests, Logs, Automation, CI/CD, Validation, Infra, Configs, Docs, AI, etc.) \\n' +\n    '\\\\end{itemize} \\n \\n' +\n    '\\\\noindent\\\\section*{※ Summary Overview} \\n' +\n    '\\\\begin{itemize} \\n' +\n    summaryContent + ' \\n' +\n    '\\\\end{itemize} \\n \\n' +\n    '\\\\noindent\\\\section*{※ Development Tasks Completed (Weekly Changelog Report)} \\n' +\n    '\\\\vspace{0.3cm} \\n' +\n    '\\\\begin{Verbatim}[fontsize=\\\\fontsize{9}{18}\\\\selectfont] \\n' +\n    formattedCommits +\n    '\\\\end{Verbatim} \\n \\n' +\n    '\\\\end{document}';\n  \n  return texContent;\n};\n\nconst texFileContent = generateTexContent();\n\nconsole.log('LaTeX .tex file generated successfully');\nconsole.log('Total commits processed:', Object.values(categories).flat().length);\nconsole.log('Summary tasks generated:', summaryOverview.tasks.length);\n\n// Return in n8n expected format with tex content as main output\nreturn {\n  texContent: texFileContent\n};\n"
+      },
+      "id": "981bcf3b-eadc-4d64-a526-f802e840054e",
+      "name": "Generate Report (.tex)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1872,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                5
+              ],
+              "triggerAtHour": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        96,
+        336
+      ],
+      "id": "1aaa8fe7-8faa-4f68-afa0-11fe3f0e61f0",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a technical project manager creating high-level summary items from software development commit data. Generate exactly 5 concise bullet points (up to 90 characters each) that summarize the most significant changes, improvements, and fixes.\n\nAnalyze the following commit data and create 5 high-level summary items starting with exactly the word \"Completed:\". Make sure the items do not have the words \"Training Platform\", \"course\" or \"TP\".\n\nOutput the same json, just add the field summaries with the bullet points created, after categories inside the json.\n\n{{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1600,
+        240
+      ],
+      "id": "0659065c-9b1b-4ee5-9176-cadfc3afa9b4",
+      "name": "AI Agent",
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "events": [
+          "init",
+          "activate"
+        ]
+      },
+      "type": "n8n-nodes-base.n8nTrigger",
+      "typeVersion": 1,
+      "position": [
+        96,
+        144
+      ],
+      "id": "5ed32f55-b331-4abf-849f-43131c8a8d01",
+      "name": "n8n Startup Trigger"
+    },
+    {
+      "parameters": {
+        "content": "Manual trigger for testing the weekly report generation workflow when needed.",
+        "height": 112,
+        "width": 168,
+        "color": 3
+      },
+      "id": "80562fed-9bfb-48f4-8371-03dfdc93b76e",
+      "name": "Manual Test Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        80,
+        16
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Automated weekly schedule that triggers report generation every Friday at 3 AM.",
+        "height": 112,
+        "width": 168,
+        "color": 3
+      },
+      "id": "2a782be4-48a2-497e-a8ae-a97e8aac78a0",
+      "name": "Schedule Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        80,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Fetches changes from Tardigrade repository using PowerShell git commands.",
+        "height": 112,
+        "width": 150,
+        "color": 2
+      },
+      "id": "9a652e59-e3d3-47ce-a524-0fe0313e9690",
+      "name": "Fetch Tardigrade Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        320,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Fetches changes from Tardigrade-Data repository using PowerShell git commands.",
+        "height": 112,
+        "width": 150,
+        "color": 2
+      },
+      "id": "f8b24716-68de-4e8c-bbb2-47d9ceb6bc05",
+      "name": "Fetch Data Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Gets Tardigrade commits for the last 9 days with encoded output and contributors.",
+        "height": 112,
+        "width": 150,
+        "color": 5
+      },
+      "id": "f687cc57-6268-48b4-b681-44a287857783",
+      "name": "Tardigrade Commits Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Gets Data repo commits for the last 9 days with encoded output and contributors.",
+        "height": 112,
+        "width": 150,
+        "color": 5
+      },
+      "id": "90e840c7-9113-4a0b-b95f-c406b6787583",
+      "name": "Data Commits Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Parses commits and categorizes by Added, Fixed, Changed, Removed, Other.",
+        "height": 112,
+        "width": 150,
+        "color": 6
+      },
+      "id": "09bfd5ec-c7c2-4eff-9d95-6d4b408cc660",
+      "name": "Process Commits Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1280,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Maps git users to proper display names and adds contributor info to the report data.",
+        "height": 112,
+        "width": 150,
+        "color": 7
+      },
+      "id": "5d60d63c-e500-4ec3-84f6-584320c3b95b",
+      "name": "Contributors Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1440,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "An AI model based  agent that generates 5 high-level formal summaries bullet points from commit data using Open AI GPT models.",
+        "height": 112,
+        "width": 232
+      },
+      "id": "8bcaaaa2-14be-4ad3-82d1-81f814ad12f2",
+      "name": "AI Summary Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1600,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Generates LaTeX report with formatted date, title, summary, contributors,  commits, and styling.",
+        "height": 112,
+        "width": 168
+      },
+      "id": "3850e33e-c168-4aff-bfe7-13cfd0b0d42e",
+      "name": "Generate Report Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1840,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Exports the LaTeX report as a .tex file for compilation into PDF format by external tools.",
+        "height": 112,
+        "width": 152
+      },
+      "id": "0e4de416-0b72-4096-aac0-307566b4dc21",
+      "name": "Export File Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2016,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get first input item\nconst data = $input.first();\n\nif (!data || !data.json || !data.json.texContent) {\n  throw new Error('No texContent found in input item.');\n}\n\n// Only replace literal backslash + n that are followed by a space or end-of-string\n// This prevents messing with LaTeX commands\nconst cleanTex = data.json.texContent.replace(/\\\\n(?=\\s|$)/g, \"\\n\");\n\n// Return both viewable JSON and downloadable binary\nreturn {\n  json: {\n    texContent: cleanTex,\n    fileName: \"log.txt\",\n    mimeType: \"text/plain\",\n    size: cleanTex.length\n  },\n  binary: {\n    data: {\n      data: Buffer.from(cleanTex, \"utf8\").toString(\"base64\"),\n      mimeType: \"text/plain\",\n      fileName: \"log.txt\"\n    }\n  }\n};\n"
+      },
+      "id": "7ef7ee99-098a-4a72-9940-a77f2c00dd22",
+      "name": "Export File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -Command \"cd 'C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\AgentWorklfows'; git fetch origin; if (-not (git branch --list main)) { git checkout -b main origin/main } else { git checkout main }; git pull origin main\"; "
+      },
+      "id": "d0ecae48-ecd4-4e90-877b-0034893442dd",
+      "name": "Fetch Flows",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        656,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Fetches changes from Agent Flows repository using PowerShell git commands.",
+        "height": 112,
+        "width": 150,
+        "color": 2
+      },
+      "id": "f3097fd4-54d9-4587-88eb-bf8244def123",
+      "name": "Fetch Data Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        640,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Gets Flows repo commits for the last 9 days with encoded output and contributors.",
+        "height": 112,
+        "width": 150,
+        "color": 5
+      },
+      "id": "fbd50e4d-31cb-482e-b485-c5ac3a912f19",
+      "name": "Data Commits Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "powershell -Command \"cd 'C:\\Repo\\Tardigrade'; $days = 9; $log = git log --oneline --since=\\\"$days days ago\\\" | Out-String; $contributors = git log --since=\\\"$days days ago\\\" --format='%an' | Sort-Object | Get-Unique | Out-String; $combined = $log + '|||CONTRIBUTORS|||' + $contributors; $b64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($combined)); Write-Output $b64\"\n"
+      },
+      "id": "3665fba4-cef2-4aed-9dbc-854b53f38e7f",
+      "name": "Get Tardigrade",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        816,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=powershell -Command \"$prev = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{{$json[\"stdout\"]}}')); cd 'C:\\Users\\Jomiru Sergiu\\Documents\\Terminal'; $days = 9; $newLog = git log --oneline --since=\\\"$days days ago\\\" | Out-String; $newContributors = git log --since=\\\"$days days ago\\\" --format='%an' | Sort-Object | Get-Unique | Out-String; $combined = $prev + $newLog + '|||DATA_CONTRIBUTORS|||' + $newContributors; $b64 = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($combined)); Write-Output $b64\"\n"
+      },
+      "id": "ba05681a-98bc-4f04-9b5c-6672a99f59d5",
+      "name": "Get Data",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        976,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=powershell -Command \"$prev = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('{{$json[\"stdout\"]}}')); cd 'C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\AgentWorklfows'; $days = 9; $newLog = git log --oneline --since=\\\"$days days ago\\\" | Out-String; $newContributors = git log --since=\\\"$days days ago\\\" --format='%an' | Sort-Object | Get-Unique | Out-String; $combined = $prev + $newLog + '|||FLOWS_CONTRIBUTORS|||' + $newContributors; Write-Output $combined\"; "
+      },
+      "id": "02f6c58f-3968-454b-bdb4-405defc683de",
+      "name": "Get Flows",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        240
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Add Contributors": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Tardigrade": {
+      "main": [
+        [
+          {
+            "node": "Fetch Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Data": {
+      "main": [
+        [
+          {
+            "node": "Fetch Flows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Commits": {
+      "main": [
+        [
+          {
+            "node": "Add Contributors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Tardigrade",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate Report (.tex)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Report (.tex)": {
+      "main": [
+        [
+          {
+            "node": "Export File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Startup Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Tardigrade",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Flows": {
+      "main": [
+        [
+          {
+            "node": "Get Tardigrade",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Tardigrade": {
+      "main": [
+        [
+          {
+            "node": "Get Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Data": {
+      "main": [
+        [
+          {
+            "node": "Get Flows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Flows": {
+      "main": [
+        [
+          {
+            "node": "Process Commits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "timeSavedPerExecution": 60
+  },
+  "versionId": "1f0a3fe5-94bb-415c-ba94-ab82c343b6b2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "bT8VKE7JFnOTfSaU",
+  "tags": [
+    {
+      "createdAt": "2025-08-06T05:21:27.877Z",
+      "updatedAt": "2025-08-06T05:21:27.877Z",
+      "id": "bZQkQ0kY9QItEKWC",
+      "name": "productivity"
+    },
+    {
+      "createdAt": "2025-08-27T03:32:51.331Z",
+      "updatedAt": "2025-08-27T03:32:51.331Z",
+      "id": "gkMAL0tM7YHqJozY",
+      "name": "weekly"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    }
+  ]
+}
