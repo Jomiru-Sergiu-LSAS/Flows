@@ -1,0 +1,473 @@
+{
+  "name": "mail-to-jira",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.textPlain }}",
+        "options": {
+          "systemMessage": "=You are a Jira assistant.\n\nAnalyze the following email content and generate structured output in **pure JSON** format.\n\nInstructions:\n1. Identify if the email has one of the following subjects \"JIRA feature\", \"JIRA issue\", \"JIRA Task\" or \"JIRA bug\", if not output empty.\n2. Provide a short but clear summary (`main_ticket`) for the main ticket.\n3. Include a meaningful one-liner (`main_description`) describing the overall goal.\n4. Break down all actionable items into `sub_tasks`, each with:\n   - a short `summary`\n   - a short `description` that elaborates slightly more on the task.\n5. Respond ONLY in a valid JSON object. No extra explanation, no Markdown, no bullet points, no formatting — only raw JSON.\n\nExpected JSON format:\n{\n  \"category\": \"Issue\" | \"Feature\",\n  \"main_ticket\": \"Short summary of the main ticket\",\n  \"main_description\": \"One-liner describing the main ticket goal\",\n  \"sub_tasks\": [\n    {\n      \"summary\": \"Short sub-task summary\",\n      \"description\": \"Slightly more detailed description\"\n    },\n    ...\n  ]\n}\n\nuse think tool also if needed.\nInput:\n{{ $json.text }}"
+        }
+      },
+      "id": "eb903ab6-19df-47cb-a562-efdc4469fdf0",
+      "name": "Analyze Email & Extract Tasks\t",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -304,
+        176
+      ],
+      "typeVersion": 1.8
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the raw output from the previous AI Agent node\nconst rawOutput = $input.first().json.output;\n\n// Remove code block wrappers like ```json and ```\nconst cleaned = rawOutput\n  .replace(/^```json/, '')\n  .replace(/```$/, '')\n  .trim();\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (err) {\n  throw new Error(\"Failed to parse AI output as JSON: \" + err.message);\n}\n\n// Now return the structured data so it can be used by later nodes\nreturn parsed;"
+      },
+      "id": "7fba0043-c282-4b57-a5d0-9013a3dca3e1",
+      "name": "Parse JSON Output from AI\t",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        224,
+        176
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "📌 Email-to-Jira Auto Ticket Creator (AI-powered) – Overview\nThis AI-powered workflow reads emails, understands the request using an LLM, and creates structured Jira issues:\n\nFlow Steps:\n📨 Polls for new emails every 5 minutes.\n📬 Fetches full email content.\n🧠 Analyzes content using AI to understand the feature request.\n📊 Parses structured task data (main task + subtasks).\n🧾 Creates a main Jira task.\n🧾 Creates all related subtasks in Jira under the main task.\n\nPerfect for project teams who get work requests via email and want them converted into actionable Jira tickets automatically.",
+        "height": 280,
+        "width": 556
+      },
+      "id": "e48989d0-3b94-473b-b0fc-83f320dc0e53",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        128,
+        336
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "mode": "id",
+          "value": "10002"
+        },
+        "issueType": {
+          "__rl": true,
+          "mode": "list",
+          "value": "10008",
+          "cachedResultName": "Task"
+        },
+        "summary": "={{ $json.main_ticket }}",
+        "additionalFields": {
+          "assignee": {
+            "__rl": true,
+            "mode": "list",
+            "value": "5fec3f15dd5eb501088e0226",
+            "cachedResultName": "ajay"
+          },
+          "description": "={{ $json.main_description }}"
+        }
+      },
+      "id": "7a85144f-7e26-46c7-8bae-c08787b348d6",
+      "name": "Jira - Create Main Issue",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        448,
+        176
+      ],
+      "executeOnce": false,
+      "retryOnFail": false,
+      "typeVersion": 1,
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "mvnCUQvYXVlEfCOU",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "mode": "id",
+          "value": "10002"
+        },
+        "issueType": {
+          "__rl": true,
+          "mode": "list",
+          "value": "10010",
+          "cachedResultName": "Subtask"
+        },
+        "summary": "={{ $json.sub_task.summary }}",
+        "additionalFields": {
+          "assignee": {
+            "__rl": true,
+            "mode": "list",
+            "value": "5fec3f15dd5eb501088e0226",
+            "cachedResultName": "ajay"
+          },
+          "description": "={{ $json.sub_task.description }}",
+          "parentIssueKey": "={{ $('Jira - Create Main Issue').item.json.key }}"
+        }
+      },
+      "id": "cecbe148-2295-4b76-9dd3-a915511ef9a2",
+      "name": "Create Subtasks\t",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        912,
+        176
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "mvnCUQvYXVlEfCOU",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const subtasks = $('Parse JSON Output from AI\t').first().json.sub_tasks;\n\nreturn subtasks.map(task => {\n  return {\n    json: {\n      sub_task: task\n    }\n  };\n});"
+      },
+      "id": "8b458b52-c608-447a-8224-3918d2ca6b75",
+      "name": "Split Subtasks JSON to Items\t",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        672,
+        176
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {},
+      "id": "95502dab-133c-422a-bab3-abaada292f94",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        0,
+        176
+      ],
+      "webhookId": "d5e70f73-8c17-4e02-b029-fe0b3f703c83",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "Monitors IMAP email account for new incoming messages and triggers workflow when emails arrive.",
+        "height": 112,
+        "width": 196,
+        "color": 3
+      },
+      "id": "667a930a-4b7d-48c2-b13e-3c27c838165c",
+      "name": "IMAP Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -528,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "209cf28a-a258-44a7-b943-6836a25c983f",
+      "name": "Check New Email (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "position": [
+        -528,
+        176
+      ],
+      "typeVersion": 2,
+      "credentials": {
+        "imap": {
+          "id": "NBfMzCctD9ha97vJ",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "AI Agent that analyzes email content using OpenAI GPT models and extracts structured task information for Jira ticket creation.",
+        "height": 112,
+        "width": 232,
+        "color": 2
+      },
+      "id": "bb2b56a6-c62e-45bc-a062-fac5cf81376f",
+      "name": "AI Analysis Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -304,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Think Tool provides reasoning capabilities to the AI agent for better analysis and structured output generation.",
+        "height": 96,
+        "width": 228,
+        "color": 7
+      },
+      "id": "12382ff6-80a4-4927-a2f7-75bd3dbe7b4c",
+      "name": "Think Tool Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -176,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Parses AI-generated JSON output to extract main ticket and subtask information for Jira ticket creation.",
+        "height": 112,
+        "width": 200,
+        "color": 6
+      },
+      "id": "5187e4e9-e0f8-400a-a04b-e8d2a3cb0300",
+      "name": "JSON Parse Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        176,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Creates the main Jira task/issue using extracted information from email analysis with proper project settings.",
+        "height": 112,
+        "width": 200,
+        "color": 4
+      },
+      "id": "eb828f73-9554-40e8-9b22-5c78fcb4457b",
+      "name": "Main Jira Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Creates individual subtasks in Jira linked to the main issue, processing each subtask from the AI analysis.",
+        "height": 112,
+        "width": 216,
+        "color": 4
+      },
+      "id": "74df37f1-48c4-42fb-b905-0ec0d85ff615",
+      "name": "Subtasks Jira Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Splits the subtasks array from AI analysis into individual items so each subtask can be processed separately by Jira node.",
+        "height": 112,
+        "width": 200,
+        "color": 5
+      },
+      "id": "27ee0573-5519-440c-8888-0df42b14dcc6",
+      "name": "Split Subtasks Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        624,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Wait node to ensure proper timing between AI analysis completion and JSON parsing for reliable workflow execution.",
+        "height": 112,
+        "width": 196
+      },
+      "id": "6b9d5171-be03-436f-8749-73f22901140e",
+      "name": "Wait Node Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -48,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "OpenAI Chat Model providing capabilities for intelligent email analysis and task extraction.",
+        "height": 96,
+        "width": 196,
+        "color": 2
+      },
+      "id": "38cb41ab-324f-4324-b1e3-4e3db2d36567",
+      "name": "OpenAI Model Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -384,
+        528
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        400
+      ],
+      "id": "2e400187-9f49-423b-a564-29ced055ecdb",
+      "name": "OpenAI Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "df414585-442c-4dd4-bef1-0f5ff2109b64",
+      "name": "AI Think Support\t",
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "position": [
+        -160,
+        400
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "📌 Email Example\n\nTitle: JIRA Task/Feature/Issue/Bug\n\nSubject: Add a new button on main screen.\nDescription: Lorem Ipsum.\nAcceptance Criteria: TBD\nPriority: High",
+        "height": 184,
+        "width": 364
+      },
+      "id": "e1cdbec7-fc31-4ebd-a62f-00826145afd5",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        336
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON Output from AI\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira - Create Main Issue": {
+      "main": [
+        [
+          {
+            "node": "Split Subtasks JSON to Items\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON Output from AI\t": {
+      "main": [
+        [
+          {
+            "node": "Jira - Create Main Issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Subtasks JSON to Items\t": {
+      "main": [
+        [
+          {
+            "node": "Create Subtasks\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Email & Extract Tasks\t": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check New Email (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Analyze Email & Extract Tasks\t",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze Email & Extract Tasks\t",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Think Support\t": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyze Email & Extract Tasks\t",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionOrder": "v0",
+    "timeSavedPerExecution": 15
+  },
+  "versionId": "99b99f07-05ca-4e06-8aea-b1017311ce83",
+  "meta": {
+    "templateId": "5473",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "WeUhHKcH4eZZjgBf",
+  "tags": []
+}
