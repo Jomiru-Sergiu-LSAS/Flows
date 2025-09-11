@@ -1,0 +1,300 @@
+{
+  "name": "mail-reply-draft",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "This workflow triggers from Mail (IMAP), processes text with LLM Model, sets up an email field, and saves a draft.",
+        "height": 112,
+        "width": 192
+      },
+      "id": "9f44582d-bc3e-4302-882f-d3983f19e014",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -304,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Monitors IMAP email account for new incoming messages and triggers workflow when emails arrive.",
+        "height": 112,
+        "width": 196,
+        "color": 3
+      },
+      "id": "e1a8f43c-7f3d-4ee3-9d6d-17daace2987d",
+      "name": "IMAP Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -80,
+        -112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Uses an LLM AI language chain to analyze all of the incoming email content and generate appropriate reply text using OpenAI.",
+        "height": 112,
+        "width": 228
+      },
+      "id": "149b4ba1-1304-4005-bf07-23ef4553ff21",
+      "name": "AI Process Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        176,
+        -112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Structures email data by setting reply fields: from address, subject (with 'Re:' prefix), and AI-generated message text.",
+        "height": 112,
+        "width": 196,
+        "color": 6
+      },
+      "id": "c6f660fa-931d-4fbe-a6de-f0a22290d9b0",
+      "name": "Prepare Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        448,
+        -112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Saves the prepared email reply as a Gmail draft using Gmail API, ready for manual review and sending.",
+        "height": 112,
+        "width": 180,
+        "color": 5
+      },
+      "id": "a84f1c44-c423-4917-9011-05dfccd167b7",
+      "name": "Gmail Draft Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        -112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Provides GPT-4.1-mini LLM language model capabilities for the AI email processing chain with OpenAI API.",
+        "height": 112,
+        "width": 180
+      },
+      "id": "31ad0cc1-5e29-4540-928e-3b4af09f415d",
+      "name": "OpenAI Model Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -64,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e20715e0-5f66-4034-9e60-bb3ab275892b",
+      "name": "Check New Email (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "position": [
+        -32,
+        32
+      ],
+      "typeVersion": 2,
+      "credentials": {
+        "imap": {
+          "id": "NBfMzCctD9ha97vJ",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.textPlain }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an AI email assistant.  \nYour task is to generate professional, well-structured email replies based on the incoming email content.  \n\nGuidelines:\n- Always address the sender by name if provided.  \n- Keep the tone respectful, clear, and professional. \n- Structure the email with proper greeting, body, and closing \n- Every new sentence in the body should be from new line\n- Ensure proper grammar and formatting for paragraphs in the body\n- Include all necessary information mentioned\n- Summarize long emails before replying if needed.  \n- Provide clear answers or actions, and confirm receipt when appropriate.  \n- If the request is unclear, politely ask for clarification.  \n- Keep replies short (3–6 sentences), unless a longer explanation is required.  \n- Use correct grammar and formatting.  \n- Do not include subject line in the email body \n\nEmail structure example:\n'Dear [RECIPIENT],\n\nThank you for your message.\n\nI appreciate you taking the time to review my application and proceed accordingly.\nPlease let me know if you need any additional information from my side.\n\nBest regards,\nSergiu'\n\nInput: {{ $json.textPlain }} \n\nOutput: Drafted email reply body, with Best Regards, my name is Sergiu."
+            }
+          ]
+        }
+      },
+      "id": "5545a72b-48fe-4550-8253-9c509a58ec4b",
+      "name": "Process Email with AI",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        176,
+        32
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7d428c48-4809-45d8-ba1e-c96d68c02c07",
+              "name": "from",
+              "type": "string",
+              "value": "={{ $('Check New Email (IMAP)').first().json.from }}"
+            },
+            {
+              "id": "63b99545-3d2d-4563-b9d7-078cbc20dbcc",
+              "name": "subject",
+              "type": "string",
+              "value": "=Re: {{ $('Check New Email (IMAP)').first().json.subject }}"
+            },
+            {
+              "id": "11d94d3f-2170-4b54-b5f9-b85bb95ad472",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.text }} "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3422e24f-4b07-4a44-addb-aa9bee9212f6",
+      "name": "Prepare Email Content",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        496,
+        32
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "id": "5ebf0882-8057-4104-b6fb-c76ac2235b3e",
+      "name": "Save as Gmail Draft",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        736,
+        32
+      ],
+      "webhookId": "18c29d10-9bf5-4678-b6ba-c93ed6865317",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        176,
+        208
+      ],
+      "id": "5bd19e2d-281f-4fb7-919d-26d4c45e88e9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Prepare Email Content": {
+      "main": [
+        [
+          {
+            "node": "Save as Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Email with AI": {
+      "main": [
+        [
+          {
+            "node": "Prepare Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check New Email (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Process Email with AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Process Email with AI",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionOrder": "v0",
+    "timeSavedPerExecution": 10
+  },
+  "versionId": "044840d3-c663-430c-bc53-5607b6bda496",
+  "meta": {
+    "templateId": "5196",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "SoWKY6F8J5XOKjMQ",
+  "tags": [
+    {
+      "createdAt": "2025-09-08T07:55:19.208Z",
+      "updatedAt": "2025-09-08T07:55:19.208Z",
+      "id": "8mzLwVwaYcqGeRXd",
+      "name": "email"
+    },
+    {
+      "createdAt": "2025-09-08T07:55:37.716Z",
+      "updatedAt": "2025-09-08T07:55:37.716Z",
+      "id": "Wotdd6nOv1ZH7qrJ",
+      "name": "drafts"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    }
+  ]
+}
