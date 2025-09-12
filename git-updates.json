@@ -9,7 +9,7 @@
       "name": "Execute Status Check",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
-        -1056,
+        -1104,
         -32
       ],
       "typeVersion": 1
@@ -22,7 +22,7 @@
       "name": "Parse JSON Status",
       "type": "n8n-nodes-base.code",
       "position": [
-        -864,
+        -944,
         -32
       ],
       "typeVersion": 2
@@ -35,7 +35,7 @@
       "name": "Route for Updates",
       "type": "n8n-nodes-base.code",
       "position": [
-        -480,
+        -624,
         -32
       ],
       "typeVersion": 2
@@ -48,7 +48,7 @@
       "name": "Filter by Status",
       "type": "n8n-nodes-base.code",
       "position": [
-        -288,
+        -464,
         -32
       ],
       "typeVersion": 2
@@ -61,7 +61,7 @@
       "name": "Route Pull or Summary",
       "type": "n8n-nodes-base.code",
       "position": [
-        -96,
+        -304,
         -32
       ],
       "typeVersion": 2
@@ -94,7 +94,7 @@
       "name": "Has Pull Command",
       "type": "n8n-nodes-base.if",
       "position": [
-        112,
+        -144,
         -32
       ],
       "typeVersion": 2
@@ -108,8 +108,8 @@
       "name": "Execute Pull Command",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
-        320,
-        -128
+        32,
+        -112
       ],
       "typeVersion": 1
     },
@@ -122,7 +122,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        704,
+        368,
         -16
       ]
     },
@@ -154,7 +154,7 @@
       "name": "Prepare Repos",
       "type": "n8n-nodes-base.code",
       "position": [
-        -1280,
+        -1248,
         -32
       ],
       "typeVersion": 2
@@ -167,7 +167,7 @@
       "name": "Filter Needing Updates",
       "type": "n8n-nodes-base.code",
       "position": [
-        -672,
+        -784,
         -32
       ],
       "typeVersion": 2
@@ -180,10 +180,254 @@
       "name": "Generate Summary",
       "type": "n8n-nodes-base.code",
       "position": [
-        528,
+        208,
         -16
       ],
       "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "Auto triggers git repo monitoring when n8n starts up or workflow is activated. ",
+        "height": 112,
+        "width": 150,
+        "color": 3
+      },
+      "id": "22179d4c-dc83-4607-afb0-107c4b8233b9",
+      "name": "Startup Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1520,
+        -288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Hourly trigger that auto checks repo status for updates every 60 minutes.",
+        "height": 96,
+        "width": 150,
+        "color": 3
+      },
+      "id": "439e90ff-0d1e-4902-bb25-dfb35cf36ca5",
+      "name": "Schedule Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1520,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Configures list of 35+ repositories to monitor, including Tardigrade, JP and US projects paths.",
+        "height": 112,
+        "width": 152,
+        "color": 5
+      },
+      "id": "26e896e9-0905-46f5-b458-5441771fb7b0",
+      "name": "Prepare Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1280,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Executes .ps1 command for git status across all repositories using batch processing.",
+        "height": 112,
+        "width": 150,
+        "color": 2
+      },
+      "id": "43704bf3-da3a-4930-bf01-9dfd4105d8cc",
+      "name": "Status Check Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1120,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Parses JSON from PowerShell git status check and splits repos, that need updates.",
+        "height": 112,
+        "width": 150,
+        "color": 6
+      },
+      "id": "366ee453-0ee2-4019-9407-3c58779977d8",
+      "name": "Parse Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -960,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Filters repositories and identifies which ones need updates based on behind status.",
+        "height": 112,
+        "width": 152,
+        "color": 4
+      },
+      "id": "70b9f993-d8a4-4283-bb19-8c4a9889afd8",
+      "name": "Filter Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -800,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Routes data flow pull commands for repos needing updates or sends summary.",
+        "height": 112,
+        "width": 150,
+        "color": 7
+      },
+      "id": "5794f5f9-c5bb-428c-957a-f9c3847304f2",
+      "name": "Route Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -640,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Conditional that checks if repos pull commands are ready for execution.",
+        "height": 112,
+        "width": 150,
+        "color": 4
+      },
+      "id": "c4c8fa3c-ee09-4347-a4a3-2ca1f41f379b",
+      "name": "Pull Check Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Executes git pull commands for repositories that are behind their remotes.",
+        "height": 112,
+        "width": 166
+      },
+      "id": "dddadebf-5480-494d-8c41-3a73e2e00272",
+      "name": "Execute Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        -240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Generate summary with repo status, success/failure counts, and logs.",
+        "height": 112,
+        "width": 150
+      },
+      "id": "775d9329-b492-4f47-9342-812bfbd2e1a9",
+      "name": "Summary Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        176,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Exports the final log content as a text file for external viewing and analysis.",
+        "height": 112,
+        "width": 150
+      },
+      "id": "ba4fa92b-a8a2-40ac-880b-13ec4fa1d56a",
+      "name": "Export Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        336,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Filters repos by status depending if data update is necessary or not and sends",
+        "height": 112,
+        "width": 150,
+        "color": 7
+      },
+      "id": "70e06c55-0bee-4160-a357-1e7886a11e94",
+      "name": "Route Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -480,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Routes repos requiring PRs or generates a summary for no updates needed",
+        "height": 112,
+        "width": 150,
+        "color": 7
+      },
+      "id": "a999ac8e-9827-4f16-903f-d20877a8db3d",
+      "name": "Route Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Notification about automated report generation will be sent to configured email address",
+        "height": 112,
+        "width": 166
+      },
+      "id": "063a2f05-e85b-4b23-a6d9-9ff13ab1574a",
+      "name": "Export File Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        496,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "jomirusergiu@gmail.com",
+        "subject": "=Git Updates",
+        "emailType": "text",
+        "message": "={{ $json.logContent }}",
+        "options": {}
+      },
+      "id": "c439ccab-140e-4179-9f7b-65a86ee82338",
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        528,
+        -16
+      ],
+      "webhookId": "18c29d10-9bf5-4678-b6ba-c93ed6865317",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
@@ -200,229 +444,9 @@
       ],
       "id": "3a32ae8c-08e3-4616-b87d-d3dd274a392e",
       "name": "n8n Startup Trigger"
-    },
-    {
-      "parameters": {
-        "content": "Automatically triggers git repository monitoring when n8n starts up or workflow is activated.",
-        "height": 96,
-        "width": 200,
-        "color": 3
-      },
-      "id": "22179d4c-dc83-4607-afb0-107c4b8233b9",
-      "name": "Startup Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -1520,
-        -272
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Hourly schedule trigger that automatically checks repository status for updates every 60 minutes.",
-        "height": 96,
-        "width": 216,
-        "color": 3
-      },
-      "id": "439e90ff-0d1e-4902-bb25-dfb35cf36ca5",
-      "name": "Schedule Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -1520,
-        224
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Configures list of 35+ repositories to monitor, including paths for Tardigrade, JP projects, and US projects.",
-        "height": 112,
-        "width": 200,
-        "color": 5
-      },
-      "id": "26e896e9-0905-46f5-b458-5441771fb7b0",
-      "name": "Prepare Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -1280,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Executes PowerShell command to check git status across all repositories using batch processing.",
-        "height": 112,
-        "width": 168,
-        "color": 2
-      },
-      "id": "43704bf3-da3a-4930-bf01-9dfd4105d8cc",
-      "name": "Status Check Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -1056,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Parses JSON output from PowerShell git status check and splits repos, that need updates.",
-        "height": 112,
-        "width": 168,
-        "color": 6
-      },
-      "id": "366ee453-0ee2-4019-9407-3c58779977d8",
-      "name": "Parse Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -864,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Filters repositories and identifies which ones need updates based on behind status.",
-        "height": 112,
-        "width": 152,
-        "color": 4
-      },
-      "id": "70b9f993-d8a4-4283-bb19-8c4a9889afd8",
-      "name": "Filter Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -672,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Routes data flow with pull commands for repos needing updates or proceeds to summary.",
-        "height": 112,
-        "width": 168,
-        "color": 7
-      },
-      "id": "5794f5f9-c5bb-428c-957a-f9c3847304f2",
-      "name": "Route Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -496,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Conditional node that checks if repositories have pull commands ready for execution.",
-        "height": 112,
-        "width": 168,
-        "color": 4
-      },
-      "id": "c4c8fa3c-ee09-4347-a4a3-2ca1f41f379b",
-      "name": "Pull Check Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        96,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Executes git pull commands for repositories that are behind their remotes.",
-        "height": 112,
-        "width": 152
-      },
-      "id": "dddadebf-5480-494d-8c41-3a73e2e00272",
-      "name": "Execute Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        288,
-        -256
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Generate comprehensive summary with repository status, success/failure counts, and logs.",
-        "height": 112,
-        "width": 200
-      },
-      "id": "775d9329-b492-4f47-9342-812bfbd2e1a9",
-      "name": "Summary Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        480,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Exports the final log content as a text file for external viewing and analysis.",
-        "height": 112,
-        "width": 168
-      },
-      "id": "ba4fa92b-a8a2-40ac-880b-13ec4fa1d56a",
-      "name": "Export Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        704,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Filters repos by status depending if data update is necessary or not and passes further",
-        "height": 112,
-        "width": 168,
-        "color": 7
-      },
-      "id": "70e06c55-0bee-4160-a357-1e7886a11e94",
-      "name": "Route Note1",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -304,
-        -176
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Routes repos that require pull request or generates a summary for no updates needed",
-        "height": 112,
-        "width": 168,
-        "color": 7
-      },
-      "id": "a999ac8e-9827-4f16-903f-d20877a8db3d",
-      "name": "Route Note2",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -112,
-        -176
-      ],
-      "typeVersion": 1
     }
   ],
-  "pinData": {
-    "n8n Startup Trigger": [
-      {
-        "json": {
-          "parameters": {},
-          "name": "Startup Trigger",
-          "type": "n8n-nodes-base.startupTrigger",
-          "typeVersion": 1,
-          "position": [
-            240,
-            300
-          ]
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
     "Execute Status Check": {
       "main": [
@@ -552,6 +576,17 @@
         ]
       ]
     },
+    "Export Log File": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "n8n Startup Trigger": {
       "main": [
         [
@@ -570,7 +605,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 15
   },
-  "versionId": "5d1a9cb0-23c0-4f87-8e67-579b055fea73",
+  "versionId": "8d286a7a-3358-486e-9a70-816e32c883f5",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
