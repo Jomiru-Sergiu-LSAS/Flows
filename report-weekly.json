@@ -62,7 +62,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        576,
+        592,
         192
       ]
     },
@@ -283,9 +283,9 @@
     },
     {
       "parameters": {
-        "content": "Generates LaTeX report with formatted date, title, summary, contributors,  commits, and styling.",
+        "content": "Generates concise LaTeX report with formatted date, title, summary, contributors,  commits, and styling.",
         "height": 112,
-        "width": 168
+        "width": 184
       },
       "id": "e67c1ab9-a426-490f-bd79-e30415a4fa8a",
       "name": "Generate Report Note",
@@ -306,7 +306,7 @@
       "name": "Export File Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        720,
+        736,
         64
       ],
       "typeVersion": 1
@@ -429,24 +429,63 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        912,
-        192
+        752,
+        752
       ],
       "id": "1e19c3ee-c24c-4d2c-aaa7-9ad0c340d548",
       "name": "HTTP Request"
     },
     {
       "parameters": {
-        "content": "Notification about automated report generation is sent to configured user's WhatsApp",
+        "content": "Notification about automated report generation is sent to pre-configured email address",
         "height": 112,
-        "width": 152
+        "width": 150
       },
       "id": "a174c11b-d6d5-4160-9136-1d31d139c3ad",
       "name": "Export File Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        880,
-        64
+        736,
+        336
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "jomirusergiu@gmail.com",
+        "subject": "=Weekly Report",
+        "emailType": "text",
+        "message": "={{ $json.texContent }}",
+        "options": {}
+      },
+      "id": "d5a51164-28dd-4756-851c-45c18fa8cbdf",
+      "name": "Save as Gmail Draft",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        752,
+        464
+      ],
+      "webhookId": "18c29d10-9bf5-4678-b6ba-c93ed6865317",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Notification about automated report generation is sent to pre-configured WhatsApp",
+        "height": 112,
+        "width": 152
+      },
+      "id": "b4345b49-2b08-4b3d-b1be-03a7bfa3f5dd",
+      "name": "Export File Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        624
       ],
       "typeVersion": 1
     }
@@ -526,6 +565,11 @@
             "node": "Export File",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Save as Gmail Draft",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -597,7 +641,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 60
   },
-  "versionId": "023e5ca4-e838-40bc-bc06-2bd8958fe552",
+  "versionId": "58f375f1-29b8-4d4e-9981-1f36eef5cfaa",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
