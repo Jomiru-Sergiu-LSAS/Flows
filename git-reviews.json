@@ -463,6 +463,48 @@
           "name": "GitHub account"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "Notification about automated git code PR reviews will be sent to configured email address",
+        "height": 112,
+        "width": 166
+      },
+      "id": "a865ce83-e2d8-4001-9307-c69a2382adec",
+      "name": "Export File Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        768,
+        96
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "jomirusergiu@gmail.com",
+        "subject": "=Git PR Reviews",
+        "emailType": "text",
+        "message": "={{ $json.reviewContent }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "9425733e-27fe-4908-af69-bd6827cff15c",
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        800,
+        240
+      ],
+      "webhookId": "18c29d10-9bf5-4678-b6ba-c93ed6865317",
+      "typeVersion": 2.1,
+      "notesInFlow": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
     }
   ],
   "pinData": {
@@ -629,6 +671,17 @@
           }
         ]
       ]
+    },
+    "Export File": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -637,7 +690,7 @@
     "executionOrder": "v0",
     "timeSavedPerExecution": 60
   },
-  "versionId": "503336eb-68d9-4fd3-89de-a29aaba6288b",
+  "versionId": "2e680b41-ca12-4bbb-b4b8-26eab81acddb",
   "meta": {
     "templateId": "3804",
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
