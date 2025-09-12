@@ -46,7 +46,7 @@
     },
     {
       "parameters": {
-        "command": "$ErrorActionPreference = 'SilentlyContinue'\nGet-Process | Where-Object { $_.MainWindowHandle -ne 0 } | ForEach-Object { Stop-Process -Id $_.Id -Force }\nStop-Computer -Force\n"
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& { `$ErrorActionPreference = 'SilentlyContinue'; Get-Process | Where-Object { `$_.MainWindowHandle -ne 0 } | ForEach-Object { Stop-Process -Id `$_.Id -Force }; Stop-Computer -Force }\"\n"
       },
       "id": "8d8c8097-676f-4719-83f9-801af2d9a999",
       "name": "Shutdown",
@@ -56,45 +56,6 @@
         -16,
         624
       ]
-    },
-    {
-      "parameters": {
-        "resource": "draft",
-        "subject": "={{ $json.subject }}",
-        "message": "={{ $json.message }}",
-        "options": {}
-      },
-      "id": "c4c68081-97bc-46c9-a695-66f28d8986d0",
-      "name": "Save as Gmail Draft",
-      "type": "n8n-nodes-base.gmail",
-      "position": [
-        192,
-        624
-      ],
-      "webhookId": "12345678-90ab-cdef-1234-567890abcdef",
-      "typeVersion": 2.1,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "6ZNnHZRObc0alAvd",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "Sends the generated email report as a Gmail draft using Gmail API, ready for manual review and sending.",
-        "height": 112,
-        "width": 180,
-        "color": 5
-      },
-      "id": "81615a1e-8cf7-4f97-8fa8-6246ac5282dc",
-      "name": "Gmail Draft Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        176,
-        496
-      ],
-      "typeVersion": 1
     }
   ],
   "pinData": {
@@ -120,13 +81,7 @@
     },
     "Shutdown": {
       "main": [
-        [
-          {
-            "node": "Save as Gmail Draft",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -136,7 +91,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 5
   },
-  "versionId": "3b92e2b0-38d8-40cd-b255-b7827fa4649b",
+  "versionId": "e94fd9e4-a96e-428f-9064-970e4f7b3762",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
