@@ -392,7 +392,7 @@
     },
     {
       "parameters": {
-        "content": "Notification about automated report generation will be sent to configured email address",
+        "content": "Notification about automated git update pull will be sent to configured email address",
         "height": 112,
         "width": 166
       },
@@ -608,7 +608,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 15
   },
-  "versionId": "2fde8f4a-3a68-4050-b5be-39a5d927ef2d",
+  "versionId": "88007961-9f4b-4d87-8286-737b4583570f",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },

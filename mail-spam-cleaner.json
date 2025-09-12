@@ -11,12 +11,12 @@
           ]
         }
       },
-      "id": "e8eb600c-9b45-44e2-8ee6-409c9b61b171",
+      "id": "e11bfafa-2599-484c-958e-efe7d73ae2d7",
       "name": "Fetch SPAM Emails (Gmail)",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        624,
-        448
+        640,
+        192
       ],
       "webhookId": "c47419de-278c-40d1-a5da-c9414d3f89c6",
       "typeVersion": 2.1,
@@ -29,12 +29,12 @@
     },
     {
       "parameters": {},
-      "id": "96a0fd3c-63bd-48f4-87d7-7eda528b50a3",
+      "id": "a80556ef-2e47-4fb4-8861-f2ad180069da",
       "name": "Pause Before Deletion (5s)",
       "type": "n8n-nodes-base.wait",
       "position": [
-        848,
-        448
+        864,
+        192
       ],
       "webhookId": "0b2f9902-fd7b-4a98-87a3-f36c74b0af32",
       "typeVersion": 1.1
@@ -44,12 +44,12 @@
         "operation": "delete",
         "messageId": "={{ $json.id }}"
       },
-      "id": "e172bbb8-069c-4c68-b72f-cf2a7f304f0b",
+      "id": "fdf6daf4-0817-42f3-b9f4-940f8e4c1ef8",
       "name": "Delete Fetched SPAM Emails",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        1072,
-        448
+        1088,
+        192
       ],
       "webhookId": "46b0fe0f-cc00-4994-8364-9048c888e9ef",
       "typeVersion": 2.1,
@@ -67,12 +67,12 @@
         "width": 218,
         "color": 3
       },
-      "id": "a07dd87f-1216-44de-91b8-a6d7d36877e8",
+      "id": "892aef18-dc1c-4e45-bff3-704012f2b687",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        352,
-        352
+        368,
+        96
       ],
       "typeVersion": 1
     },
@@ -83,12 +83,12 @@
         "width": 202,
         "color": 5
       },
-      "id": "0de7be15-2ebe-4c28-ab52-59f35f6a3135",
+      "id": "985f4269-bca0-48ca-a580-f23f2671860a",
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        576,
-        352
+        592,
+        96
       ],
       "typeVersion": 1
     },
@@ -98,12 +98,12 @@
         "height": 264,
         "width": 218
       },
-      "id": "11c0f2f1-1480-4512-ad4d-1d9544838e2c",
+      "id": "05e03031-1967-4152-bb11-920ed1621256",
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        784,
-        352
+        800,
+        96
       ],
       "typeVersion": 1
     },
@@ -111,15 +111,15 @@
       "parameters": {
         "content": "Permanently deletes all emails retrieved from the spam folder to free up the Gmail space.\n",
         "height": 264,
-        "width": 266,
+        "width": 234,
         "color": 4
       },
-      "id": "0600f919-8315-431a-8420-9c0931b9c097",
+      "id": "b4ff116e-6143-4a08-8aa2-eda43c772e00",
       "name": "Sticky Note3",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1008,
-        352
+        1024,
+        96
       ],
       "typeVersion": 1
     },
@@ -134,14 +134,88 @@
           ]
         }
       },
-      "id": "e214c477-6d39-426f-8a34-cd38bb6f5ae2",
+      "id": "33287b08-0a30-4f4c-a8b3-572e40c36442",
       "name": "Monthly Trigger (1st)",
       "type": "n8n-nodes-base.scheduleTrigger",
       "position": [
-        416,
-        448
+        432,
+        192
       ],
       "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "deleted_emails",
+        "options": {}
+      },
+      "id": "ad38e7c0-661c-4443-bd2f-bd162a8a29db",
+      "name": "Aggregate Deleted Emails",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        1328,
+        192
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "jomirusergiu@gmail.com",
+        "subject": "=Mail Spam Cleanup - {{ $json.deleted_emails.length }} emails deleted",
+        "emailType": "text",
+        "message": "=Mail Spam Cleanup completed successfully.\n\n{{ $json.deleted_emails.length }} spam emails were permanently deleted from your Gmail account.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "fc905638-3d58-4990-b1d2-70e274641f0b",
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1568,
+        192
+      ],
+      "webhookId": "18c29d10-9bf5-4678-b6ba-c93ed6865317",
+      "typeVersion": 2.1,
+      "notesInFlow": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Aggregates all deleted spam emails data to prepare summary information for single notification.",
+        "height": 264,
+        "width": 218,
+        "color": 6
+      },
+      "id": "53723ad9-484a-4b02-9214-2fc7fb882778",
+      "name": "Aggregate Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1264,
+        96
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Sends one single notification email with summary of all deleted spam messages including count and timestamp.",
+        "height": 264,
+        "width": 266,
+        "color": 2
+      },
+      "id": "72aa2d9a-2650-43e7-9ee0-ef6fea0ea2ca",
+      "name": "Notification Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1488,
+        96
+      ],
+      "typeVersion": 1
     }
   ],
   "pinData": {},
@@ -178,6 +252,28 @@
           }
         ]
       ]
+    },
+    "Delete Fetched SPAM Emails": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Deleted Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Deleted Emails": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -186,7 +282,7 @@
     "executionOrder": "v0",
     "timeSavedPerExecution": 10
   },
-  "versionId": "0a47ab4f-16c8-4b8b-9847-f15b0d471351",
+  "versionId": "c6b7b7b1-c2af-4cec-bbb6-0bac674038df",
   "meta": {
     "templateId": "6122",
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
