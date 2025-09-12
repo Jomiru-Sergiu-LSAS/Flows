@@ -411,7 +411,9 @@
         "subject": "=Git Updates",
         "emailType": "text",
         "message": "={{ $json.logContent }}",
-        "options": {}
+        "options": {
+          "appendAttribution": false
+        }
       },
       "id": "c439ccab-140e-4179-9f7b-65a86ee82338",
       "name": "Send Notification",
@@ -422,6 +424,7 @@
       ],
       "webhookId": "18c29d10-9bf5-4678-b6ba-c93ed6865317",
       "typeVersion": 2.1,
+      "notesInFlow": false,
       "credentials": {
         "gmailOAuth2": {
           "id": "6ZNnHZRObc0alAvd",
@@ -605,7 +608,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 15
   },
-  "versionId": "8d286a7a-3358-486e-9a70-816e32c883f5",
+  "versionId": "2fde8f4a-3a68-4050-b5be-39a5d927ef2d",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },

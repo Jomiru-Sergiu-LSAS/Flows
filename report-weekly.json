@@ -444,7 +444,9 @@
         "subject": "=Weekly Report",
         "emailType": "text",
         "message": "={{ $json.texContent }}",
-        "options": {}
+        "options": {
+          "appendAttribution": false
+        }
       },
       "id": "d5a51164-28dd-4756-851c-45c18fa8cbdf",
       "name": "Send Notification",
@@ -642,7 +644,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 60
   },
-  "versionId": "db1f2fa2-ee25-4d3b-9c66-6a5ae5c4a290",
+  "versionId": "ae90ed71-f5c6-4e49-8884-7a7b68742194",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
