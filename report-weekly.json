@@ -320,7 +320,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        752,
+        768,
         192
       ]
     },
@@ -410,6 +410,60 @@
     },
     {
       "parameters": {
+        "content": "Notification about automated report generation will be sent to configured email address",
+        "height": 112,
+        "width": 166
+      },
+      "id": "a174c11b-d6d5-4160-9136-1d31d139c3ad",
+      "name": "Export File Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        896,
+        64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Notification about automated report generation will be sent to configured WhatsApp Number",
+        "height": 112,
+        "width": 168
+      },
+      "id": "b4345b49-2b08-4b3d-b1be-03a7bfa3f5dd",
+      "name": "Export File Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        896,
+        512
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "jomirusergiu@gmail.com",
+        "subject": "=Weekly Report",
+        "emailType": "text",
+        "message": "={{ $json.texContent }}",
+        "options": {}
+      },
+      "id": "d5a51164-28dd-4756-851c-45c18fa8cbdf",
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        928,
+        192
+      ],
+      "webhookId": "18c29d10-9bf5-4678-b6ba-c93ed6865317",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
         "method": "POST",
         "url": "https://graph.facebook.com/v22.0/766518189882229/messages",
         "sendHeaders": true,
@@ -429,65 +483,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        752,
-        752
+        928,
+        352
       ],
       "id": "1e19c3ee-c24c-4d2c-aaa7-9ad0c340d548",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "content": "Notification about automated report generation is sent to pre-configured email address",
-        "height": 112,
-        "width": 150
-      },
-      "id": "a174c11b-d6d5-4160-9136-1d31d139c3ad",
-      "name": "Export File Note1",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        736,
-        336
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "sendTo": "jomirusergiu@gmail.com",
-        "subject": "=Weekly Report",
-        "emailType": "text",
-        "message": "={{ $json.texContent }}",
-        "options": {}
-      },
-      "id": "d5a51164-28dd-4756-851c-45c18fa8cbdf",
-      "name": "Save as Gmail Draft",
-      "type": "n8n-nodes-base.gmail",
-      "position": [
-        752,
-        464
-      ],
-      "webhookId": "18c29d10-9bf5-4678-b6ba-c93ed6865317",
-      "typeVersion": 2.1,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "6ZNnHZRObc0alAvd",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "Notification about automated report generation is sent to pre-configured WhatsApp",
-        "height": 112,
-        "width": 152
-      },
-      "id": "b4345b49-2b08-4b3d-b1be-03a7bfa3f5dd",
-      "name": "Export File Note2",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        736,
-        624
-      ],
-      "typeVersion": 1
+      "name": "Send Message"
     }
   ],
   "pinData": {},
@@ -565,11 +565,6 @@
             "node": "Export File",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Save as Gmail Draft",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -631,7 +626,13 @@
     },
     "Export File": {
       "main": [
-        []
+        [
+          {
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -641,7 +642,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 60
   },
-  "versionId": "58f375f1-29b8-4d4e-9981-1f36eef5cfaa",
+  "versionId": "db1f2fa2-ee25-4d3b-9c66-6a5ae5c4a290",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
