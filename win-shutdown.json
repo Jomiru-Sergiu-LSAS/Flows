@@ -46,7 +46,7 @@
     },
     {
       "parameters": {
-        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& {\n    $ErrorActionPreference = 'SilentlyContinue';\n    Get-Process | Where-Object { $_.MainWindowHandle -ne 0 } | ForEach-Object { Stop-Process -Id $_.Id -Force };\n    Stop-Computer -Force\n}\"\n"
+        "command": "$ErrorActionPreference = 'SilentlyContinue'\nGet-Process | Where-Object { $_.MainWindowHandle -ne 0 } | ForEach-Object { Stop-Process -Id $_.Id -Force }\nStop-Computer -Force\n"
       },
       "id": "8d8c8097-676f-4719-83f9-801af2d9a999",
       "name": "Shutdown",
@@ -136,7 +136,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 5
   },
-  "versionId": "8ebe5d94-b594-41c1-b31e-8f9853db76fa",
+  "versionId": "3b92e2b0-38d8-40cd-b255-b7827fa4649b",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
