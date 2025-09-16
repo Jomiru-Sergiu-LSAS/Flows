@@ -1,0 +1,597 @@
+{
+  "name": "newsletter",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://hype.aero/space/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.5"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "body"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "c2b3d05b-5b31-4254-90a6-54b4dc136c66",
+      "name": "Fetch Hype Aero",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        656,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://tldr.tech/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            },
+            {
+              "name": "Accept",
+              "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "en-US,en;q=0.5"
+            },
+            {
+              "name": "Accept-Encoding",
+              "value": "gzip, deflate, br"
+            },
+            {
+              "name": "Cache-Control",
+              "value": "no-cache"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 5
+            }
+          },
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "body"
+            }
+          },
+          "timeout": 30000
+        }
+      },
+      "id": "177793ed-5f3d-4a7d-b62d-fe4011cd28ad",
+      "name": "Fetch TLDR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        656,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// TLDR.TECH PARSER - Enhanced categorization system\nconst input = $input.first();\n\nconsole.log('=== TLDR.TECH PARSER (Enhanced) ===');\nconsole.log('Input received:', !!input);\n\n// Get HTML content\nlet htmlText = '';\nif (input && input.body) {\n  htmlText = input.body;\n} else if (input && input.data) {\n  htmlText = input.data;\n} else if (input && input.json && input.json.body) {\n  htmlText = input.json.body;\n} else if (input && input.json) {\n  htmlText = input.json;\n} else if (typeof input === 'string') {\n  htmlText = input;\n}\n\n// Handle object to string conversion\nif (typeof htmlText === 'object' && htmlText !== null) {\n  if (htmlText.body) {\n    htmlText = htmlText.body;\n  } else if (htmlText.data) {\n    htmlText = htmlText.data;\n  } else {\n    htmlText = '';\n  }\n}\n\nconsole.log('HTML length:', htmlText ? htmlText.length : 0);\n\n// Enhanced category mapping and detection\nconst categoryMapping = {\n  'ai': 'AI',\n  'artificial intelligence': 'AI',\n  'machine learning': 'AI',\n  'infosec': 'Infosec',\n  'security': 'Infosec',\n  'cybersecurity': 'Infosec',\n  'cyber security': 'Infosec',\n  'tech': 'Tech',\n  'technology': 'Tech',\n  'fintech': 'Fintech',\n  'finance': 'Fintech',\n  'financial': 'Fintech',\n  'data': 'Data',\n  'analytics': 'Data',\n  'database': 'Data',\n  'design': 'Design',\n  'ui': 'Design',\n  'ux': 'Design',\n  'webdev': 'Webdev',\n  'web development': 'Webdev',\n  'frontend': 'Webdev',\n  'backend': 'Webdev',\n  'marketing': 'Marketing',\n  'growth': 'Marketing',\n  'crypto': 'Crypto',\n  'cryptocurrency': 'Crypto',\n  'blockchain': 'Crypto',\n  'bitcoin': 'Crypto',\n  'founders': 'Founders',\n  'startup': 'Founders',\n  'entrepreneur': 'Founders',\n  'product': 'Product',\n  'product management': 'Product',\n  'devops': 'DevOps',\n  'infrastructure': 'DevOps',\n  'deployment': 'DevOps'\n};\n\nconst categoryKeywords = {\n  'AI': ['ai', 'artificial intelligence', 'machine learning', 'neural network', 'deep learning', 'gpt', 'llm', 'openai', 'anthropic', 'chatbot', 'automation', 'computer vision'],\n  'Infosec': ['security', 'cybersecurity', 'breach', 'vulnerability', 'encryption', 'malware', 'phishing', 'hack', 'privacy', 'authentication', 'firewall'],\n  'Tech': ['technology', 'innovation', 'software', 'hardware', 'cloud', 'saas', 'platform', 'api', 'framework', 'programming'],\n  'Fintech': ['fintech', 'finance', 'banking', 'payment', 'trading', 'investment', 'cryptocurrency', 'defi', 'neobank', 'insurtech'],\n  'Data': ['data', 'analytics', 'database', 'warehouse', 'visualization', 'bigdata', 'etl', 'sql', 'nosql', 'pipeline'],\n  'Design': ['design', 'ui', 'ux', 'interface', 'figma', 'prototype', 'usability', 'typography', 'branding'],\n  'Webdev': ['web development', 'frontend', 'backend', 'react', 'vue', 'angular', 'javascript', 'node.js', 'css', 'html'],\n  'Marketing': ['marketing', 'growth', 'seo', 'content', 'social media', 'advertising', 'campaign', 'conversion', 'analytics'],\n  'Crypto': ['crypto', 'cryptocurrency', 'blockchain', 'bitcoin', 'ethereum', 'defi', 'nft', 'web3', 'smart contract'],\n  'Founders': ['startup', 'founder', 'entrepreneur', 'venture capital', 'funding', 'ipo', 'unicorn', 'incubator', 'accelerator'],\n  'Product': ['product', 'product management', 'roadmap', 'feature', 'user experience', 'mvp', 'launch', 'metrics'],\n  'DevOps': ['devops', 'infrastructure', 'deployment', 'ci/cd', 'docker', 'kubernetes', 'aws', 'azure', 'monitoring']\n};\n\nfunction categorizeArticle(title, description, context) {\n  const textToAnalyze = `${title} ${description} ${context}`.toLowerCase();\n  \n  // First, look for explicit category markers\n  const explicitCategoryPattern = /\\[(\\w+\\s+\\d+)\\s*\\|\\s*([^\\]]+)\\]/;\n  const categoryMatch = context.match(explicitCategoryPattern);\n  if (categoryMatch) {\n    const foundCategory = categoryMatch[2].trim();\n    const normalizedCategory = categoryMapping[foundCategory.toLowerCase()] || foundCategory;\n    return normalizedCategory;\n  }\n  \n  // Score each category based on keyword matches\n  const categoryScores = {};\n  for (const [category, keywords] of Object.entries(categoryKeywords)) {\n    let score = 0;\n    for (const keyword of keywords) {\n      const regex = new RegExp(`\\\\b${keyword.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}\\\\b`, 'gi');\n      const matches = textToAnalyze.match(regex);\n      if (matches) {\n        score += matches.length;\n        // Bonus for title matches\n        if (title.toLowerCase().includes(keyword)) {\n          score += 2;\n        }\n      }\n    }\n    categoryScores[category] = score;\n  }\n  \n  // Find the category with the highest score\n  const maxScore = Math.max(...Object.values(categoryScores));\n  if (maxScore > 0) {\n    const bestCategory = Object.keys(categoryScores).find(cat => categoryScores[cat] === maxScore);\n    return bestCategory;\n  }\n  \n  // Default fallback\n  return 'Tech';\n}\n\nconst items = [];\n\nif (!htmlText || htmlText.length < 100) {\n  console.log('ERROR: No valid HTML data');\n  items.push({\n    title: 'No HTML Data',\n    description: 'Failed to retrieve HTML content from tldr.tech',\n    link: 'https://tldr.tech/',\n    pubDate: new Date().toISOString(),\n    category: 'Error'\n  });\n} else {\n  try {\n    console.log('=== PARSING TLDR ARTICLES ===');\n    \n    // Enhanced parsing - look for section headings and articles within sections\n    const sectionPattern = /<h[1-6][^>]*>([^<]+)<\\/h[1-6]>/gi;\n    const sectionMatches = htmlText.match(sectionPattern);\n    \n    console.log('Section headings found:', sectionMatches ? sectionMatches.length : 0);\n    \n    // Look for article containers - TLDR typically uses structured divs\n    const articleContainerPatterns = [\n      /<article[^>]*>([\\s\\S]*?)<\\/article>/gi,\n      /<div[^>]*class=\"[^\"]*article[^\"]*\"[^>]*>([\\s\\S]*?)<\\/div>/gi,\n      /<div[^>]*class=\"[^\"]*story[^\"]*\"[^>]*>([\\s\\S]*?)<\\/div>/gi\n    ];\n    \n    let articlesFound = false;\n    \n    for (const pattern of articleContainerPatterns) {\n      const containerMatches = htmlText.match(pattern);\n      if (containerMatches && containerMatches.length > 0) {\n        console.log(`Found ${containerMatches.length} article containers with pattern`);\n        articlesFound = true;\n        \n        containerMatches.forEach((containerHtml, index) => {\n          try {\n            // Extract link\n            const linkMatch = containerHtml.match(/<a[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/);\n            \n            if (linkMatch) {\n              const href = linkMatch[1];\n              const linkContent = linkMatch[2];\n              \n              // Skip if not an external article link\n              if (!href.startsWith('http') || href.includes('tldr.tech') || href.includes('unsubscribe') || href.includes('mailto')) {\n                return;\n              }\n              \n              // Extract title\n              let title = linkContent.replace(/<[^>]*>/g, '').trim();\n              \n              // Clean up title - remove read time indicators\n              title = title.replace(/\\(\\d+\\s*min(?:ute)?\\s*read\\)/gi, '').trim();\n              \n              // Skip if title is too short or looks like navigation\n              if (title.length < 10 || \n                  /^(home|about|contact|login|sign|menu|nav|footer|header|search|subscribe|privacy|terms|cookies?|more|read|click|here|unsubscribe)$/i.test(title)) {\n                return;\n              }\n              \n              // Get surrounding context for better categorization\n              const contextStart = Math.max(0, htmlText.indexOf(containerHtml) - 500);\n              const contextEnd = Math.min(htmlText.length, htmlText.indexOf(containerHtml) + containerHtml.length + 500);\n              const context = htmlText.substring(contextStart, contextEnd);\n              \n              // Extract description from container\n              let description = containerHtml.replace(/<[^>]*>/g, ' ').replace(/\\s+/g, ' ').trim();\n              description = description.replace(title, '').trim();\n              \n              // Limit description length\n              if (description.length > 200) {\n                description = description.substring(0, 200) + '...';\n              }\n              \n              // Enhanced categorization\n              const category = categorizeArticle(title, description, context);\n              \n              // Extract date\n              let pubDate = new Date();\n              const datePatterns = [\n                /\\[(\\w+\\s+\\d+)\\s*\\|/,\n                /(\\w+\\s+\\d+,?\\s*\\d{4})/,\n                /(\\d{1,2}\\/\\d{1,2}\\/\\d{4})/\n              ];\n              \n              for (const datePattern of datePatterns) {\n                const dateMatch = context.match(datePattern);\n                if (dateMatch) {\n                  try {\n                    const dateStr = dateMatch[1];\n                    const parsedDate = new Date(dateStr.includes('2024') || dateStr.includes('2025') ? dateStr : `${dateStr} ${new Date().getFullYear()}`);\n                    if (!isNaN(parsedDate.getTime())) {\n                      pubDate = parsedDate;\n                      break;\n                    }\n                  } catch (e) {\n                    // Continue with next pattern\n                  }\n                }\n              }\n              \n              // Determine source from URL\n              let source = 'tldr';\n              try {\n                const urlObj = new URL(href);\n                const domain = urlObj.hostname.replace('www.', '').replace(/\\./g, '');\n                source = domain || 'tldr';\n              } catch (e) {\n                source = 'tldr';\n              }\n              \n              const article = {\n                title: title,\n                description: `${category}: ${title}${description ? ' - ' + description : ''}`,\n                link: href,\n                pubDate: pubDate.toISOString(),\n                category: category,\n                source: source,\n                section: 'TLDR',\n                confidence: 'high' // Mark as high confidence due to enhanced parsing\n              };\n              \n              items.push(article);\n              console.log(`Added TLDR article ${items.length}: ${title.substring(0, 50)} [${category}]`);\n            }\n            \n          } catch (error) {\n            console.log(`Error processing article container ${index}:`, error.message);\n          }\n        });\n        \n        if (items.length > 0) break; // Stop after first successful pattern\n      }\n    }\n    \n    // Fallback to original link-based parsing if no articles found\n    if (!articlesFound) {\n      console.log('Using fallback link-based parsing');\n      const linkPattern = /<a[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/gi;\n      const linkMatches = htmlText.match(linkPattern);\n      \n      if (linkMatches && linkMatches.length > 0) {\n        linkMatches.forEach((linkHtml, index) => {\n          try {\n            const linkMatch = linkHtml.match(/<a[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/);\n            \n            if (linkMatch) {\n              const href = linkMatch[1];\n              const linkContent = linkMatch[2];\n              \n              if (!href.startsWith('http') || href.includes('tldr.tech') || href.includes('unsubscribe') || href.includes('mailto')) {\n                return;\n              }\n              \n              let title = linkContent.replace(/<[^>]*>/g, '').trim();\n              title = title.replace(/\\(\\d+\\s*min(?:ute)?\\s*read\\)/gi, '').trim();\n              \n              if (title.length < 10 || \n                  /^(home|about|contact|login|sign|menu|nav|footer|header|search|subscribe|privacy|terms|cookies?|more|read|click|here|unsubscribe)$/i.test(title)) {\n                return;\n              }\n              \n              const contextStart = Math.max(0, htmlText.indexOf(linkHtml) - 300);\n              const contextEnd = Math.min(htmlText.length, htmlText.indexOf(linkHtml) + linkHtml.length + 300);\n              const context = htmlText.substring(contextStart, contextEnd);\n              \n              const category = categorizeArticle(title, '', context);\n              \n              let source = 'tldr';\n              try {\n                const urlObj = new URL(href);\n                const domain = urlObj.hostname.replace('www.', '').replace(/\\./g, '');\n                source = domain || 'tldr';\n              } catch (e) {\n                source = 'tldr';\n              }\n              \n              const article = {\n                title: title,\n                description: `${category}: ${title}`,\n                link: href,\n                pubDate: new Date().toISOString(),\n                category: category,\n                source: source,\n                section: 'TLDR',\n                confidence: 'medium' // Mark as medium confidence for fallback\n              };\n              \n              items.push(article);\n              console.log(`Added fallback TLDR article ${items.length}: ${title.substring(0, 50)} [${category}]`);\n            }\n            \n          } catch (error) {\n            console.log(`Error processing fallback link ${index}:`, error.message);\n          }\n        });\n      }\n    }\n    \n  } catch (error) {\n    console.log('PARSING ERROR:', error.message);\n    items.push({\n      title: 'TLDR.tech Parsing Error',\n      description: `Error parsing HTML: ${error.message}`,\n      link: 'https://tldr.tech/',\n      pubDate: new Date().toISOString(),\n      category: 'Error'\n    });\n  }\n}\n\n// Remove duplicates by URL and title\nconst uniqueItems = [];\nconst seenKeys = new Set();\n\nfor (const item of items) {\n  const key = `${item.link}|${item.title.toLowerCase().trim()}`;\n  if (!seenKeys.has(key)) {\n    seenKeys.add(key);\n    uniqueItems.push(item);\n  }\n}\n\n// Log category distribution\nconst categoryStats = {};\nuniqueItems.forEach(item => {\n  categoryStats[item.category] = (categoryStats[item.category] || 0) + 1;\n});\n\nconsole.log('=== TLDR CATEGORIZATION STATS ===');\nObject.entries(categoryStats).forEach(([category, count]) => {\n  console.log(`${category}: ${count} articles`);\n});\n\nconsole.log('=== TLDR FINAL RESULTS ===');\nconsole.log(`Total unique TLDR articles: ${uniqueItems.length}`);\nuniqueItems.forEach((item, i) => {\n  console.log(`${i + 1}: ${item.title.substring(0, 60)} [${item.category}]`);\n});\n\nreturn { feed: 'tldr', data: { rss: { channel: { item: uniqueItems } } } };"
+      },
+      "id": "ea08e688-abfe-4cea-a629-083b125006b4",
+      "name": "Parse TLDR HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// HYPE AERO SPACE PAGE PARSER - Updated for /space/ endpoint\nconst input = $input.first();\n\nconsole.log('=== HYPE AERO SPACE PARSER ===');\nconsole.log('Input received:', !!input);\n\n// Get HTML content\nlet htmlText = '';\nif (input && input.body) {\n  htmlText = input.body;\n} else if (input && input.data) {\n  htmlText = input.data;\n} else if (input && input.json && input.json.body) {\n  htmlText = input.json.body;\n} else if (input && input.json) {\n  htmlText = input.json;\n} else if (typeof input === 'string') {\n  htmlText = input;\n}\n\n// Handle object to string conversion\nif (typeof htmlText === 'object' && htmlText !== null) {\n  if (htmlText.body) {\n    htmlText = htmlText.body;\n  } else if (htmlText.data) {\n    htmlText = htmlText.data;\n  } else {\n    htmlText = '';\n  }\n}\n\nconsole.log('HTML length:', htmlText ? htmlText.length : 0);\n\nconst items = [];\n\nif (!htmlText || htmlText.length < 100) {\n  console.log('ERROR: No valid HTML data');\n  items.push({\n    title: 'No HTML Data',\n    description: 'Failed to retrieve HTML content from hype.aero/space/',\n    link: 'https://hype.aero/space/',\n    pubDate: new Date().toISOString(),\n    category: 'Error'\n  });\n} else {\n  try {\n    console.log('=== PARSING SPACE PAGE ARTICLES ===');\n    \n    // Look for elements with timestamp classes (ts, ts-rel-s, ts-abs-datetime)\n    const timestampElements = htmlText.match(/<[^>]*class=\"[^\"]*\\b(ts|ts-rel-s|ts-abs-datetime)\\b[^\"]*\"[^>]*>([\\s\\S]*?)<\\/[^>]+>/gi);\n    console.log('Timestamp elements found:', timestampElements ? timestampElements.length : 0);\n    \n    // Also look for \"More\" section content - find the More heading and parse content after it\n    const moreMatch = htmlText.match(/<h2[^>]*>More<\\/h2>([\\s\\S]*?)(?=<h2|$)/i);\n    let moreContent = '';\n    if (moreMatch) {\n      moreContent = moreMatch[1];\n      console.log('Found More section with', moreContent.length, 'characters');\n    }\n    \n    // Alternative approach: Look for article-like structures with links and timestamps\n    const articlePatterns = [\n      // Pattern 1: Elements with timestamp classes and nearby links\n      /<div[^>]*>([\\s\\S]*?)(?=<div|$)/gi,\n      // Pattern 2: Direct link elements with titles\n      /<a[^>]*href=\"[^\"]+\"[^>]*>([\\s\\S]*?)<\\/a>/gi\n    ];\n    \n    let foundArticles = false;\n    \n    // First try to find articles using timestamp-based parsing\n    if (timestampElements && timestampElements.length > 0) {\n      console.log('Using timestamp-based parsing');\n      \n      // For each timestamp element, look for nearby article content\n      timestampElements.forEach((timestampHtml, index) => {\n        try {\n          // Find the parent container that includes both timestamp and article info\n          const containerStart = htmlText.indexOf(timestampHtml) - 500; // Look 500 chars before\n          const containerEnd = htmlText.indexOf(timestampHtml) + timestampHtml.length + 500; // and 500 after\n          const containerHtml = htmlText.substring(Math.max(0, containerStart), Math.min(htmlText.length, containerEnd));\n          \n          // Look for links in the container\n          const linkMatch = containerHtml.match(/<a[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/);\n          \n          if (linkMatch) {\n            const href = linkMatch[1];\n            let title = linkMatch[2].replace(/<[^>]*>/g, '').trim();\n            \n            // Skip navigation or invalid links\n            if (title.length < 5 || /^(home|about|contact|login|sign|menu|nav|footer|header|search|subscribe|privacy|terms|cookies?)$/i.test(title) || /interested in sponsoring|sponsoring hype/i.test(title)) {\n              return;\n            }\n            \n            // Extract timestamp from the timestamp element\n            const timestampMatch = timestampHtml.match(/>([^<]+)</)\n            let timeStr = timestampMatch ? timestampMatch[1].trim() : '';\n            \n            // Parse timestamp\n            let pubDate = new Date();\n            if (timeStr) {\n              // Handle relative timestamps like \"2h ago\", \"1d ago\"\n              const relativeMatch = timeStr.match(/(\\d+)([smhdw])/);\n              if (relativeMatch) {\n                const amount = parseInt(relativeMatch[1]);\n                const unit = relativeMatch[2];\n                pubDate = new Date();\n                \n                switch(unit) {\n                  case 's': pubDate.setSeconds(pubDate.getSeconds() - amount); break;\n                  case 'm': pubDate.setMinutes(pubDate.getMinutes() - amount); break;\n                  case 'h': pubDate.setHours(pubDate.getHours() - amount); break;\n                  case 'd': pubDate.setDate(pubDate.getDate() - amount); break;\n                  case 'w': pubDate.setDate(pubDate.getDate() - (amount * 7)); break;\n                }\n              } else {\n                // Try to parse as regular date\n                const parsedDate = new Date(timeStr);\n                if (!isNaN(parsedDate.getTime())) {\n                  pubDate = parsedDate;\n                }\n              }\n            }\n            \n            // Extract source from favicon URL pattern\n            const faviconMatch = containerHtml.match(/https:\\/\\/cdn\\.hype\\.aero\\/file\\/hypeav\\/websites\\/favicons\\/([^\\/\"'\\s]+)/);\n            let source = faviconMatch ? faviconMatch[1] : 'space-news';\n            \n            // Create description\n            let description = `Space news: ${title}`;\n            const textContent = containerHtml.replace(/<[^>]*>/g, ' ').replace(/\\s+/g, ' ').trim();\n            const cleanText = textContent.replace(title, '').replace(timeStr, '').trim();\n            if (cleanText.length > 20) {\n              description = `${title} - ${cleanText.substring(0, 150)}${cleanText.length > 150 ? '...' : ''}`;\n            }\n            \n            // Ensure absolute URL\n            const fullUrl = href.startsWith('http') ? href : `https://hype.aero${href}`;\n            \n            const article = {\n              title: title,\n              description: description,\n              link: fullUrl,\n              pubDate: pubDate.toISOString(),\n              category: 'Space',\n              source: source,\n              timeStr: timeStr\n            };\n            \n            items.push(article);\n            foundArticles = true;\n            console.log(`Added article ${items.length}: ${title.substring(0, 50)}`);\n          }\n          \n        } catch (error) {\n          console.log(`Error processing timestamp element ${index}:`, error.message);\n        }\n      });\n    }\n    \n    // Parse \"More\" section specifically - Updated for exact HTML structure\n    if (moreContent) {\n      console.log('=== PARSING MORE SECTION ===');\n      \n      // Look for <article class=\"relative\"> elements in More section\n      const moreArticlePattern = /<article class=\"relative\">([\\s\\S]*?)<\\/article>/g;\n      const moreArticleMatches = moreContent.match(moreArticlePattern);\n      \n      if (moreArticleMatches) {\n        console.log('Found', moreArticleMatches.length, 'articles in More section');\n        \n        moreArticleMatches.forEach((articleHtml, index) => {\n          try {\n            // Extract the main article link (external link)\n            const linkMatch = articleHtml.match(/<a href=\"([^\"]+)\"[^>]*rel=\"external nofollow\"[^>]*target=\"_blank\"[^>]*class=\"absolute[^\"]*\"[^>]*><\\/a>/);\n            \n            if (linkMatch) {\n              const href = linkMatch[1];\n              \n              // Extract title from the h1 link\n              const titleMatch = articleHtml.match(/<h1[^>]*>[\\s\\S]*?<a[^>]*>([\\s\\S]*?)<\\/a>[\\s\\S]*?<\\/h1>/);\n              let title = '';\n              if (titleMatch) {\n                title = titleMatch[1].replace(/<[^>]*>/g, '').trim();\n              }\n              \n              // Skip if title is too short or invalid\n              if (title.length < 5 || \n                  /^(home|about|contact|login|sign|menu|nav|footer|header|search|subscribe|privacy|terms|cookies?)$/i.test(title) ||\n                  /interested in sponsoring|sponsoring hype/i.test(title)) {\n                console.log(`Skipping More section article: ${title}`);\n                return;\n              }\n              \n              // Extract source and author from cite element\n              const sourceMatch = articleHtml.match(/<cite[^>]*>[\\s\\S]*?<span>([^<]+)<\\/span>[\\s\\S]*?<span>([^<]+)<\\/span>[\\s\\S]*?<\\/cite>/);\n              let sourceName = 'more-space';\n              let author = '';\n              if (sourceMatch) {\n                sourceName = sourceMatch[1].trim();\n                author = sourceMatch[2].trim();\n              }\n              \n              // Extract favicon for source identification\n              const faviconMatch = articleHtml.match(/https:\\/\\/cdn\\.hype\\.aero\\/file\\/hypeav\\/websites\\/favicons\\/([^\\/\"'\\s]+)\\.png/);\n              let sourceId = faviconMatch ? faviconMatch[1] : sourceName.toLowerCase().replace(/\\s+/g, '');\n              \n              // Extract timestamp from ts-rel-l class\n              const timeMatch = articleHtml.match(/<span class=\"ts-rel-l\">([^<]+)<\\/span>/);\n              let timeStr = '';\n              let pubDate = new Date();\n              \n              if (timeMatch) {\n                timeStr = timeMatch[1].trim();\n                \n                // Parse relative time like \"12 hours ago\"\n                const relativeMatch = timeStr.match(/(\\d+)\\s*(second|minute|hour|day|week|month|year)s?\\s*ago/i);\n                if (relativeMatch) {\n                  const amount = parseInt(relativeMatch[1]);\n                  const unit = relativeMatch[2].toLowerCase();\n                  pubDate = new Date();\n                  \n                  switch(unit) {\n                    case 'second': pubDate.setSeconds(pubDate.getSeconds() - amount); break;\n                    case 'minute': pubDate.setMinutes(pubDate.getMinutes() - amount); break;\n                    case 'hour': pubDate.setHours(pubDate.getHours() - amount); break;\n                    case 'day': pubDate.setDate(pubDate.getDate() - amount); break;\n                    case 'week': pubDate.setDate(pubDate.getDate() - (amount * 7)); break;\n                    case 'month': pubDate.setMonth(pubDate.getMonth() - amount); break;\n                    case 'year': pubDate.setFullYear(pubDate.getFullYear() - amount); break;\n                  }\n                }\n              }\n              \n              // Extract source count\n              const sourceCountMatch = articleHtml.match(/(\\d+) Sources?/);\n              let sourceCount = sourceCountMatch ? sourceCountMatch[1] : '1';\n              \n              // Create description\n              let description = `${sourceName}: ${title}`;\n              if (author && author !== 'News Release') {\n                description = `${sourceName} (${author}): ${title}`;\n              }\n              if (sourceCount !== '1') {\n                description += ` [${sourceCount} sources]`;\n              }\n              \n              // Ensure absolute URL (should already be absolute)\n              const fullUrl = href.startsWith('http') ? href : `https://hype.aero${href}`;\n              \n              const article = {\n                title: title,\n                description: description,\n                link: fullUrl,\n                pubDate: pubDate.toISOString(),\n                category: 'Space',\n                source: sourceId,\n                sourceName: sourceName,\n                author: author,\n                sourceCount: sourceCount,\n                timeStr: timeStr,\n                section: 'More'\n              };\n              \n              items.push(article);\n              foundArticles = true;\n              console.log(`Added More section article ${items.length}: ${title.substring(0, 50)} [${sourceName}]`);\n            } else {\n              console.log(`No external link found in More section article ${index + 1}`);\n            }\n            \n          } catch (error) {\n            console.log(`Error processing More section article ${index}:`, error.message);\n          }\n        });\n      } else {\n        console.log('No articles found in More section using ❗️ pattern');\n        \n        // Fallback: Look for any links in More section\n        const moreLinks = moreContent.match(/<a[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/gi);\n        if (moreLinks) {\n          console.log('Found', moreLinks.length, 'links in More section as fallback');\n          \n          moreLinks.forEach((linkHtml, index) => {\n            const linkMatch = linkHtml.match(/<a[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/);\n            if (linkMatch) {\n              const href = linkMatch[1];\n              const title = linkMatch[2].replace(/<[^>]*>/g, '').trim();\n              \n              if (title.length > 10 && \n                  !title.match(/^(home|about|contact|login|sign|menu|nav|footer|header|search|subscribe|privacy|terms|cookies?|more|read|click|here)$/i) &&\n                  !title.match(/interested in sponsoring|sponsoring hype/i) &&\n                  (href.includes('http') || href.startsWith('/'))) {\n                \n                const fullUrl = href.startsWith('http') ? href : `https://hype.aero${href}`;\n                \n                const article = {\n                  title: title,\n                  description: `More space news: ${title}`,\n                  link: fullUrl,\n                  pubDate: new Date().toISOString(),\n                  category: 'Space',\n                  source: 'more-space',\n                  section: 'More'\n                };\n                \n                items.push(article);\n                foundArticles = true;\n                console.log(`Added More fallback article ${items.length}: ${title.substring(0, 50)}`);\n              }\n            }\n          });\n        }\n      }\n    }\n    \n    // Fallback: General link-based parsing if timestamp method didn't work\n    if (!foundArticles) {\n      console.log('Using fallback link-based parsing');\n      \n      const linkMatches = htmlText.match(/<a[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/gi);\n      \n      if (linkMatches) {\n        console.log('Found', linkMatches.length, 'links for fallback parsing');\n        \n        linkMatches.forEach((linkHtml, index) => {\n          const linkMatch = linkHtml.match(/<a[^>]*href=\"([^\"]+)\"[^>]*>([\\s\\S]*?)<\\/a>/);\n          \n          if (linkMatch) {\n            const href = linkMatch[1];\n            const title = linkMatch[2].replace(/<[^>]*>/g, '').trim();\n            \n            // Filter for actual article links\n            if (title.length > 10 && \n                !title.match(/^(home|about|contact|login|sign|menu|nav|footer|header|search|subscribe|privacy|terms|cookies?|more|read|click|here)$/i) &&\n                !title.match(/interested in sponsoring|sponsoring hype/i) &&\n                (href.includes('http') || href.startsWith('/'))) {\n              \n              const fullUrl = href.startsWith('http') ? href : `https://hype.aero${href}`;\n              \n              const article = {\n                title: title,\n                description: `Space news: ${title}`,\n                link: fullUrl,\n                pubDate: new Date().toISOString(),\n                category: 'Space',\n                source: 'hype.aero'\n              };\n              \n              items.push(article);\n              console.log(`Fallback article ${items.length}: ${title.substring(0, 50)}`);\n            }\n          }\n        });\n      }\n    }\n    \n  } catch (error) {\n    console.log('PARSING ERROR:', error.message);\n    items.push({\n      title: 'Hype.aero Space Parsing Error',\n      description: `Error parsing HTML: ${error.message}`,\n      link: 'https://hype.aero/space/',\n      pubDate: new Date().toISOString(),\n      category: 'Error'\n    });\n  }\n}\n\n// Remove duplicates by URL and title\nconst uniqueItems = [];\nconst seenKeys = new Set();\n\nfor (const item of items) {\n  const key = `${item.link}|${item.title.toLowerCase().trim()}`;\n  if (!seenKeys.has(key)) {\n    seenKeys.add(key);\n    uniqueItems.push(item);\n  }\n}\n\nconsole.log('=== FINAL RESULTS ===');\nconsole.log(`Total unique articles: ${uniqueItems.length}`);\nuniqueItems.forEach((item, i) => {\n  console.log(`${i + 1}: ${item.title.substring(0, 60)} [${item.source}]`);\n});\n\nreturn { feed: 'hypeaero', data: { rss: { channel: { item: uniqueItems } } } };"
+      },
+      "id": "1ad62d62-c4f0-4af7-8b7c-bdce8ac8384c",
+      "name": "Parse Hype Aero HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "all_feeds",
+        "options": {}
+      },
+      "id": "8867f476-0e74-47ca-a83e-7c334dfb8e65",
+      "name": "Merge All Feeds",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first();\nconsole.log('=== GENERATE EMAIL DEBUG ===');\nconsole.log('Input received:', !!input);\nconsole.log('Input type:', typeof input);\nconsole.log('Input keys:', Object.keys(input || {}));\n\n// DEBUG: Print the complete input structure\nconsole.log('=== COMPLETE INPUT STRUCTURE ===');\nconsole.log(JSON.stringify(input, null, 2));\n\nlet articles = [];\n\n// Try multiple ways to extract articles\nif (input && input.articles && Array.isArray(input.articles)) {\n  articles = input.articles;\n  console.log('Found articles in input.articles:', articles.length);\n} else if (input && input.json && input.json.articles && Array.isArray(input.json.articles)) {\n  articles = input.json.articles;\n  console.log('Found articles in input.json.articles:', articles.length);\n} else if (input && Array.isArray(input)) {\n  articles = input;\n  console.log('Input is array, using directly:', articles.length);\n} else if (input && input.json && Array.isArray(input.json)) {\n  articles = input.json;\n  console.log('Found articles in input.json array:', articles.length);\n} else {\n  console.log('ERROR: No articles found in input');\n  console.log('Available input properties:', Object.keys(input || {}));\n  if (input && input.json) {\n    console.log('Available json properties:', Object.keys(input.json || {}));\n  }\n  \n  return {\n    html: '<html><body><h1>No Articles Found</h1><p>The workflow did not find any articles.</p></body></html>',\n    text: 'No articles found for today briefing.',\n    subject: 'Daily News from ' + articles[0].source.toUpperCase() + ' - ' + today + ' (' + totalArticles + ' articles)',\n    articleCount: 0\n  };\n}\n\nconsole.log('Processing', articles.length, 'articles');\nif (articles.length > 0) {\n  console.log('First article:', JSON.stringify(articles[0], null, 2));\n}\n\nconst today = new Date().toLocaleDateString('en-US', { \n  weekday: 'long', \n  year: 'numeric', \n  month: 'long', \n  day: 'numeric' \n});\n\nconst sourceDisplayNames = {\n  'hypeareo': 'Hype Aero',\n  'techcrunch': 'TechCrunch',\n  'hype.aero': 'Hype Aero',\n  'tldr': 'TLDR Tech'\n};\n\n// Category display names and colors\nconst categoryDisplayNames = {\n  'AI': '🤖 Artificial Intelligence',\n  'Infosec': '🔒 Information Security',\n  'Tech': '💻 Technology',\n  'Fintech': '💳 Financial Technology',\n  'Data': '📊 Data & Analytics',\n  'Design': '🎨 Design & UX',\n  'Webdev': '🌐 Web Development',\n  'Marketing': '📈 Marketing & Growth',\n  'Crypto': '₿ Cryptocurrency',\n  'Founders': '🚀 Startups & Founders',\n  'Product': '📱 Product Management',\n  'DevOps': '⚙️ DevOps & Infrastructure',\n  'Space': '🚀 Space Technology',\n  'Error': '❌ Error',\n  'General': '📰 General News'\n};\n\nconst categoryColors = {\n  'AI': '#e74c3c',\n  'Infosec': '#e67e22',\n  'Tech': '#3498db',\n  'Fintech': '#2ecc71',\n  'Data': '#9b59b6',\n  'Design': '#f39c12',\n  'Webdev': '#1abc9c',\n  'Marketing': '#e91e63',\n  'Crypto': '#ff9800',\n  'Founders': '#8bc34a',\n  'Product': '#607d8b',\n  'DevOps': '#795548',\n  'Space': '#667eea',\n  'Error': '#f44336',\n  'General': '#666666'\n};\n\nlet emailHtml = '<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>' + 'Daily News from ' + articles[0].source.toUpperCase() + ' - ' + today + '</title><style>body{font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif;line-height:1.6;color:#333;max-width:900px;margin:0 auto;padding:20px}.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:30px;text-align:center;border-radius:15px;margin-bottom:30px;box-shadow:0 4px 15px rgba(0,0,0,0.1)}.header h1{margin:0;font-size:28px;font-weight:300}.header .subtitle{margin-top:10px;opacity:0.9;font-size:16px}.source-section{margin-bottom:40px}.source-title{color:#2c3e50;font-size:24px;font-weight:600;margin:30px 0 20px 0;padding:15px 0;border-bottom:3px solid #667eea;position:relative}.source-title::before{content:\"\";position:absolute;bottom:-3px;left:0;width:60px;height:3px;background:#e74c3c}.category-section{margin-bottom:30px;border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.08)}.category-header{padding:15px 20px;color:white;font-weight:600;font-size:18px;margin:0}.category-content{background:#fafafa;padding:0}.article-item{background:white;margin:0;padding:20px;border-bottom:1px solid #eee;transition:background-color 0.3s ease}.article-item:last-child{border-bottom:none}.article-item:hover{background-color:#f8f9ff}.article-title{margin-bottom:8px}.article-title a{color:#2c3e50;text-decoration:none;font-size:16px;font-weight:500;line-height:1.4}.article-title a:hover{color:#667eea;text-decoration:underline}.article-meta{color:#7f8c8d;font-size:12px;margin-bottom:10px}.article-description{color:#555;font-size:14px;line-height:1.5;margin:0}.read-more{display:inline-block;margin-top:10px;color:#667eea;font-size:13px;text-decoration:none;font-weight:500}.read-more:hover{text-decoration:underline}.stats{background:#ecf0f1;padding:20px;border-radius:10px;margin:30px 0;text-align:center}.stats-item{display:inline-block;margin:0 15px;text-align:center}.stats-number{font-size:24px;font-weight:600;color:#2c3e50;display:block}.stats-label{font-size:12px;color:#7f8c8d;text-transform:uppercase;letter-spacing:1px}.footer{text-align:center;margin-top:50px;padding-top:30px;border-top:1px solid #eee;color:#7f8c8d;font-size:14px}</style></head><body>';\n\n// Group articles by source first, then by category within TLDR\nconst articlesBySource = {};\narticles.forEach(article => {\n  if (!articlesBySource[article.source]) {\n    articlesBySource[article.source] = [];\n  }\n  articlesBySource[article.source].push(article);\n});\n\n// Calculate stats\nlet totalArticles = articles.length;\nlet tldrArticles = articles.filter(a => a.source === 'tldr').length;\nlet spaceArticles = articles.filter(a => a.source === 'hypeareo' || a.source === 'hype.aero').length;\n\nfor (const [source, sourceArticles] of Object.entries(articlesBySource)) {\n  const sourceDisplayName = sourceDisplayNames[source] || source.toUpperCase();\n  \n  emailHtml += '<div class=\"source-section\">';\n  emailHtml += '<h2 class=\"source-title\">' + sourceDisplayName + '</h2>';\n  \n  if (source === 'tldr') {\n    // Group TLDR articles by category\n    const tldrByCategory = {};\n    sourceArticles.forEach(article => {\n      const category = article.category || 'General';\n      if (!tldrByCategory[category]) {\n        tldrByCategory[category] = [];\n      }\n      tldrByCategory[category].push(article);\n    });\n    \n    // Sort categories by article count (descending) and then alphabetically\n    const sortedCategories = Object.keys(tldrByCategory).sort((a, b) => {\n      const countDiff = tldrByCategory[b].length - tldrByCategory[a].length;\n      if (countDiff !== 0) return countDiff;\n      return a.localeCompare(b);\n    });\n    \n    console.log('TLDR Categories:', sortedCategories);\n    \n    // Generate sections for each category\n    sortedCategories.forEach(category => {\n      const categoryArticles = tldrByCategory[category];\n      const categoryName = categoryDisplayNames[category] || category;\n      const categoryColor = categoryColors[category] || '#667eea';\n      \n      emailHtml += '<div class=\"category-section\">';\n      emailHtml += '<h3 class=\"category-header\" style=\"background-color:' + categoryColor + '\">' + categoryName + ' (' + categoryArticles.length + ')</h3>';\n      emailHtml += '<div class=\"category-content\">';\n      \n      categoryArticles.forEach(article => {\n        const pubDate = new Date(article.pubDate).toLocaleDateString('en-US', {\n          month: 'short',\n          day: 'numeric',\n          hour: '2-digit',\n          minute: '2-digit'\n        });\n        \n        emailHtml += '<div class=\"article-item\">';\n        emailHtml += '<div class=\"article-title\"><a href=\"' + article.link + '\" target=\"_blank\">' + (article.title || 'No Title') + '</a></div>';\n        emailHtml += '<div class=\"article-meta\">Published: ' + pubDate + '</div>';\n        \n        // Clean description (remove category prefix if present)\n        let description = article.description || '';\n        if (description.startsWith(category + ':')) {\n          description = description.substring(category.length + 1).trim();\n        }\n        if (description.startsWith(article.title)) {\n          description = description.substring(article.title.length).replace(/^\\s*-\\s*/, '').trim();\n        }\n        \n        if (description && description.length > 10) {\n          emailHtml += '<div class=\"article-description\">' + description + '</div>';\n        }\n        \n        emailHtml += '<a href=\"' + article.link + '\" target=\"_blank\" class=\"read-more\">Read More →</a>';\n        emailHtml += '</div>';\n      });\n      \n      emailHtml += '</div></div>';\n    });\n    \n  } else {\n    // For non-TLDR sources, show articles directly\n    sourceArticles.forEach(article => {\n      const pubDate = new Date(article.pubDate).toLocaleDateString('en-US', {\n        month: 'short',\n        day: 'numeric',\n        hour: '2-digit',\n        minute: '2-digit'\n      });\n      \n      const categoryColor = categoryColors[article.category] || '#667eea';\n      \n      emailHtml += '<div class=\"category-section\">';\n      emailHtml += '<div class=\"category-content\">';\n      emailHtml += '<div class=\"article-item\">';\n      emailHtml += '<div class=\"article-title\"><a href=\"' + article.link + '\" target=\"_blank\">' + (article.title || 'No Title') + '</a></div>';\n      emailHtml += '<div class=\"article-meta\">Published: ' + pubDate + '</div>';\n      \n      if (article.description) {\n        emailHtml += '<div class=\"article-description\">' + article.description + '</div>';\n      }\n      \n      emailHtml += '<a href=\"' + article.link + '\" target=\"_blank\" class=\"read-more\">Read More →</a>';\n      emailHtml += '</div>';\n      emailHtml += '</div></div>';\n    });\n  }\n  \n  emailHtml += '</div>'; // Close source-section\n}\n\nemailHtml += '<div class=\"footer\"><p>Stay curious about space & technology! 🚀</p></div></body></html>';\n\n// Generate text version with categories\nlet emailText = 'Daily News from ' + articles[0].source.toUpperCase() + ' - ' + today + ' (' + totalArticles + ' articles)';\nemailText += '='.repeat(50) + '\\n\\n';\nemailText += 'Summary: ' + totalArticles + ' articles (' + tldrArticles + ' TLDR, ' + spaceArticles + ' Space)\\n\\n';\n\nfor (const [source, sourceArticles] of Object.entries(articlesBySource)) {\n  const sourceDisplayName = sourceDisplayNames[source] || source.toUpperCase();\n  emailText += sourceDisplayName + '\\n' + '-'.repeat(sourceDisplayName.length) + '\\n\\n';\n  \n  if (source === 'tldr') {\n    // Group by category for text version too\n    const tldrByCategory = {};\n    sourceArticles.forEach(article => {\n      const category = article.category || 'General';\n      if (!tldrByCategory[category]) {\n        tldrByCategory[category] = [];\n      }\n      tldrByCategory[category].push(article);\n    });\n    \n    const sortedCategories = Object.keys(tldrByCategory).sort((a, b) => {\n      const countDiff = tldrByCategory[b].length - tldrByCategory[a].length;\n      if (countDiff !== 0) return countDiff;\n      return a.localeCompare(b);\n    });\n    \n    sortedCategories.forEach(category => {\n      const categoryArticles = tldrByCategory[category];\n      const categoryName = categoryDisplayNames[category] || category;\n      \n      emailText += categoryName + ' (' + categoryArticles.length + ')\\n';\n      \n      categoryArticles.forEach((article, index) => {\n        emailText += (index + 1) + '. ' + (article.title || 'No Title') + '\\n';\n        \n        let description = article.description || '';\n        if (description.startsWith(category + ':')) {\n          description = description.substring(category.length + 1).trim();\n        }\n        if (description.startsWith(article.title)) {\n          description = description.substring(article.title.length).replace(/^\\s*-\\s*/, '').trim();\n        }\n        \n        if (description && description.length > 10) {\n          emailText += '   ' + description.substring(0, 150) + (description.length > 150 ? '...' : '') + '\\n';\n        }\n        \n        emailText += '   Link: ' + article.link + '\\n\\n';\n      });\n      \n      emailText += '\\n';\n    });\n    \n  } else {\n    sourceArticles.forEach((article, index) => {\n      emailText += (index + 1) + '. ' + (article.title || 'No Title') + '\\n';\n      if (article.description) {\n        emailText += '   ' + article.description.substring(0, 200) + (article.description.length > 200 ? '...' : '') + '\\n';\n      }\n      emailText += '   Link: ' + article.link + '\\n\\n';\n    });\n  }\n}\n\nemailText += '\\n---\\nGenerated by n8n workflow | Stay curious! 🚀';\n\nreturn {\n  html: emailHtml,\n  text: emailText,\n  subject: 'Daily News from ' + articles[0].source.toUpperCase() + ' - ' + today + ' (' + totalArticles + ' articles)',\n  articleCount: totalArticles\n};"
+      },
+      "id": "d3ea9a01-4868-4e07-a6a3-a69c05cba77a",
+      "name": "Generate Email Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "jomirusergiu@gmail.com",
+        "toEmail": "jomirusergiu@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false,
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "8832f88c-1b15-4dcb-b907-9906cdd46519",
+      "name": "Send Email Briefing",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1840,
+        352
+      ],
+      "webhookId": "52757a00-9c6f-4c00-b7b2-03bc25c4b28d",
+      "credentials": {
+        "smtp": {
+          "id": "hDZ18LOe4Kax4dpH",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "1",
+              "leftValue": "={{ $json.count }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5461fc03-8a55-4d23-b94d-5227a672d567",
+      "name": "Check Articles Available",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1424,
+        352
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "e18240f9-51c4-4a54-9aee-04d069f09bab",
+      "name": "Log No Articles",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "events": [
+          "init",
+          "activate"
+        ]
+      },
+      "type": "n8n-nodes-base.n8nTrigger",
+      "typeVersion": 1,
+      "position": [
+        352,
+        432
+      ],
+      "id": "5a61b5ba-3d19-4b2c-b08b-5ae62fd25630",
+      "name": "n8n Startup Trigger"
+    },
+    {
+      "parameters": {
+        "content": "Automatically triggers the newsletter workflow when n8n starts up or when the workflow is activated.",
+        "height": 96,
+        "width": 200,
+        "color": 3
+      },
+      "id": "a4a09c2e-435e-45bc-8889-c009ac6af444",
+      "name": "Startup Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        352,
+        304
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Fetches HTML content from Hype Aero space news website with browser-like headers to avoid blocking.",
+        "height": 112,
+        "width": 180,
+        "color": 5
+      },
+      "id": "645ab242-628e-470c-b1bf-8d0277e5cc60",
+      "name": "Hype Fetch Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        656,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Fetches HTML content from TLDR Tech newsletter website with proper headers for reliable scraping.",
+        "height": 112,
+        "width": 180,
+        "color": 5
+      },
+      "id": "c96e0239-1806-4ab2-b302-554e0cb367db",
+      "name": "TLDR Fetch Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        656,
+        512
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Advanced parser that extracts space news articles from Hype Aero HTML, including timestamps & sources.",
+        "height": 112,
+        "width": 180,
+        "color": 6
+      },
+      "id": "5ab4628c-1180-44b6-b1c3-3b5b54dba718",
+      "name": "Hype Parse Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Enhanced parser that categorizes TLDR Tech articles by AI, Infosec, Tech, etc., with metadata.",
+        "height": 112,
+        "width": 166,
+        "color": 6
+      },
+      "id": "f8212eab-2da4-43e5-85b1-63c1911ea5a1",
+      "name": "TLDR Parse Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        848,
+        512
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Combines articles from both TLDR and Hype Aero feeds into a single data structure .",
+        "height": 112,
+        "width": 150,
+        "color": 7
+      },
+      "id": "daa94b19-b6e3-4365-8571-6bc1ea89593e",
+      "name": "Merge Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1040,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Extracts and processes all articles from merged feeds, handles multiple data formats and structures.",
+        "height": 112,
+        "width": 180,
+        "color": 2
+      },
+      "id": "3c0c7992-424f-40a6-a0c4-8a1ee3381280",
+      "name": "Process Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1200,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Checks if any articles were found before proceeding to email generation.",
+        "height": 112,
+        "width": 150,
+        "color": 4
+      },
+      "id": "02584b0a-1009-4165-b1e6-9a0bb3c76e2f",
+      "name": "Check Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1392,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Generates beautiful HTML email with categorized articles, stats, and responsive styling for daily briefing.",
+        "height": 112,
+        "width": 196
+      },
+      "id": "e0e5ec3a-3d95-4772-9344-6ffcabe70180",
+      "name": "Email Gen Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1552,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Prepares the content and sends formatted newsletter email via SMTP to configured recipient address.",
+        "height": 112,
+        "width": 176
+      },
+      "id": "f352354d-f38e-4bf4-850b-d5c3f08a6ca5",
+      "name": "Send Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1760,
+        208
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Logs the result in case no articles have been found on any of the predefined sources",
+        "height": 96,
+        "width": 180
+      },
+      "id": "a9bc441b-74b6-40fe-bb11-5837b9757a51",
+      "name": "Email Gen Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1760,
+        496
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// DEBUG Process and Filter Articles - Find the exact data structure\nconst firstInput = $input.first();\nconst allInputs = $input.all();\n\nconsole.log('=== COMPLETE DEBUG ===');\nconsole.log('Total inputs:', allInputs.length);\nconsole.log('First input keys:', Object.keys(firstInput || {}));\n\n// Print the COMPLETE structure of what we're receiving\nconsole.log('=== FULL FIRST INPUT STRUCTURE ===');\nconsole.log(JSON.stringify(firstInput, null, 2));\n\nif (allInputs.length > 1) {\n  console.log('=== SECOND INPUT STRUCTURE ===');\n  console.log(JSON.stringify(allInputs[1], null, 2));\n}\n\n// Check aggregate node field name\nif (firstInput && firstInput.all_feeds) {\n  console.log('=== FOUND all_feeds PROPERTY ===');\n  console.log('all_feeds type:', typeof firstInput.all_feeds);\n  console.log('all_feeds length:', Array.isArray(firstInput.all_feeds) ? firstInput.all_feeds.length : 'not array');\n  if (Array.isArray(firstInput.all_feeds)) {\n    console.log('First all_feeds item:', JSON.stringify(firstInput.all_feeds[0], null, 2));\n  }\n}\n\n// Now try to extract articles using EVERY possible path\nconst allArticles = [];\n\ntry {\n  console.log('\\n=== TRYING ALL EXTRACTION STRATEGIES ===');\n  \n  // Strategy 1: Direct all_feeds array\n  if (firstInput && firstInput.all_feeds && Array.isArray(firstInput.all_feeds)) {\n    console.log('Strategy 1: Processing all_feeds array');\n    // ... existing logic ...\n  }\n  \n  // Strategy 2: Check if data is in json.all_feeds\n  else if (firstInput && firstInput.json && firstInput.json.all_feeds) {\n    console.log('Strategy 2: Found json.all_feeds');\n    const feedsData = firstInput.json.all_feeds;\n    if (Array.isArray(feedsData)) {\n      for (const feedItem of feedsData) {\n        if (feedItem.data && feedItem.data.rss && feedItem.data.rss.channel && feedItem.data.rss.channel.item) {\n          const articles = Array.isArray(feedItem.data.rss.channel.item) ? feedItem.data.rss.channel.item : [feedItem.data.rss.channel.item];\n          console.log(`Found ${articles.length} articles from ${feedItem.feed || 'unknown'}`);\n          \n          for (const article of articles) {\n            if (article && article.title) {\n              allArticles.push({\n                source: feedItem.feed || 'unknown',\n                title: article.title,\n                description: article.description || 'No description',\n                link: article.link || '#',\n                pubDate: new Date(article.pubDate || new Date()).toISOString(),\n                category: article.category || 'General'\n              });\n            }\n          }\n        }\n      }\n    }\n  }\n  \n  // Strategy 3: Process all individual inputs\n  else {\n    console.log('Strategy 3: Processing individual inputs');\n    \n    for (let i = 0; i < allInputs.length; i++) {\n      const input = allInputs[i];\n      console.log(`Processing input ${i + 1}:`, Object.keys(input || {}));\n      \n      // Try multiple paths to find feed data\n      let feedData = null;\n      let feedName = 'unknown';\n      \n      // Path 1: Direct properties\n      if (input.feed && input.data) {\n        feedName = input.feed;\n        feedData = input.data;\n        console.log('Found direct feed data for', feedName);\n      }\n      // Path 2: Inside json property\n      else if (input.json && input.json.feed && input.json.data) {\n        feedName = input.json.feed;\n        feedData = input.json.data;\n        console.log('Found json feed data for', feedName);\n      }\n      // Path 3: Entire json is the feed data\n      else if (input.json) {\n        feedData = input.json;\n        if (input.json.feed) feedName = input.json.feed;\n        console.log('Using entire json as feed data');\n      }\n      // Path 4: Entire input is feed data\n      else {\n        feedData = input;\n        if (input.feed) feedName = input.feed;\n        console.log('Using entire input as feed data');\n      }\n      \n      if (!feedData) {\n        console.log('No feed data found in input', i + 1);\n        continue;\n      }\n      \n      console.log('Feed data structure:', Object.keys(feedData));\n      \n      // Extract articles from feed data\n      let articles = [];\n      \n      // RSS structure\n      if (feedData.rss && feedData.rss.channel && feedData.rss.channel.item) {\n        articles = Array.isArray(feedData.rss.channel.item) ? feedData.rss.channel.item : [feedData.rss.channel.item];\n        console.log(`Found ${articles.length} RSS articles from ${feedName}`);\n      }\n      // Atom structure\n      else if (feedData.feed && feedData.feed.entry) {\n        articles = Array.isArray(feedData.feed.entry) ? feedData.feed.entry : [feedData.feed.entry];\n        console.log(`Found ${articles.length} Atom articles from ${feedName}`);\n      }\n      // Direct array\n      else if (Array.isArray(feedData)) {\n        articles = feedData;\n        console.log(`Found ${articles.length} direct articles from ${feedName}`);\n      }\n      // Look for any array property\n      else if (feedData && typeof feedData === 'object') {\n        for (const [key, value] of Object.entries(feedData)) {\n          if (Array.isArray(value) && value.length > 0 && value[0] && typeof value[0] === 'object' && value[0].title) {\n            articles = value;\n            console.log(`Found ${articles.length} articles in ${key} property from ${feedName}`);\n            break;\n          }\n        }\n      }\n      \n      // Process articles\n      for (const article of articles) {\n        if (article && (article.title || article.name)) {\n          allArticles.push({\n            source: feedName,\n            title: article.title || article.name || 'No Title',\n            description: article.description || article.summary || 'No description',\n            link: article.link || article.url || '#',\n            pubDate: new Date(article.pubDate || article.published || article.updated || new Date()).toISOString(),\n            category: article.category || 'General'\n          });\n        }\n      }\n    }\n  }\n  \n} catch (error) {\n  console.log('ERROR:', error.message);\n}\n\nconsole.log('\\n=== FINAL RESULTS ===');\nconsole.log('Total articles extracted:', allArticles.length);\n\n// Show first few articles\nfor (let i = 0; i < Math.min(5, allArticles.length); i++) {\n  console.log(`${i + 1}: [${allArticles[i].source}] ${allArticles[i].title.substring(0, 60)}`);\n}\n\nconst result = {\n  articles: allArticles,\n  count: allArticles.length,\n  debug: {\n    totalFound: allArticles.length,\n    inputCount: allInputs.length,\n    hasAllFeeds: !!(firstInput && firstInput.all_feeds)\n  }\n};\n\nreturn result;"
+      },
+      "id": "4b570649-64ec-4460-83db-03d9d17d19c5",
+      "name": "Process and Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        352
+      ]
+    }
+  ],
+  "pinData": {
+    "n8n Startup Trigger": [
+      {
+        "json": {
+          "parameters": {},
+          "name": "Startup Trigger",
+          "type": "n8n-nodes-base.startupTrigger",
+          "typeVersion": 1,
+          "position": [
+            240,
+            300
+          ]
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Fetch Hype Aero": {
+      "main": [
+        [
+          {
+            "node": "Parse Hype Aero HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch TLDR": {
+      "main": [
+        [
+          {
+            "node": "Parse TLDR HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Hype Aero HTML": {
+      "main": [
+        [
+          {
+            "node": "Merge All Feeds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse TLDR HTML": {
+      "main": [
+        [
+          {
+            "node": "Merge All Feeds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge All Feeds": {
+      "main": [
+        [
+          {
+            "node": "Process and Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Email Content": {
+      "main": [
+        [
+          {
+            "node": "Send Email Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Articles Available": {
+      "main": [
+        [
+          {
+            "node": "Generate Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log No Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Startup Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Hype Aero",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch TLDR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process and Filter": {
+      "main": [
+        [
+          {
+            "node": "Check Articles Available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "timeSavedPerExecution": 15
+  },
+  "versionId": "2df31cf4-b67f-4fd3-8852-fd09a7c5814a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "9MWvHmSry7VECDzJ",
+  "tags": [
+    {
+      "createdAt": "2025-08-04T04:19:34.825Z",
+      "updatedAt": "2025-08-04T04:19:34.825Z",
+      "id": "5FdunponT3siO2an",
+      "name": "space"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.820Z",
+      "updatedAt": "2025-08-04T04:19:34.820Z",
+      "id": "qSJmG2bdUyn0iA7e",
+      "name": "news"
+    }
+  ]
+}
