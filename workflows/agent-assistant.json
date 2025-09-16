@@ -3,30 +3,17 @@
   "nodes": [
     {
       "parameters": {
-        "command": "=`powershell -NoProfile -ExecutionPolicy Bypass -Command \"${$fromAI('query', 'PowerShell command to execute', 'string')}\"`"
-      },
-      "type": "n8n-nodes-base.executeCommandTool",
-      "typeVersion": 1,
-      "position": [
-        944,
-        480
-      ],
-      "id": "088ede2a-1080-4ba4-9e69-970be72e3208",
-      "name": "create"
-    },
-    {
-      "parameters": {
         "public": true,
         "options": {
           "loadPreviousSession": "memory"
         }
       },
-      "id": "d0ab594c-f3b7-4104-8e38-ea9d8fa6c9f2",
+      "id": "d94a66b4-5309-41ac-8fff-69bdc14eacba",
       "name": "When chat message received",
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "position": [
-        448,
-        288
+        -96,
+        432
       ],
       "webhookId": "9eab0524-6cd7-4b81-8bd8-4d050a972a08",
       "typeVersion": 1.1
@@ -41,12 +28,12 @@
         },
         "options": {}
       },
-      "id": "ab8bee0a-6f67-473e-b771-26dbeec64cd3",
+      "id": "f6755657-9f40-417a-81d3-8c870b3b460a",
       "name": "Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        720,
-        480
+        -272,
+        912
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -63,24 +50,24 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        448,
-        480
+        -144,
+        912
       ],
-      "id": "791d7719-2f23-4b6b-a0b5-ae246d2d5969",
+      "id": "4b152647-3e68-4813-b148-a148b8f4538c",
       "name": "Memory"
     },
     {
       "parameters": {
         "options": {
-          "systemMessage": "You are a helpful personal assistant. My name is Sergiu.\n\nWhen handling file operations, use the 'create' tool by providing the PowerShell command in the 'query' parameter.\n\n**File Operations Examples:**\n\n1. **Create/Write File:**\n   - Command: Set-Content -Path 'C:\\\\Users\\\\Jomiru Sergiu\\\\Documents\\\\filename.txt' -Value 'content here' -Encoding UTF8\n   - For multiline content: Set-Content -Path 'C:\\\\Users\\\\Jomiru Sergiu\\\\Documents\\\\filename.txt' -Value @'\nline 1\nline 2\n'@ -Encoding UTF8\n\n2. **Read File:**\n   - Command: Get-Content -Path 'C:\\\\Users\\\\Jomiru Sergiu\\\\Documents\\\\filename.txt' -Encoding UTF8\n\n3. **Delete File:**\n   - Command: Remove-Item -Path 'C:\\\\Users\\\\Jomiru Sergiu\\\\Documents\\\\filename.txt' -Force\n\n4. **Edit/Append File:**\n   - Command: Add-Content -Path 'C:\\\\Users\\\\Jomiru Sergiu\\\\Documents\\\\filename.txt' -Value 'additional content' -Encoding UTF8\n\n5. **Create Directory:**\n   - Command: New-Item -Path 'C:\\\\Users\\\\Jomiru Sergiu\\\\Documents\\\\newfolder' -ItemType Directory -Force\n\n6. **List Files:**\n   - Command: Get-ChildItem -Path 'C:\\\\Users\\\\Jomiru Sergiu\\\\Documents' | Format-Table Name, Length, LastWriteTime\n\n**Default folder:** C:\\\\Users\\\\Jomiru Sergiu\\\\Documents\\\\\n\n**Important Rules:**\n- Always use double backslashes (\\\\\\\\) in file paths\n- Wrap file paths in single quotes\n- Use UTF8 encoding for text files\n- When user requests file operations, call the 'create_file' tool with the PowerShell command as the 'command' parameter\n- Always ensure the directory exists before creating files\n\n**Example Usage:**\nUser: \"Create a file called test.txt with Hello World\"\nYou should call create_file tool with command: \"Set-Content -Path 'C:\\\\\\\\Users\\\\\\\\Jomiru Sergiu\\\\\\\\Documents\\\\\\\\test.txt' -Value 'Hello World' -Encoding UTF8\""
+          "systemMessage": "You are a helpful personal assistant. My name is Sergiu.\n\n1. When ahndling mail operations - call mail-draft tool "
         }
       },
-      "id": "b94be04d-3fee-4cd7-9204-fb8edecf13e5",
+      "id": "f82cfb1f-5afc-46aa-90f0-49a57d52b7da",
       "name": "Assistant Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        720,
-        288
+        192,
+        432
       ],
       "typeVersion": 2.1
     },
@@ -91,12 +78,12 @@
         "width": 232,
         "color": 2
       },
-      "id": "29eebfac-eb75-48d6-87f0-67c5d95e4b23",
+      "id": "0b689615-33cc-42d4-9e8b-517878c986b6",
       "name": "CTO Agent Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        720,
-        160
+        192,
+        304
       ],
       "typeVersion": 1
     },
@@ -107,14 +94,59 @@
         "width": 232,
         "color": 3
       },
-      "id": "8fcaa934-e24d-4677-97ef-50b164ebc808",
+      "id": "aeb7eeb4-469f-4096-b7d7-f713876d000d",
       "name": "Chat Trigger Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        448,
-        160
+        -96,
+        304
       ],
       "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to send a mail draft",
+        "workflowId": {
+          "__rl": true,
+          "value": "BWHgDUTxbsqAcgYw",
+          "mode": "list",
+          "cachedResultName": "mail-draft"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        912
+      ],
+      "id": "c4533a81-e58d-418a-9f9f-39501400d9b8",
+      "name": "Write Mail Draft"
     }
   ],
   "pinData": {},
@@ -130,17 +162,6 @@
           {
             "node": "Assistant Agent",
             "type": "ai_memory",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "create": {
-      "ai_tool": [
-        [
-          {
-            "node": "Assistant Agent",
-            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -167,6 +188,17 @@
           }
         ]
       ]
+    },
+    "Write Mail Draft": {
+      "ai_tool": [
+        [
+          {
+            "node": "Assistant Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -175,7 +207,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 10
   },
-  "versionId": "8a014db2-b8e8-49d5-be88-d850341cca3b",
+  "versionId": "d6e3bd2f-8cb2-421c-b9e2-79c0b9f961e2",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
