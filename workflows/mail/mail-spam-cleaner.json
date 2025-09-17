@@ -1,0 +1,461 @@
+{
+  "name": "mail-spam-cleaner",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "0d8932f6-985d-41a0-b7af-74a20fa0074e",
+              "leftValue": "={{ $json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "7f6b76b2-ac05-4cfb-899f-0c314ab943aa",
+      "name": "Check if SPAM emails exist",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -272,
+        -48
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {},
+      "id": "729f3091-01bf-418e-ae21-bd98c1789bd3",
+      "name": "Pause Before Deletion (5s)",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        -64,
+        -48
+      ],
+      "webhookId": "0b2f9902-fd7b-4a98-87a3-f36c74b0af32",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "Introduces a short delay to avoid hitting Gmail’s API rate limits to to fetch all emails",
+        "height": 96,
+        "width": 186
+      },
+      "id": "0ea8bb3c-adfd-41e0-be66-547344028c2d",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "id": "8ccf1ebd-f32a-429b-9c72-e5cef7d5da36",
+      "name": "Monthly Trigger (1st)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -704,
+        -48
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "deleted_emails",
+        "options": {}
+      },
+      "id": "56318235-4021-41a8-98bd-16f9de4e5d17",
+      "name": "Aggregate Deleted Emails",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        352,
+        -48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "jomirusergiu@gmail.com",
+        "toEmail": "jomirusergiu@gmail.com",
+        "subject": "=Mail Spam Cleanup Report - {{ $json.deleted_emails.length }} emails deleted",
+        "emailFormat": "text",
+        "text": "=Mail Spam Cleanup completed successfully.\n\n{{ $json.deleted_emails.length }} spam emails were permanently deleted from your Gmail account.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
+        "options": {
+          "appendAttribution": false,
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "105609dc-4ee0-43da-8f08-80975d8a8e94",
+      "name": "Send Email Briefing",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        560,
+        -48
+      ],
+      "webhookId": "52757a00-9c6f-4c00-b7b2-03bc25c4b28d",
+      "credentials": {
+        "smtp": {
+          "id": "hDZ18LOe4Kax4dpH",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Permanently deletes all emails retrieved from the spam folder to free up the Gmail space.\n",
+        "height": 96,
+        "width": 186,
+        "color": 4
+      },
+      "id": "81c27e50-ce59-4e12-a65c-0da89b78a5ad",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        96,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Uses Gmail API to retrieve all emails in the SPAM folder for authenticated Gmail.",
+        "height": 96,
+        "width": 186,
+        "color": 5
+      },
+      "id": "1fffdf19-38a9-4a98-a2c5-27d172eef7a8",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -528,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Starts the workflow on the 1st of every month or on request to perform cleanup.",
+        "height": 96,
+        "width": 186,
+        "color": 3
+      },
+      "id": "bca6090f-0d2a-4d26-94f6-2660c045d3b0",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -736,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Aggregates all deleted spam emails data to prepare summary info for single notification.",
+        "height": 96,
+        "width": 186,
+        "color": 6
+      },
+      "id": "1ca20073-379d-4681-a3c8-c813ecb5b4de",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        304,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Sends one single notification email with summary of all deleted spam messages.",
+        "height": 96,
+        "width": 186,
+        "color": 2
+      },
+      "id": "9a13639f-e401-422e-94cd-f9b24e644b5a",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        512,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -704,
+        144
+      ],
+      "id": "e66643f8-7a96-4443-9da8-e04e99ee1bc4",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "content": "Introduces a short delay to avoid hitting Gmail’s API rate limits to to fetch all emails",
+        "height": 96,
+        "width": 186
+      },
+      "id": "0c43390a-8377-4473-b5a6-92812e7d979e",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -160
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "options": {}
+      },
+      "id": "87aba088-727a-4597-b83c-150182ddc4ba",
+      "name": "No Spam Found",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -64,
+        144
+      ],
+      "typeVersion": 3.4,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $json.id }}"
+      },
+      "id": "d28450b6-870f-4040-a83f-3dfa291d0b43",
+      "name": "Delete Spam",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        128,
+        -48
+      ],
+      "webhookId": "46b0fe0f-cc00-4994-8364-9048c888e9ef",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "labelIds": [
+            "SPAM"
+          ]
+        }
+      },
+      "id": "f9989fa5-391f-498e-b5d8-88f159eda082",
+      "name": "Fetch SPAM Emails",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        -496,
+        -48
+      ],
+      "webhookId": "c47419de-278c-40d1-a5da-c9414d3f89c6",
+      "typeVersion": 2.1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "jomirusergiu@gmail.com",
+        "toEmail": "jomirusergiu@gmail.com",
+        "subject": "=Mail Spam Cleanup Report - no spam emails were found.",
+        "emailFormat": "text",
+        "text": "=Mail Spam Cleanup completed successfully.\n\nNo spam emails were found in your Gmail account.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
+        "options": {
+          "appendAttribution": false,
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "80bf52e8-ccd3-4b80-83aa-ae74b0770bf3",
+      "name": "Send Report N/A",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        560,
+        144
+      ],
+      "webhookId": "52757a00-9c6f-4c00-b7b2-03bc25c4b28d",
+      "credentials": {
+        "smtp": {
+          "id": "hDZ18LOe4Kax4dpH",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check if SPAM emails exist": {
+      "main": [
+        [
+          {
+            "node": "Pause Before Deletion (5s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Spam Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pause Before Deletion (5s)": {
+      "main": [
+        [
+          {
+            "node": "Delete Spam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monthly Trigger (1st)": {
+      "main": [
+        [
+          {
+            "node": "Fetch SPAM Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Deleted Emails": {
+      "main": [
+        [
+          {
+            "node": "Send Email Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "Fetch SPAM Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Spam Found": {
+      "main": [
+        [
+          {
+            "node": "Send Report N/A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Spam": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Deleted Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch SPAM Emails": {
+      "main": [
+        [
+          {
+            "node": "Check if SPAM emails exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionOrder": "v0",
+    "timeSavedPerExecution": 10
+  },
+  "versionId": "3a4044c3-a0d3-437f-b5fb-5b8edf630754",
+  "meta": {
+    "templateId": "6122",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "penMMNPrl3jphZRQ",
+  "tags": [
+    {
+      "createdAt": "2025-09-08T07:55:19.208Z",
+      "updatedAt": "2025-09-08T07:55:19.208Z",
+      "id": "8mzLwVwaYcqGeRXd",
+      "name": "email"
+    },
+    {
+      "createdAt": "2025-09-08T07:55:22.137Z",
+      "updatedAt": "2025-09-08T07:55:22.137Z",
+      "id": "VPDBXUiMYIm0ZfUI",
+      "name": "spam"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    }
+  ]
+}

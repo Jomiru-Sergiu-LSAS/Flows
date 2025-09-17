@@ -1,0 +1,440 @@
+{
+  "name": "mail-draft-cleaner",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3040561a-1caa-4a6e-af87-1e1e6c4d4131",
+      "name": "Pause Before Deletion (5s)",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        560,
+        192
+      ],
+      "webhookId": "0b2f9902-fd7b-4a98-87a3-f36c74b0af32",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "Introduces a short delay to avoid hitting Gmail’s API rate limits to to fetch all emails",
+        "height": 96,
+        "width": 186
+      },
+      "id": "3e1a99f5-1a80-47ef-87f0-d0c62cbd563d",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        512,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "deleted_emails",
+        "options": {}
+      },
+      "id": "98800f85-ae21-48ac-ac0a-214b2cef1da2",
+      "name": "Aggregate Deleted Emails",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        976,
+        192
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "jomirusergiu@gmail.com",
+        "toEmail": "jomirusergiu@gmail.com",
+        "subject": "=Mail Draft Cleanup Report - {{ $json.deleted_emails.length }} emails deleted",
+        "emailFormat": "text",
+        "text": "=Mail Draft Cleanup completed successfully.\n\n{{ $json.deleted_emails.length }} draft emails were permanently deleted from your Gmail account.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
+        "options": {
+          "appendAttribution": false,
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "0ca0eb09-9c23-4c0d-b4f0-6e58d4d22f14",
+      "name": "Send Email Briefing",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1184,
+        192
+      ],
+      "webhookId": "52757a00-9c6f-4c00-b7b2-03bc25c4b28d",
+      "credentials": {
+        "smtp": {
+          "id": "hDZ18LOe4Kax4dpH",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Permanently deletes all emails retrieved from the draft folder to free up the Gmail space.\n",
+        "height": 96,
+        "width": 186,
+        "color": 4
+      },
+      "id": "423c686e-b5ab-4f18-90c1-ab11944642a8",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        720,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Uses Gmail API to retrieve all emails in the Draft folder for authenticated Gmail.",
+        "height": 96,
+        "width": 186,
+        "color": 5
+      },
+      "id": "cf74e21b-f63c-4955-877c-e88c1c21790e",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        96,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Aggregates all deleted draft emails data to prepare summary info for single notification.",
+        "height": 96,
+        "width": 186,
+        "color": 6
+      },
+      "id": "970dd52a-65d8-4287-b5d0-861a506f36a7",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        928,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Sends one single notification email with summary of all deleted draft messages.",
+        "height": 96,
+        "width": 186,
+        "color": 2
+      },
+      "id": "3207ae20-73e5-4b27-9154-0cdedd2495db",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1136,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        384
+      ],
+      "id": "f0b24845-12e9-40c5-94a1-b02e915a428b",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "content": "Introduces a short delay to avoid hitting Gmail’s API rate limits to to fetch all emails",
+        "height": 96,
+        "width": 186
+      },
+      "id": "c6322d79-3091-435b-941d-01364d60339e",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        304,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "jomirusergiu@gmail.com",
+        "toEmail": "jomirusergiu@gmail.com",
+        "subject": "=Mail Draft Cleanup Report - no draft emails were found.",
+        "emailFormat": "text",
+        "text": "=Mail Draft Cleanup completed successfully.\n\nNo draft emails were found in your Gmail account.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
+        "options": {
+          "appendAttribution": false,
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "413b2b09-537c-459b-aab4-a4d3d87807bc",
+      "name": "Send Report N/A",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1184,
+        384
+      ],
+      "webhookId": "52757a00-9c6f-4c00-b7b2-03bc25c4b28d",
+      "credentials": {
+        "smtp": {
+          "id": "hDZ18LOe4Kax4dpH",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "labelIds": [
+            "DRAFT"
+          ]
+        }
+      },
+      "id": "deb4ecf0-dd82-4e29-8bd7-b05ebcc30f5a",
+      "name": "Fetch Draft Emails",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        128,
+        192
+      ],
+      "webhookId": "c47419de-278c-40d1-a5da-c9414d3f89c6",
+      "typeVersion": 2.1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cd524b08-fd72-40ff-b796-eac22baac351",
+              "leftValue": "={{ $json }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "b750b01f-0106-41ae-9d6d-0e44d7f3d3ef",
+      "name": "Check if Draft emails exist",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        352,
+        192
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "options": {}
+      },
+      "id": "75ff870e-b07f-4b21-be16-ea6e4ca29dde",
+      "name": "No Draft Found",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        560,
+        384
+      ],
+      "typeVersion": 3.4,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $json.id }}"
+      },
+      "id": "d1b8ed5e-e697-4aab-bea1-1e2abc7d5d86",
+      "name": "Delete Draft",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        752,
+        192
+      ],
+      "webhookId": "46b0fe0f-cc00-4994-8364-9048c888e9ef",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Starts the workflow on request to perform cleanup of the draft email folder.",
+        "height": 96,
+        "width": 186,
+        "color": 3
+      },
+      "id": "c1a7f553-7b8a-4cec-bed3-792234e25061",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "id": "90359085-7445-48b1-89f5-83729e8dc1a4",
+      "name": "Monthly Trigger (1st)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -96,
+        192
+      ],
+      "typeVersion": 1.2
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Pause Before Deletion (5s)": {
+      "main": [
+        [
+          {
+            "node": "Delete Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Deleted Emails": {
+      "main": [
+        [
+          {
+            "node": "Send Email Briefing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "Fetch Draft Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Draft Emails": {
+      "main": [
+        [
+          {
+            "node": "Check if Draft emails exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Draft emails exist": {
+      "main": [
+        [
+          {
+            "node": "Pause Before Deletion (5s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Draft Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Draft Found": {
+      "main": [
+        [
+          {
+            "node": "Send Report N/A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Draft": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Deleted Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monthly Trigger (1st)": {
+      "main": [
+        [
+          {
+            "node": "Fetch Draft Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "timeSavedPerExecution": 10
+  },
+  "versionId": "b20a97a7-c578-413b-8e03-4804b7a93d8d",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "prHQevGtXaWcY7wg",
+  "tags": []
+}
