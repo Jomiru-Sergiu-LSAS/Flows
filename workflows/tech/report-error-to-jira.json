@@ -1,0 +1,255 @@
+{
+  "name": "report-error-to-jira",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "error-alert",
+        "options": {}
+      },
+      "id": "ee0984f1-d683-4f99-9066-91b44fdfce73",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        -432,
+        784
+      ],
+      "webhookId": "fbea35d4-9112-40a4-bf5e-c4a37cae021d",
+      "typeVersion": 1,
+      "notes": "This node triggers the workflow when an error is received from a service like Sentry, LogRocket, or Datadog via a POST request."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "{{$node['Webhook Trigger'].json['level']}}",
+              "value2": "critical"
+            }
+          ]
+        }
+      },
+      "id": "9b75a408-994c-4719-bfe5-40a58dba62df",
+      "name": "Filter Critical Errors",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -96,
+        784
+      ],
+      "typeVersion": 1,
+      "notes": "This IF node checks if the error level is 'critical'. Only critical errors proceed to the true branch for alerting and Jira creation."
+    },
+    {
+      "parameters": {
+        "channel": "incidents",
+        "text": "🚨 Critical Production Error: {{$node['Webhook Trigger'].json['message']}} \nEnvironment: {{$node['Webhook Trigger'].json['environment']}} \nTimestamp: {{$node['Webhook Trigger'].json['timestamp']}}",
+        "otherOptions": {},
+        "attachments": []
+      },
+      "id": "82ca4b30-2727-4b82-8059-b8ca3766b525",
+      "name": "Send Slack Alert",
+      "type": "n8n-nodes-base.slack",
+      "position": [
+        256,
+        672
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "slackApi": {
+          "id": "8KRg6tJ309vJQAp8",
+          "name": "Slack account"
+        }
+      },
+      "notes": "This node sends a notification to the 'incidents' Slack channel with details about the critical error, including message, environment, and timestamp."
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1234"
+        },
+        "issueType": {
+          "__rl": true,
+          "mode": "id",
+          "value": "=7654ew"
+        },
+        "summary": "Critical Production Error: {{$node['Webhook Trigger'].json['message']}}",
+        "additionalFields": {}
+      },
+      "id": "415f63b1-918d-42be-bd39-ef5643775252",
+      "name": "Create Jira Bug",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        256,
+        832
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "mvnCUQvYXVlEfCOU",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "notes": "This node creates a Jira bug in the 'PROD' project with the error message as the summary and includes environment, timestamp, and stack trace in the description."
+    },
+    {
+      "parameters": {
+        "content": "### System Architecture\n- **Error Detection Pipeline**:\n  - **Webhook Trigger**: Get incoming error data via POST requests.\n  - **Filter Critical Errors**: Identifies and separates critical errors.\n- **Alert Generation Flow**:\n  - **Send Slack Alert**: Notifies the team via Slack for critical errors.\n  - **Create Jira Bug**: Logs critical errors as Jira issues.\n- **Non-Critical Handling**:\n  - **No Action for Non-Critical**: Skips non-critical errors actions.\n",
+        "height": 232,
+        "width": 488,
+        "color": 3
+      },
+      "id": "5cb6a08f-2996-4768-80a9-9f55745c7f2d",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        928
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "4659899d-bfd2-4ac8-8924-e2d4e868b2a4",
+      "name": "Skip Non-Critical",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        256,
+        992
+      ],
+      "typeVersion": 1,
+      "notes": "This node is a placeholder for non-critical errors. No action is taken if the error is not critical."
+    },
+    {
+      "parameters": {
+        "content": "Webhook trigger that receives error alerts from monitoring services like Sentry, LogRocket, or Datadog via POST requests.",
+        "height": 112,
+        "width": 216,
+        "color": 3
+      },
+      "id": "bdfd627f-e2c6-4925-8041-1b6a36e81884",
+      "name": "Webhook Trigger Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        640
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "IF node that filters incoming errors to identify critical severity levels before processing alerts and tickets.",
+        "height": 112,
+        "width": 200,
+        "color": 6
+      },
+      "id": "c268f2d1-564b-4fb6-bb7e-874fbe004351",
+      "name": "Filter Critical Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        640
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Sends immediate Slack notifications to the incidents channel for critical production errors with full context.",
+        "height": 96,
+        "width": 232,
+        "color": 5
+      },
+      "id": "64d067af-5db9-4b55-8ff6-127f6066e733",
+      "name": "Slack Alert Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        448,
+        672
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Creates Jira bug tickets for critical errors with detailed information including env, timestamp, and stack traces.",
+        "height": 96,
+        "width": 232,
+        "color": 4
+      },
+      "id": "872568bc-2732-4eca-9ce8-35968c2ffff7",
+      "name": "Jira Bug Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        448,
+        832
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "No-operation node to hande all non-critical errors, by skipping alert as well as ticket creation processes.",
+        "height": 96,
+        "width": 232
+      },
+      "id": "b605ed92-dff7-412e-8bcb-890ae4bf5a0f",
+      "name": "Skip Non-Critical Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        448,
+        992
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filter Critical Errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Critical Errors": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Jira Bug",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Non-Critical",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1,
+    "executionOrder": "v0",
+    "timeSavedPerExecution": 15
+  },
+  "versionId": "990d8df3-f61e-4ed2-9e46-5b05f8eb98b5",
+  "meta": {
+    "templateId": "6644",
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "F26YKT4uQZlA3HZ0",
+  "tags": []
+}
