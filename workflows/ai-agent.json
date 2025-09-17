@@ -1,0 +1,331 @@
+{
+  "name": "ai-agent",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {
+          "loadPreviousSession": "memory"
+        }
+      },
+      "id": "d94a66b4-5309-41ac-8fff-69bdc14eacba",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [
+        -96,
+        432
+      ],
+      "webhookId": "9eab0524-6cd7-4b81-8bd8-4d050a972a08",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "f6755657-9f40-417a-81d3-8c870b3b460a",
+      "name": "Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -128,
+        656
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 50000
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        656
+      ],
+      "id": "4b152647-3e68-4813-b148-a148b8f4538c",
+      "name": "Memory"
+    },
+    {
+      "parameters": {
+        "content": "Personal assistant agent that analyzes submitted requests and provides feedback based on the specific task.",
+        "height": 96,
+        "width": 232,
+        "color": 2
+      },
+      "id": "0b689615-33cc-42d4-9e8b-517878c986b6",
+      "name": "CTO Agent Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        192,
+        304
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Chat trigger that receives personal requests or tasks and initiates the interaction with the Personal Assistant agent.",
+        "height": 96,
+        "width": 232,
+        "color": 3
+      },
+      "id": "aeb7eeb4-469f-4096-b7d7-f713876d000d",
+      "name": "Chat Trigger Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -96,
+        304
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to send a mail draft",
+        "workflowId": {
+          "__rl": true,
+          "value": "3JUlir6U8RerkiHd",
+          "mode": "list",
+          "cachedResultName": "mail-agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        656
+      ],
+      "id": "2a3e2692-55f8-49af-bebb-21e6bd2bea26",
+      "name": "Mail Agent"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to send a mail draft",
+        "workflowId": {
+          "__rl": true,
+          "value": "hezu6BmRCenLnhNo",
+          "mode": "list",
+          "cachedResultName": "tech-agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        656
+      ],
+      "id": "b8a64320-f2e1-425f-a13a-32ab8db2bee5",
+      "name": "Tech Agent"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to send a mail draft",
+        "workflowId": {
+          "__rl": true,
+          "value": "fyhXx2Qh6iysxQ2B",
+          "mode": "list",
+          "cachedResultName": "infra-agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        656
+      ],
+      "id": "c21fdc0d-5f87-45fe-870b-4649469d67e4",
+      "name": "Infra Agent"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to send a mail draft",
+        "workflowId": {
+          "__rl": true,
+          "value": "mZYXdtXGow6VtJzc",
+          "mode": "list",
+          "cachedResultName": "general-agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        656
+      ],
+      "id": "13581211-0ddc-4451-8815-1585726aeddd",
+      "name": "General Agent"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful AI Personal Assistant Agent. \nMy name is Sergiu. You act as the main router and coordinator.\n\n🔑 Rules:\n0. In case of delegation, interpret the output and report the action without doing anything else - IE: weekly report was sent to your email.\n1. For anything related to email → delegate to \"Mail Agent\".\n2. For anything related to Git, computers, or Windows → delegate to \"Infra Agent\".\n3. For anything related to software development, engineering, or technical subjects (except Git/Windows) → delegate to \"Tech Agent\".\n4. For all other topics → delegate to \"General Assistant\".\n\n💾 Memory:\n- Maintain a conversation history with Sergiu so you can recall past queries.\n\n📤 Output:\nAlways interpret the output and provide feedback in natural language.\n"
+        }
+      },
+      "id": "f82cfb1f-5afc-46aa-90f0-49a57d52b7da",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        192,
+        432
+      ],
+      "typeVersion": 2.1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "When chat message received",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mail Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tech Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Infra Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "General Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "timeSavedPerExecution": 10
+  },
+  "versionId": "c2eba057-cd34-4869-b4b7-95c7485378e3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "9yY5kIpAqzkqFwKT",
+  "tags": []
+}
