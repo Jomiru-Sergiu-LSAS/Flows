@@ -1,0 +1,292 @@
+{
+  "name": "infra-agent",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -448,
+        -160
+      ],
+      "id": "2b6182c4-1966-44ec-b316-cee9e6fee243",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "b8a29f17-9caa-47fc-b05c-068cd1d18be8",
+      "name": "Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -384,
+        48
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "labelIds": [
+            "UNREAD"
+          ]
+        }
+      },
+      "id": "8c81af9c-2d7a-4cef-9375-5dc3557a04ea",
+      "name": "Fetch Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        32,
+        -160
+      ],
+      "webhookId": "c47419de-278c-40d1-a5da-c9414d3f89c6",
+      "typeVersion": 2.1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to pull git updates",
+        "workflowId": {
+          "__rl": true,
+          "value": "bk6aMU5sIvjJBQU3",
+          "mode": "list",
+          "cachedResultName": "git-updates"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        48
+      ],
+      "id": "90369d1c-eb3c-4e50-bfab-1a0d2db91248",
+      "name": "Git Update"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to shut the computer",
+        "workflowId": {
+          "__rl": true,
+          "value": "7ZB5rVzzaBDdMmrg",
+          "mode": "list",
+          "cachedResultName": "win-shutdown"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        48
+      ],
+      "id": "e1475044-af54-418b-ada7-f437ec9bf465",
+      "name": "Win Shutdown"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to pull PRs and prepare code review drafts",
+        "workflowId": {
+          "__rl": true,
+          "value": "ryubZDpF5stfDkm1",
+          "mode": "list",
+          "cachedResultName": "git-reviews"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        48
+      ],
+      "id": "205f3851-17ad-4877-84b2-557257d6b95c",
+      "name": "Code Review"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json}}",
+        "options": {
+          "systemMessage": "You are a helpful Infrastructure Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n1. For fetching Git updates → call \"Git Update\".\n2. For reviewing Git pull requests → call \"Code Review\".\n3. For shutting down Windows → call \"Win Shutdown\".\n4. Otherwise, answer infrastructure-related questions directly.\n\n💾 Memory:\n- Remember repo names, last operations, or system context.\n\n📤 Output JSON:\n{\n  \"action\": \"tool_call\" | \"respond\",\n  \"tool\": \"Git Update | Code Review | Win Shutdown | None\",\n  \"arguments\": { \"repo\": \"optional repo name\", \"details\": \"additional context\" },\n  \"response\": \"Explanation for Sergiu\"\n}\n"
+        }
+      },
+      "id": "51aa2643-7706-4c8c-a72a-834d65140a0c",
+      "name": "Infra Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -272,
+        -160
+      ],
+      "typeVersion": 2.1
+    }
+  ],
+  "pinData": {
+    "Executed by other flow": []
+  },
+  "connections": {
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Git Update": {
+      "ai_tool": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Win Shutdown": {
+      "ai_tool": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Review": {
+      "ai_tool": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "71cca95a-bf8f-4814-8895-c216c7a48aa2",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "fyhXx2Qh6iysxQ2B",
+  "tags": []
+}
