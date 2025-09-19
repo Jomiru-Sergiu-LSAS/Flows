@@ -8,40 +8,15 @@
           "loadPreviousSession": "memory"
         }
       },
-      "id": "9c0aa96f-37fb-4ed0-b316-b86b904a266f",
+      "id": "0b435640-5fbf-418a-a4a7-60a16edfac83",
       "name": "When chat message received",
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "position": [
-        -160,
-        144
+        -1328,
+        -240
       ],
       "webhookId": "9eab0524-6cd7-4b81-8bd8-4d050a972a08",
       "typeVersion": 1.1
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "7861a1a9-d8a2-4f9c-8d02-ba15710d303b",
-      "name": "Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        -192,
-        368
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
     },
     {
       "parameters": {
@@ -50,83 +25,26 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -80,
-        368
+        -1232,
+        -16
       ],
-      "id": "86028b92-ad27-4769-ae0e-642196eb91a4",
+      "id": "daaecff1-b2e0-43e0-a5cb-ed4cc31b976b",
       "name": "Memory"
     },
     {
       "parameters": {
-        "content": "Personal assistant agent that analyzes submitted requests delegates and provides feedback on specific task.",
-        "height": 96,
-        "width": 232,
-        "color": 2
-      },
-      "id": "881e8149-a473-4b1e-8680-8e02004cb84c",
-      "name": "CTO Agent Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        128,
-        16
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Chat trigger that receives personal requests or tasks and initiates the interaction with the Personal Assistant agent.",
-        "height": 96,
-        "width": 232,
-        "color": 3
-      },
-      "id": "7c28e72e-d89f-4b37-a8f5-878f7cdd8b01",
-      "name": "Chat Trigger Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -160,
-        16
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "toolDescription": "You are a helpful Email Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n0. Do not just provide chat feedback. Trigger tools only.\n1. For creating new emails → call \"Create Draft\".\n2. For cleaning spam → call \"Clean Spam\".\n3. For cleaning drafts → call \"Clean Drafts\".\n4. Otherwise, answer email-related questions directly.\n\n💾 Memory:\n- Remember recent email activity and drafts.\n\n📤 Output JSON:\n{\n  \"action\": \"tool_call\" | \"respond\",\n  \"tool\": \"Create Draft | Clean Spam | Clean Drafts | None\",\n  \"arguments\": { \"subject\": \"...\", \"body\": \"...\", \"filters\": \"...\" },\n  \"response\": \"Natural language explanation for Sergiu\"\n}\n",
+        "toolDescription": "You are a helpful Email Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n0. Do not just provide chat feedback. Trigger tools only.\n1. For creating new emails → call \"Create Draft\" tool.\n2. For cleaning spam → call \"Spam\" tool.\n3. For cleaning drafts → call \"Drafts\" tool.\n3. For cleaning trash → call \"Trash\" tool.\n4. Otherwise, answer email-related questions directly.\n\n💾 Memory:\n- Remember recent email activity and drafts.\n\n📤 Output JSON:\n{\n  \"action\": \"tool_call\" | \"respond\",\n  \"tool\": \"Create Draft | Clean Spam | Clean Drafts | None\",\n  \"arguments\": { \"subject\": \"...\", \"body\": \"...\", \"filters\": \"...\" },\n  \"response\": \"Natural language explanation for Sergiu\"\n}\n",
         "text": "={{$json}}",
         "options": {}
       },
-      "id": "7b5531d3-5e2b-4d25-b3e7-d7ed3ec9f357",
+      "id": "aa9f25a7-1845-4554-b987-c09637581f95",
       "name": "Mail Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1152,
-        368
+        976,
+        160
       ],
       "typeVersion": 2.2
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "a0c0c747-73b1-4e0a-8213-0df2873ffcfb",
-      "name": "Mail Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        1152,
-        528
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
     },
     {
       "parameters": {
@@ -167,101 +85,11 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1232,
-        656
+        1008,
+        416
       ],
-      "id": "f1ea014b-87bc-4677-9758-743cf2222fdc",
+      "id": "bf70a383-af22-4fe5-bd9f-0b7a195cda7d",
       "name": "Create Draft"
-    },
-    {
-      "parameters": {
-        "description": "Call this tool to clean email spam",
-        "workflowId": {
-          "__rl": true,
-          "value": "prHQevGtXaWcY7wg",
-          "mode": "list",
-          "cachedResultName": "mail-draft-cleaner"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
-            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "chatInput",
-              "displayName": "Chat Input",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            },
-            {
-              "id": "emailInstructions",
-              "displayName": "Email Instructions",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        1344,
-        656
-      ],
-      "id": "0997a44f-6f4d-4e10-9ebe-6e8b6824625a",
-      "name": "Clean Drafts"
-    },
-    {
-      "parameters": {
-        "description": "Call this tool to clean email spam",
-        "workflowId": {
-          "__rl": true,
-          "value": "penMMNPrl3jphZRQ",
-          "mode": "list",
-          "cachedResultName": "mail-spam-cleaner"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
-            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "chatInput",
-              "displayName": "Chat Input",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            },
-            {
-              "id": "emailInstructions",
-              "displayName": "Email Instructions",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        1456,
-        656
-      ],
-      "id": "4ecd497b-8c2b-4033-9a82-c38a2da59662",
-      "name": "Clean Spam"
     },
     {
       "parameters": {
@@ -302,10 +130,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        960,
-        656
+        1536,
+        416
       ],
-      "id": "249bd153-bdfd-4cb6-8970-caef30524b70",
+      "id": "9b54579e-df94-4958-a2ca-9b20aa349902",
       "name": "Newsletter"
     },
     {
@@ -347,36 +175,11 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1072,
-        656
+        1440,
+        416
       ],
-      "id": "d169afa0-39e1-4fff-9bc1-04a76061ebc6",
+      "id": "6b72e561-8bb8-4949-afbc-6555e4069041",
       "name": "Report"
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "30fa5d58-9202-4da3-8dd8-a6bd75811461",
-      "name": "General Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        784,
-        528
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
     },
     {
       "parameters": {
@@ -384,23 +187,23 @@
         "text": "={{$json}}",
         "options": {}
       },
-      "id": "c2f3a46b-a82f-4b57-93a2-83dc63f2c858",
+      "id": "4a1c0799-59b1-49a1-b755-1253eaed88de",
       "name": "General Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        784,
-        368
+        1344,
+        160
       ],
       "typeVersion": 2.2
     },
     {
       "parameters": {},
-      "id": "42718f6c-f613-4b97-be30-a4e73cc1c9e7",
+      "id": "68365d2d-22ba-45fe-999f-9a70274f5d4b",
       "name": "Think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "position": [
-        -208,
-        800
+        -1216,
+        448
       ],
       "typeVersion": 1.1
     },
@@ -410,12 +213,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "83776303-782a-48c7-8492-fb2477637869",
+      "id": "84f57bcf-c305-43b6-b772-9243a5a67ac7",
       "name": "Software Architect Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        -192,
-        976
+        -1104,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -425,12 +228,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "8d0bb311-964f-4b38-9378-9a125099e509",
+      "id": "c9f1303e-d3bb-4c65-9bf8-a77185ce5874",
       "name": "DevOps Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1088,
-        976
+        176,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -440,12 +243,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "fcb4ec7a-effe-4760-bcfd-8db9e85e6c3d",
+      "id": "95c60489-a56b-48cb-87eb-ad13b9e2a9cf",
       "name": "Security Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        832,
-        976
+        -80,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -455,12 +258,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "7989ad44-abf4-431a-98d0-b27f220bbad2",
+      "id": "5cda56f1-1175-4487-bf24-ce0a6e99b92f",
       "name": "QA Test Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        576,
-        976
+        -336,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -470,12 +273,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "e8565c7c-2cbe-4b52-8306-4e91fdaf5474",
+      "id": "15caa0c3-fb83-49e7-9497-cae39ce72cb3",
       "name": "Backend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        320,
-        976
+        -592,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -485,158 +288,14 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "d5e7b24e-cf26-459d-9571-b597d87baaa0",
+      "id": "911b2c53-da0c-4dfd-bace-0a82e54f7c18",
       "name": "Frontend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        64,
-        976
+        -848,
+        448
       ],
       "typeVersion": 2.2
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "id": "41386ed9-2416-4374-a474-b95878612f8f",
-      "name": "Architect Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        -192,
-        1152
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "id": "af3bc3e0-b19b-4e89-9900-ae1792db2019",
-      "name": "Frontend Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        64,
-        1152
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "id": "06fba7f2-d5b6-46c2-84ad-39502cd007fc",
-      "name": "Backend Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        320,
-        1152
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "id": "037371a5-1ae2-4ac9-ba80-aa8121c73206",
-      "name": "QA Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        576,
-        1152
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "id": "a5500cd0-cd61-43c1-9f14-9e2403e07c93",
-      "name": "Security Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        832,
-        1152
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "id": "4242234e-1fa4-42cf-b460-7bb1a33a8139",
-      "name": "DevOps Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        1088,
-        1152
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
     },
     {
       "parameters": {
@@ -677,10 +336,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1632,
-        656
+        496,
+        416
       ],
-      "id": "741668da-1e38-4499-928f-6593ed591236",
+      "id": "f6ec32bc-b985-4af5-88b0-fccd3d5f421d",
       "name": "Git Update"
     },
     {
@@ -722,65 +381,25 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1744,
-        656
+        592,
+        416
       ],
-      "id": "0527c7ba-e724-4b8f-b0a8-da583a8750bd",
+      "id": "85ab518f-b5c2-4af5-b38c-32ab4bb6c709",
       "name": "Code Review"
     },
     {
       "parameters": {
-        "toolDescription": "You are a helpful Infrastructure Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n0. Do not just provide chat feedback. Trigger tools only.\n1. For fetching Git updates → call \"Git Update\".\n2. For reviewing Git pull requests → call \"Code Review\".\n3. For shutting down Windows → call \"Windows\".\n4. Otherwise, answer infrastructure-related questions directly.\n\n💾 Memory:\n- Remember repo names, last operations, or system context.\n\n📤 Output JSON:\n{\n  \"action\": \"tool_call\" | \"respond\",\n  \"tool\": \"Git Update | Code Review | Win Shutdown | None\",\n  \"arguments\": { \"repo\": \"optional repo name\", \"details\": \"additional context\" },\n  \"response\": \"Explanation for Sergiu\"\n}\n",
-        "text": "={{$json}}",
-        "options": {}
-      },
-      "id": "8c99d7fd-5474-483f-81f0-3e2781bcb8ae",
-      "name": "Infra Agent",
-      "type": "@n8n/n8n-nodes-langchain.agentTool",
-      "position": [
-        1552,
-        368
-      ],
-      "typeVersion": 2.2
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "25499a47-15a3-455b-89ee-04fa90f12193",
-      "name": "Infra Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        1552,
-        528
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "\n## 🧠 **CTO AGENT WITH ENGINEERING TEAM**\n\nThis multi-agent n8n automation simulates a complete engineering department. A strategic CTO agent receives your technical requests, analyzes engineering needs, and delegates to specialized agents for architecture, DevOps, security, QA, backend, and frontend development—delivering comprehensive technical solutions instantly.\n\nPowered by OpenAI O3 & GPT-4.1-mini Multi-Agent System\nFor any questions or support explore more tips and tutorials here:\n   - YouTube: https://www.youtube.com/@YaronBeen/videos\n   - LinkedIn: https://www.linkedin.com/in/yaronbeen/\n\n### ⚙️ **How It Works**\n1. **Chat trigger** receives engineering requests (e.g., \"Design a microservices architecture for e-commerce platform\")\n2. **CTO Agent** (O3) analyzes request and determines required engineering functions\n3. Delegates to specialist agents:\n   - Software Architect Agent\n   - DevOps Engineer Agent\n   - Security Engineer Agent\n   - QA Test Engineer Agent\n   - Backend Developer Agent\n   - Frontend Developer Agent\n4. Each agent uses **GPT-4.1-mini** for fast, focused execution\n5. Results compiled and returned via chat or integrated with development tools\n\n### 👥 **Meet Your AI Engineering Team**\n|  |  |  |\n|------|-----------------|----------|\n| 🧠 **CTO Agent** &nbsp;&nbsp;&nbsp; | Technical strategy & team delegation &nbsp;&nbsp;&nbsp; | O3 &nbsp;&nbsp;&nbsp; |\n| 🏗️ **Software Architect** &nbsp;&nbsp;&nbsp; | System design, patterns, scalability &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| 🚀 **DevOps Engineer** &nbsp;&nbsp;&nbsp; | CI/CD, infrastructure, deployment &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| 🔒 **Security Engineer** &nbsp;&nbsp;&nbsp; | Security assessments, compliance &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| 🧪 **QA Test Engineer** &nbsp;&nbsp;&nbsp; | Test automation, quality strategies &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| ⚙️ **Backend Developer** &nbsp;&nbsp;&nbsp; | APIs, databases, microservices &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| 🎨 **Frontend Developer** &nbsp;&nbsp;&nbsp; | UI/UX, responsive design, frameworks &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n\n\n\n### 💡 **Use Cases**\n- **Full Stack Development**: End-to-end application architecture and implementation\n- **System Architecture**: Scalable designs for microservices, distributed systems\n- **DevOps Automation**: CI/CD pipelines, containerization, cloud deployment\n- **Security Audits**: Vulnerability assessments, secure coding practices\n- **Quality Assurance**: Test automation frameworks, performance testing\n- **Technical Documentation**: API docs, system diagrams, deployment guides\n\n\n### 💸 **Cost Optimization**\n- **O3 for CTO**: Strategic technical decisions only\n- **GPT-4.1-mini for specialists**: 90% cost reduction\n- **Parallel processing**: All agents work simultaneously\n- **Code template reuse**: Common patterns and frameworks",
-        "height": 1236,
+        "content": "\n## 🧠 **Multi agent division coordinated by Master AI**\n\nThis multi-agent n8n automation simulates a complete engineering department. A strategic CTO agent receives your technical requests, analyzes engineering needs, and delegates to specialized agents for architecture, DevOps, security, QA, backend, and frontend development—delivering comprehensive technical solutions instantly.\n\nPowered by OpenAI O3 & GPT-4.1-mini Multi-Agent System\nFor any questions or support explore more tips and tutorials here:\n   - YouTube: https://www.youtube.com/@YaronBeen/videos\n   - LinkedIn: https://www.linkedin.com/in/yaronbeen/\n\n### ⚙️ **How It Works**\n1. **Chat trigger** receives engineering requests (e.g., \"Design a microservices architecture for e-commerce platform\")\n2. **CTO Agent** (O3) analyzes request and determines required engineering functions\n3. Delegates to specialist agents:\n   - Software Architect Agent\n   - DevOps Engineer Agent\n   - Security Engineer Agent\n   - QA Test Engineer Agent\n   - Backend Developer Agent\n   - Frontend Developer Agent\n4. Each agent uses **GPT-4.1-mini** for fast, focused execution\n5. Results compiled and returned via chat or integrated with development tools\n\n### 👥 **Meet Your AI Engineering Team**\n|  |  |  |\n|------|-----------------|----------|\n| 🧠 **CTO Agent** &nbsp;&nbsp;&nbsp; | Technical strategy & team delegation &nbsp;&nbsp;&nbsp; | O3 &nbsp;&nbsp;&nbsp; |\n| 🏗️ **Software Architect** &nbsp;&nbsp;&nbsp; | System design, patterns, scalability &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| 🚀 **DevOps Engineer** &nbsp;&nbsp;&nbsp; | CI/CD, infrastructure, deployment &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| 🔒 **Security Engineer** &nbsp;&nbsp;&nbsp; | Security assessments, compliance &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| 🧪 **QA Test Engineer** &nbsp;&nbsp;&nbsp; | Test automation, quality strategies &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| ⚙️ **Backend Developer** &nbsp;&nbsp;&nbsp; | APIs, databases, microservices &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n| 🎨 **Frontend Developer** &nbsp;&nbsp;&nbsp; | UI/UX, responsive design, frameworks &nbsp;&nbsp;&nbsp; | GPT-4.1-mini &nbsp;&nbsp;&nbsp; |\n\n\n\n### 💡 **Use Cases**\n- **Full Stack Development**: End-to-end application architecture and implementation\n- **System Architecture**: Scalable designs for microservices, distributed systems\n- **DevOps Automation**: CI/CD pipelines, containerization, cloud deployment\n- **Security Audits**: Vulnerability assessments, secure coding practices\n- **Quality Assurance**: Test automation frameworks, performance testing\n- **Technical Documentation**: API docs, system diagrams, deployment guides\n\n\n### 💸 **Cost Optimization**\n- **O3 for CTO**: Strategic technical decisions only\n- **GPT-4.1-mini for specialists**: 90% cost reduction\n- **Parallel processing**: All agents work simultaneously\n- **Code template reuse**: Common patterns and frameworks",
+        "height": 1204,
         "width": 644,
-        "color": 5
+        "color": 7
       },
-      "id": "ab0af189-fb05-4a7c-a77c-6ae88e230b65",
+      "id": "5e9c5daa-169a-4519-bc30-1f4600523ebb",
       "name": "Sticky Note Main",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -896,
-        16
+        -2032,
+        -288
       ],
       "typeVersion": 1
     },
@@ -790,52 +409,27 @@
         "text": "={{$json}}",
         "options": {}
       },
-      "id": "cebd0065-ff04-4b9b-ba2b-9913e1d9f773",
+      "id": "47c5195b-ea3b-414d-a87a-6b794342593c",
       "name": "CTO Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        112,
-        368
+        -1328,
+        176
       ],
       "typeVersion": 2.2
     },
     {
       "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "28c6da80-51f2-42e9-94e2-9aec138a146f",
-      "name": "CTO Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        -208,
-        576
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "options": {
-          "systemMessage": "You are the main helpful Master AI Personal Assistant Agent. \nMy name is Sergiu. You act as the main router and coordinator.\n\nGuidelines:\nIn case of delegating task to a different agent, interpret the output and report the action without doing anything else - IE: Action x was completed.\n\n🔑 Rules:\n1. For reports, news or newsletter and all other topics → delegate to \"General Agent\".\n2. For anything related to email → delegate to \"Mail Agent\".\n3. For anything related to Git, computer, or Windows → delegate to \"Infra Agent\".\n4. For anything related to software development, engineering, or technical subjects (except Git/Windows) → delegate to \"CTO Agent\".\n\n💾 Memory:\n- Maintain a conversation history with Sergiu so you can recall past queries.\n\n📤 Output:\nAlways interpret the output and provide feedback in natural language.\n"
+          "systemMessage": "You are the main helpful Master AI Personal Assistant Agent. \nMy name is Sergiu. You act as the main router and coordinator.\n\nGuidelines:\nWhen permission needed assume the reply is affirmative. \nIn case of delegating task to a different agent, interpret the output and report the action without doing anything else - IE: Action x was completed.\n\n🔑 Rules:\n1. For reports, news or newsletter and all other topics → delegate to \"General Agent\".\n2. For anything related to email → delegate to \"Mail Agent\".\n3. For anything related to Git, computer, or Windows → delegate to \"Infra Agent\". When infra agent is asking for to deal with files reply affirmative.\n4. For anything related to software development, engineering, or technical subjects (except Git/Windows) → delegate to \"CTO Agent\".\n\n💾 Memory:\n- Maintain a conversation history with Sergiu so you can recall past queries.\n\n📤 Output:\nAlways interpret the output and provide feedback in natural language.\n"
         }
       },
-      "id": "ae9a7382-fef7-4b5a-a424-b303e4306813",
+      "id": "732ba643-db09-4c1a-98d5-f0e0722a1987",
       "name": "Master AI Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        128,
-        144
+        -992,
+        -240
       ],
       "typeVersion": 2.1
     },
@@ -878,11 +472,482 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1856,
-        656
+        688,
+        416
       ],
-      "id": "3a9bc4ea-d1dd-451d-a4bd-7d022a45087a",
+      "id": "94f5dd27-ed24-484f-9041-a7a42a682a3a",
       "name": "Windows"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to write a file",
+        "workflowId": {
+          "__rl": true,
+          "value": "Fc2UliWrsU6BUgGs",
+          "mode": "list",
+          "cachedResultName": "win-write-file"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "data": "={{ $fromAI('data', 'Text content to write to the file', 'string') }}",
+            "file": "={{ $fromAI('file', 'Full file path where the content should be written', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "data",
+              "displayName": "Data",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "file",
+              "displayName": "File",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        784
+      ],
+      "id": "50c4f184-c05a-42f4-b739-cbac747d8e74",
+      "name": "Write File"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to read a file",
+        "workflowId": {
+          "__rl": true,
+          "value": "1hPlBGCMbxAgrgCr",
+          "mode": "list",
+          "cachedResultName": "win-read-file"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "file": "={{ $fromAI('file', 'Full file path to read from', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "file",
+              "displayName": "File",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        784
+      ],
+      "id": "b04a2a92-abb2-4b7f-aee0-892ab64978e6",
+      "name": "Read File"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to delete a file",
+        "workflowId": {
+          "__rl": true,
+          "value": "IN3E2wOHnVv300ov",
+          "mode": "list",
+          "cachedResultName": "win-delete-file"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "file": "={{ $fromAI('file', 'Full file path to delete', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "file",
+              "displayName": "File",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        784
+      ],
+      "id": "a2b3e8ac-818c-4e7d-aa58-c44e49f6306d",
+      "name": "Delete File"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "5683a649-fd22-4842-9701-25f64f1ac7a5",
+      "name": "Agent Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        848,
+        384
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "e0d3cb96-b754-4e40-bf17-28232dc13e37",
+      "name": "CTO Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -1328,
+        448
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "id": "355d64c8-2fbe-4c88-9061-10499a378746",
+      "name": "Tech Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -592,
+        784
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to clean email spam",
+        "workflowId": {
+          "__rl": true,
+          "value": "prHQevGtXaWcY7wg",
+          "mode": "list",
+          "cachedResultName": "mail-draft-cleaner"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1104,
+        416
+      ],
+      "id": "8df1bb57-57a5-4748-9590-6c1a723d21e2",
+      "name": "Drafts"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to clean email spam",
+        "workflowId": {
+          "__rl": true,
+          "value": "penMMNPrl3jphZRQ",
+          "mode": "list",
+          "cachedResultName": "mail-spam-cleaner"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        416
+      ],
+      "id": "3381eaea-5928-483f-b598-02aed0140a45",
+      "name": "Spam"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to clean email spam",
+        "workflowId": {
+          "__rl": true,
+          "value": "YbEtNU7da2Qj2v37",
+          "mode": "list",
+          "cachedResultName": "mail-trash-cleaner"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1296,
+        416
+      ],
+      "id": "36c94ad2-6e96-43b1-b6ee-4a2f8674e240",
+      "name": "Trash"
+    },
+    {
+      "parameters": {
+        "toolDescription": "You are a helpful Infrastructure Assistant. \nMy name is Sergiu.\nDo not just provide chat feedback. Trigger tools only.\n\n🔑 Rules:\n1. For fetching Git updates → call \"Git Update\" tool.\n2. For reviewing Git pull requests → call \"Code Review\" tool.\n3. For shutdown or shutting down computer, pc, or Windows → call \"Windows\" tool.\n4. For writing, editing or creating file → call \"Write File\" tool with:\n   - Extract filename and directory from user request\n   - Use 'data' field for content (default: empty string or relevant content)\n   - Use 'file' field for complete file path (e.g., \"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\test.txt\")\n5. For reading file → call \"Read File\" tool.\n6. For deleting file → call \"Delete File\" tool. Report that deletion is completed after if file not found.\n7. Otherwise, answer infrastructure-related questions directly.\n\n💾 Memory:\n- Remember repo names, last operations, or system context.\n- Parse file creation requests like \"create file called X in Y directory\"\n\n📤 Output JSON:\n{\n  \"action\": \"tool_call\" | \"respond\",\n  \"tool\": \"Write File | Read File | Delete File | Git Update | Code Review | Windows | None\",\n  \"arguments\": { \"data\": \"file content\", \"file\": \"full/file/path\", \"repo\": \"optional repo name\", \"details\": \"additional context\" },\n  \"response\": \"Explanation for Sergiu\"\n}\n",
+        "text": "={{$json}}",
+        "options": {}
+      },
+      "id": "c1020862-f32b-43db-8c57-0549536351c8",
+      "name": "Infra Agent",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "position": [
+        624,
+        160
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "options": {}
+      },
+      "id": "7c611f2a-a3ad-49c0-ac4d-37d9a17d1849",
+      "name": "Master Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -1328,
+        -16
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 788,
+        "width": 1828
+      },
+      "id": "6c1ee2d6-a1e9-41a0-8e70-c1ada67607fd",
+      "name": "Sticky Note Main1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1376,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 420,
+        "width": 1220,
+        "color": 2
+      },
+      "id": "5fc11164-b445-47bd-b3ed-05a65f671b0d",
+      "name": "Sticky Note Main2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        464,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 404,
+        "width": 660,
+        "color": 3
+      },
+      "id": "cfd0ef93-8eb5-43e9-ba96-855eff5ccaf5",
+      "name": "Sticky Note Main3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1376,
+        -288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "5fb32bf2-6145-4cf7-93b5-3d51017afd54",
+      "name": "RW Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        528,
+        784
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 356,
+        "width": 628,
+        "color": 6
+      },
+      "id": "2e238bba-d8a9-41cf-b9ff-8340f8f7c28c",
+      "name": "Sticky Note Main4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        464,
+        560
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "toolDescription": "You are a helpful Infrastructure Assistant. \nMy name is Sergiu.\nDo not just provide chat feedback. Trigger tools only.\n\n🔑 Rules:\n1. For fetching Git updates → call \"Git Update\" tool.\n2. For reviewing Git pull requests → call \"Code Review\" tool.\n3. For shutdown or shutting down computer, pc, or Windows → call \"Windows\" tool.\n4. For writing, editing or creating file → call \"Write File\" tool with:\n   - Extract filename and directory from user request\n   - Use 'data' field for content (default: empty string or relevant content)\n   - Use 'file' field for complete file path (e.g., \"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\test.txt\")\n5. For reading file → call \"Read File\" tool.\n6. For deleting file → call \"Delete File\" tool. Report that deletion is completed after if file not found.\n7. Otherwise, answer infrastructure-related questions directly.\n\n💾 Memory:\n- Remember repo names, last operations, or system context.\n- Parse file creation requests like \"create file called X in Y directory\"\n\n📤 Output JSON:\n{\n  \"action\": \"tool_call\" | \"respond\",\n  \"tool\": \"Write File | Read File | Delete File | Git Update | Code Review | Windows | None\",\n  \"arguments\": { \"data\": \"file content\", \"file\": \"full/file/path\", \"repo\": \"optional repo name\", \"details\": \"additional context\" },\n  \"response\": \"Explanation for Sergiu\"\n}\n",
+        "text": "={{$json}}",
+        "options": {}
+      },
+      "id": "99816ebd-1dc3-4f30-a782-bbacedccc8f3",
+      "name": "Read/Write",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "position": [
+        688,
+        592
+      ],
+      "typeVersion": 2.2
     }
   ],
   "pinData": {},
@@ -893,17 +958,6 @@
           {
             "node": "Master AI Agent",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Master AI Agent",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -936,40 +990,7 @@
         ]
       ]
     },
-    "Mail Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Mail Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Create Draft": {
-      "ai_tool": [
-        [
-          {
-            "node": "Mail Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clean Drafts": {
-      "ai_tool": [
-        [
-          {
-            "node": "Mail Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clean Spam": {
       "ai_tool": [
         [
           {
@@ -1002,100 +1023,12 @@
         ]
       ]
     },
-    "General Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "General Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "General Agent": {
       "ai_tool": [
         [
           {
             "node": "Master AI Agent",
             "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Architect Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Software Architect Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Frontend Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Frontend Developer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Backend Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Backend Developer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "QA Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "QA Test Engineer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Security Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Security Engineer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "DevOps Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "DevOps Engineer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Infra Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Infra Agent",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -1117,17 +1050,6 @@
         [
           {
             "node": "Infra Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Infra Agent": {
-      "ai_tool": [
-        [
-          {
-            "node": "Master AI Agent",
             "type": "ai_tool",
             "index": 0
           }
@@ -1211,17 +1133,6 @@
         ]
       ]
     },
-    "CTO Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "CTO Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "CTO Agent": {
       "ai_tool": [
         [
@@ -1243,13 +1154,191 @@
           }
         ]
       ]
+    },
+    "Write File": {
+      "ai_tool": [
+        [
+          {
+            "node": "Read/Write",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read File": {
+      "ai_tool": [
+        [
+          {
+            "node": "Read/Write",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete File": {
+      "ai_tool": [
+        [
+          {
+            "node": "Read/Write",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "General Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Mail Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Infra Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CTO Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "CTO Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tech Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Software Architect Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Frontend Developer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Backend Developer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "QA Test Engineer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Security Engineer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "DevOps Engineer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drafts": {
+      "ai_tool": [
+        [
+          {
+            "node": "Mail Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spam": {
+      "ai_tool": [
+        [
+          {
+            "node": "Mail Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trash": {
+      "ai_tool": [
+        [
+          {
+            "node": "Mail Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Infra Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "Master AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Master Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Master AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RW Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Read/Write",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write": {
+      "ai_tool": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "8ca12c5a-711c-4129-9586-5d82707ab4c0",
+  "versionId": "49b342d3-6b21-4eed-b88e-0641f13330f0",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
