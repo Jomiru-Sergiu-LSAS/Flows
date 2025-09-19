@@ -1,0 +1,97 @@
+{
+  "name": "win-delete-file",
+  "nodes": [
+    {
+      "parameters": {
+        "command": "=del \"{{ $json.file }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        16,
+        160
+      ],
+      "id": "2e9e4c6b-c731-4239-b60a-16b4bc5ce0b8",
+      "name": "Delete File"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        160
+      ],
+      "id": "ed452ee4-4c79-4fa5-ac4a-b8cd97fdf16b",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "data",
+              "name": "data",
+              "value": "={{ $('Delete File').item.json.stdout || 'File deleted successfully' }}",
+              "type": "string"
+            },
+            {
+              "id": "file",
+              "name": "file",
+              "value": "={{ $json.file }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        160
+      ],
+      "id": "2424946b-f75e-4354-bace-365f04dea2d5",
+      "name": "Format Output"
+    }
+  ],
+  "pinData": {
+    "Executed by other flow": [
+      {
+        "json": {
+          "file": "C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\AgentWorklfows\\output.txt"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "Delete File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bb7ea62a-818c-4d76-b190-660bab82163f",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "IN3E2wOHnVv300ov",
+  "tags": []
+}

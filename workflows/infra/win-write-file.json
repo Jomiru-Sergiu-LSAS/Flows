@@ -1,0 +1,89 @@
+{
+  "name": "win-write-file",
+  "nodes": [
+    {
+      "parameters": {
+        "command": "=echo {{ $json.data }} > \"{{ $json.file }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        576,
+        -192
+      ],
+      "id": "a44da39f-6bc8-467d-b913-2910a506f0af",
+      "name": "Write Text to File"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        -192
+      ],
+      "id": "5ff9287a-74c2-4837-a787-fb6e153cc065",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "data",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            },
+            {
+              "id": "file",
+              "name": "file",
+              "value": "={{ $json.file }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        -16
+      ],
+      "id": "cb855fdf-986e-488c-b801-f12ba815c75f",
+      "name": "Format Output"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "Write Text to File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "26878df6-6590-4d4d-9d74-4c03f81e979d",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "Fc2UliWrsU6BUgGs",
+  "tags": []
+}

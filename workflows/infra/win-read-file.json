@@ -1,0 +1,68 @@
+{
+  "name": "win-read-file",
+  "nodes": [
+    {
+      "parameters": {
+        "command": "=type \"{{ $json.file }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        432,
+        528
+      ],
+      "id": "2f52a386-3210-42ee-bbbd-511100a3e4e6",
+      "name": "Read Text from File"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        528
+      ],
+      "id": "b71afa72-b9c0-489b-8fba-6a7f5192b53e",
+      "name": "Executed by other flow"
+    }
+  ],
+  "pinData": {
+    "Executed by other flow": [
+      {
+        "json": {
+          "file": "C:\\Users\\Jomiru Sergiu\\Downloads\\test.txt"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "Read Text from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Text from File": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bf6872e0-440c-4cc6-8c1b-6523b4b92437",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "1hPlBGCMbxAgrgCr",
+  "tags": []
+}
