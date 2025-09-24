@@ -852,22 +852,6 @@
         ]
       ]
     },
-    "Memory": {
-      "ai_memory": [
-        [
-          {
-            "node": "When chat message received",
-            "type": "ai_memory",
-            "index": 0
-          },
-          {
-            "node": "Master AI Agent",
-            "type": "ai_memory",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Report": {
       "ai_tool": [
         [
