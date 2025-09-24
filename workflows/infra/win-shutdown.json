@@ -86,13 +86,7 @@
     }
   ],
   "pinData": {
-    "Manual Trigger": [
-      {
-        "json": {
-          "emailInstructions": "Schedule a meeting to discuss project progress, include available times next week, and ask for agenda items"
-        }
-      }
-    ]
+    "Manual Trigger": []
   },
   "connections": {
     "Manual Trigger": {
@@ -140,7 +134,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 5
   },
-  "versionId": "d20e1013-0b80-4429-8035-63dcce0ffa8f",
+  "versionId": "1d316949-1094-4f0e-9419-3dec7a599dba",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
