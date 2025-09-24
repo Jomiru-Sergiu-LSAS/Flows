@@ -41,7 +41,7 @@
       "name": "Mail Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        976,
+        1136,
         160
       ],
       "typeVersion": 2.2
@@ -85,7 +85,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1008,
+        1168,
         416
       ],
       "id": "bf70a383-af22-4fe5-bd9f-0b7a195cda7d",
@@ -130,7 +130,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1536,
+        1696,
         416
       ],
       "id": "9b54579e-df94-4958-a2ca-9b20aa349902",
@@ -175,7 +175,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1440,
+        1600,
         416
       ],
       "id": "6b72e561-8bb8-4949-afbc-6555e4069041",
@@ -191,7 +191,7 @@
       "name": "General Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1344,
+        1504,
         160
       ],
       "typeVersion": 2.2
@@ -336,56 +336,11 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        496,
+        864,
         416
       ],
       "id": "f6ec32bc-b985-4af5-88b0-fccd3d5f421d",
       "name": "Git Update"
-    },
-    {
-      "parameters": {
-        "description": "Call this tool to pull PRs and prepare code review drafts",
-        "workflowId": {
-          "__rl": true,
-          "value": "ryubZDpF5stfDkm1",
-          "mode": "list",
-          "cachedResultName": "git-reviews"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
-            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "chatInput",
-              "displayName": "Chat Input",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            },
-            {
-              "id": "emailInstructions",
-              "displayName": "Email Instructions",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        592,
-        416
-      ],
-      "id": "85ab518f-b5c2-4af5-b38c-32ab4bb6c709",
-      "name": "Code Review"
     },
     {
       "parameters": {
@@ -432,51 +387,6 @@
         -240
       ],
       "typeVersion": 2.1
-    },
-    {
-      "parameters": {
-        "description": "Call this tool to shut the computer",
-        "workflowId": {
-          "__rl": true,
-          "value": "7ZB5rVzzaBDdMmrg",
-          "mode": "list",
-          "cachedResultName": "win-shutdown"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
-            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "chatInput",
-              "displayName": "Chat Input",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            },
-            {
-              "id": "emailInstructions",
-              "displayName": "Email Instructions",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        688,
-        416
-      ],
-      "id": "94f5dd27-ed24-484f-9041-a7a42a682a3a",
-      "name": "Windows"
     },
     {
       "parameters": {
@@ -611,7 +521,7 @@
       "name": "Agent Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        848,
+        1008,
         384
       ],
       "typeVersion": 1.2,
@@ -710,7 +620,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1104,
+        1264,
         416
       ],
       "id": "8df1bb57-57a5-4748-9590-6c1a723d21e2",
@@ -755,7 +665,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1200,
+        1360,
         416
       ],
       "id": "3381eaea-5928-483f-b598-02aed0140a45",
@@ -800,7 +710,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1296,
+        1456,
         416
       ],
       "id": "36c94ad2-6e96-43b1-b6ee-4a2f8674e240",
@@ -808,7 +718,7 @@
     },
     {
       "parameters": {
-        "toolDescription": "You are a helpful Infrastructure Assistant. \nMy name is Sergiu.\nDo not just provide chat feedback. Trigger tools only.\n\n🔑 Rules:\n1. For fetching Git updates → call \"Git Update\" tool.\n2. For reviewing Git pull requests → call \"Code Review\" tool.\n3. For shutdown or shutting down computer, pc, or Windows → call \"Windows\" tool.\n4. For writing, editing or creating file → call \"Write File\" tool with:\n   - Extract filename and directory from user request\n   - Use 'data' field for content (default: empty string or relevant content)\n   - Use 'file' field for complete file path (e.g., \"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\test.txt\")\n5. For reading file → call \"Read File\" tool.\n6. For deleting file → call \"Delete File\" tool. Report that deletion is completed after if file not found.\n7. Otherwise, answer infrastructure-related questions directly.\n\n💾 Memory:\n- Remember repo names, last operations, or system context.\n- Parse file creation requests like \"create file called X in Y directory\"\n\n📤 Output JSON:\n{\n  \"action\": \"tool_call\" | \"respond\",\n  \"tool\": \"Write File | Read File | Delete File | Git Update | Code Review | Windows | None\",\n  \"arguments\": { \"data\": \"file content\", \"file\": \"full/file/path\", \"repo\": \"optional repo name\", \"details\": \"additional context\" },\n  \"response\": \"Explanation for Sergiu\"\n}\n",
+        "toolDescription": "You are a helpful Infrastructure Assistant. \nMy name is Sergiu.\nDo not just provide chat feedback. Trigger tools only.\n\n🔑 Rules:\n1. For fetching Git updates → call \"Git Update\" tool.\n2. For reviewing Git pull requests → call \"PR Review\" tool.\n3. For shutdown or shutting down computer, pc, or Windows → call \"Shutdown\" tool.\n3. For reboot or restart computer, pc, or Windows → call \"Reboot\" tool.\n4. For writing, editing or creating file → call \"Write File\" tool with:\n   - Extract filename and directory from user request\n   - Use 'data' field for content (default: empty string or relevant content)\n   - Use 'file' field for complete file path (e.g., \"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\test.txt\")\n5. For reading file → call \"Read File\" tool.\n6. For deleting file → call \"Delete File\" tool. Report that deletion is completed after if file not found.\n7. Otherwise, answer infrastructure-related questions directly.\n\n💾 Memory:\n- Remember repo names, last operations, or system context.\n- Parse file creation requests like \"create file called X in Y directory\"\n\n📤 Output JSON:\n{\n  \"action\": \"tool_call\" | \"respond\",\n  \"tool\": \"Write File | Read File | Delete File | Git Update | Code Review | Windows | None\",\n  \"arguments\": { \"data\": \"file content\", \"file\": \"full/file/path\", \"repo\": \"optional repo name\", \"details\": \"additional context\" },\n  \"response\": \"Explanation for Sergiu\"\n}\n",
         "text": "={{$json}}",
         "options": {}
       },
@@ -865,7 +775,7 @@
       "parameters": {
         "content": "",
         "height": 420,
-        "width": 1220,
+        "width": 1332,
         "color": 2
       },
       "id": "5fc11164-b445-47bd-b3ed-05a65f671b0d",
@@ -944,10 +854,145 @@
       "name": "Read/Write",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        688,
+        576,
         592
       ],
       "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to shut the computer",
+        "workflowId": {
+          "__rl": true,
+          "value": "7ZB5rVzzaBDdMmrg",
+          "mode": "list",
+          "cachedResultName": "win-shutdown"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        496,
+        416
+      ],
+      "id": "94f5dd27-ed24-484f-9041-a7a42a682a3a",
+      "name": "Shutdown"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to reboot the computer",
+        "workflowId": {
+          "__rl": true,
+          "value": "rDh3hfKgGhwvlOWE",
+          "mode": "list",
+          "cachedResultName": "win-reboot"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        416
+      ],
+      "id": "5b1bc409-fc48-4efd-bb68-af2da8b2d423",
+      "name": "Reboot"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to pull PRs and prepare code review drafts",
+        "workflowId": {
+          "__rl": true,
+          "value": "ryubZDpF5stfDkm1",
+          "mode": "list",
+          "cachedResultName": "git-reviews"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'Chat message or email content', 'string') }}",
+            "emailInstructions": "={{ $fromAI('emailInstructions', 'Email instructions including recipient, subject context, and any specific requirements', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "Chat Input",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "emailInstructions",
+              "displayName": "Email Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        416
+      ],
+      "id": "85ab518f-b5c2-4af5-b38c-32ab4bb6c709",
+      "name": "PR Review"
     }
   ],
   "pinData": {},
@@ -1045,17 +1090,6 @@
         ]
       ]
     },
-    "Code Review": {
-      "ai_tool": [
-        [
-          {
-            "node": "Infra Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Think": {
       "ai_tool": [
         [
@@ -1138,17 +1172,6 @@
         [
           {
             "node": "Master AI Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Windows": {
-      "ai_tool": [
-        [
-          {
-            "node": "Infra Agent",
             "type": "ai_tool",
             "index": 0
           }
@@ -1332,13 +1355,46 @@
           }
         ]
       ]
+    },
+    "Shutdown": {
+      "ai_tool": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reboot": {
+      "ai_tool": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PR Review": {
+      "ai_tool": [
+        [
+          {
+            "node": "Infra Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "49b342d3-6b21-4eed-b88e-0641f13330f0",
+  "versionId": "ad9f8af7-c660-494f-a359-a945bb607d02",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
