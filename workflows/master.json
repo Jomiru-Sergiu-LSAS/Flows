@@ -20,19 +20,6 @@
     },
     {
       "parameters": {
-        "contextWindowLength": 50000
-      },
-      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-      "typeVersion": 1.3,
-      "position": [
-        -1472,
-        -32
-      ],
-      "id": "daaecff1-b2e0-43e0-a5cb-ed4cc31b976b",
-      "name": "Memory"
-    },
-    {
-      "parameters": {
         "description": "Call this tool to trigger the newsletter fetch",
         "workflowId": {
           "__rl": true,
@@ -301,7 +288,7 @@
     {
       "parameters": {
         "options": {
-          "systemMessage": "You are the main helpful Master AI Personal Assistant Agent. \nMy name is Sergiu. You act as the main router and coordinator.\n\nGuidelines:\nWhen permission needed assume the reply is affirmative. \nIn case of delegating task to a different agent, interpret the output and report the action without doing anything else - IE: Action x was completed.\n\n🔑 Rules:\n1. For anything related to email, pc, computer, windows, reports, news or newsletter and all other topics → delegate to \"General Agent\".\n2. For anything related to software development, engineering, git or technical subjects (except Git/Windows) → delegate to \"Engineering Manager Agent\".\n\n💾 Memory:\n- Maintain a conversation history with Sergiu so you can recall past queries.\n\n📤 Output:\nAlways interpret the output and provide feedback in natural language."
+          "systemMessage": "You are the main helpful Master AI Personal Assistant Agent. \nMy name is Sergiu. You act as the main router and coordinator.\n\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- For anything related to email (draft, new, spam, trash etc), pc, computer, windows, reports, news or newsletter and all other topics → delegate to \"General Agent\" tool.\n- For anything related to software development, engineering, git or technical subjects (except Git/Windows) → delegate to \"EM Agent\".\n\n💾 Memory:\n- Maintain a conversation history with Sergiu so you can recall past queries.\n\n📤 Output:\nAlways interpret the output and provide feedback in natural language.\n"
         }
       },
       "id": "732ba643-db09-4c1a-98d5-f0e0722a1987",
@@ -1237,7 +1224,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d5196c28-6f59-4900-8059-7fcd24c6d4f7",
+  "versionId": "db38e601-be9e-4617-b77e-e9838a94aa11",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
