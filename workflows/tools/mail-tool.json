@@ -1,0 +1,879 @@
+{
+  "name": "mail-tool",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2096,
+        -192
+      ],
+      "id": "562834bd-3ba1-4cef-b715-c434ffd8e070",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput + ' ' + ($json.emailInstructions || '') }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an AI operation classifier for email tasks. Analyze the user's request and determine which email operation they want to perform.|Available operations:1. **CREATE_DRAFT** - User wants to compose, write, create, or draft a new email2. **CLEAN_SPAM** - User wants to clean, delete, or remove spam emails3. **CLEAN_DRAFTS** - User wants to clean, delete, or remove draft emails4. **CLEAN_TRASH** - User wants to clean, delete, or remove trash/deleted emailsAnalyze the user request: '{{ $json.chatInput }}'Email instructions: '{{ $json.emailInstructions || 'None provided' }}'Examples:- 'Create a new email' → CREATE_DRAFT- 'Write an email to John' → CREATE_DRAFT  - 'Draft a reply to the meeting request' → CREATE_DRAFT- 'Clean up spam emails' → CLEAN_SPAM- 'Delete all spam' → CLEAN_SPAM- 'Remove draft emails' → CLEAN_DRAFTS- 'Clear my drafts folder' → CLEAN_DRAFTS- 'Empty trash' → CLEAN_TRASH- 'Delete trash emails' → CLEAN_TRASHIMPORTANT: Respond with ONLY the operation name in JSON format:{\"operation\": \"CREATE_DRAFT\"}{\"operation\": \"CLEAN_SPAM\"}{\"operation\": \"CLEAN_DRAFTS\"}{\"operation\": \"CLEAN_TRASH\"}If unclear, default to CREATE_DRAFT. Also send the input as a result too."
+            }
+          ]
+        }
+      },
+      "id": "6c320c11-9bc7-4b90-9bb4-243c597dc76b",
+      "name": "AI Operation Classifier",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        -1936,
+        -192
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the original input from the workflow trigger\nconst originalInput = $('Executed by other flow').first().json;\n\nreturn items.map(item => {\n  let parsed;\n  try {\n    parsed = JSON.parse(item.json.text);\n    // Merge with original input data\n    return { \n      json: {\n        ...item.json,\n        ...parsed,\n        originalChatInput: originalInput.chatInput,\n        originalEmailInstructions: originalInput.emailInstructions\n      }\n    };\n  } catch (e) {\n    // Default to CREATE_DRAFT if parsing fails\n    return { \n      json: {\n        ...item.json,\n        operation: \"CREATE_DRAFT\",\n        originalChatInput: originalInput.chatInput,\n        originalEmailInstructions: originalInput.emailInstructions\n      }\n    };\n  }\n});"
+      },
+      "id": "edea066c-3a6a-46c0-b647-42ac3d4a5865",
+      "name": "Parse Operation Decision",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1648,
+        -192
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "operation-create-draft",
+              "leftValue": "={{ $json.operation }}",
+              "rightValue": "CREATE_DRAFT",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "d9d7dd52-7abc-4efa-af93-5bf4405b1530",
+      "name": "Is Create Draft?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -1488,
+        -192
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "operation-clean-spam",
+              "leftValue": "={{ $json.operation }}",
+              "rightValue": "CLEAN_SPAM",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "69ac3605-b617-42d2-bbdd-cdb736adae11",
+      "name": "Is Clean Spam?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -1264,
+        -32
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "operation-clean-drafts",
+              "leftValue": "={{ $json.operation }}",
+              "rightValue": "CLEAN_DRAFTS",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "10015c5d-c291-43d5-9c66-5bd788ae46ed",
+      "name": "Is Clean Drafts?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -1088,
+        128
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "operation-clean-trash",
+              "leftValue": "={{ $json.operation }}",
+              "rightValue": "CLEAN_TRASH",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "04ec6a75-d52e-4249-81a3-586c28c1b555",
+      "name": "Is Clean Trash?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -912,
+        288
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json.originalChatInput}}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an AI email writing assistant. Your task is to generate professional, well-structured emails based on the provided context and instructions.\n\nGuidelines:\n- Always address the sender by name if provided\n- Keep the tone respectful, clear, and professional\n- Structure the email with proper greeting, body, and closing\n- Every new sentence in the body should be from new line\n- Ensure proper grammar and formatting for paragraphs in the body\n- Include all necessary information mentioned\n- Summarize long emails before replying if needed\n- Provide clear answers or actions, and confirm receipt when appropriate\n- If the request is unclear, politely ask for clarification\n- Keep replies short (3–6 sentences), unless a longer explanation is required\n- Use correct grammar and formatting\n- Do not include subject line in the email body\n\nEmail structure example:\n'Dear [RECIPIENT],\n\nThank you for your message.\n\nI appreciate you taking the time to review my application and proceed accordingly.\nPlease let me know if you need any additional information from my side.\n\nBest regards,\nSergiu'\n\nInput Instructions: {{ $json.originalEmailInstructions }}\nContext/Purpose: get the context from the instructions\nSubject/Title: add subject or topic of email based on the instructions\n\nOutput: Drafted email reply body, with Best Regards, my name is Sergiu. Also add subject into output json under subject key."
+            }
+          ]
+        }
+      },
+      "id": "e23b9d30-47b7-4ead-bc8a-546443674da7",
+      "name": "Generate Email with AI",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        -1264,
+        -192
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  let parsed;\n  try {\n    parsed = JSON.parse(item.json.text);\n  } catch (e) {\n    parsed = { subject: \"\", body: item.json.text };\n  }\n  return { json: parsed };\n});"
+      },
+      "id": "581f0350-c5f3-4036-8de1-4c453b218e5f",
+      "name": "Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -928,
+        -192
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.message }}",
+        "options": {
+          "sendTo": ""
+        }
+      },
+      "id": "ae954286-a8b0-4030-8dcd-f3bb29976db1",
+      "name": "Save as Gmail Draft",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        -528,
+        -192
+      ],
+      "typeVersion": 2.1,
+      "webhookId": "d298ef6b-b892-4eee-be31-caea6f5affdd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "labelIds": [
+            "={{ $json.folderType }}"
+          ]
+        }
+      },
+      "id": "272f4882-ff7b-442c-a328-91440837cef5",
+      "name": "Fetch Emails",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        -528,
+        128
+      ],
+      "typeVersion": 2.1,
+      "alwaysOutputData": true,
+      "webhookId": "7127f697-ab74-4b80-aa12-1a9bf98a744a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "emails-exist-check",
+              "leftValue": "={{ $json }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "f294c2ac-aacd-4c97-919e-61f5bfe7aefd",
+      "name": "Check if Emails Exist",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -352,
+        128
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "messageId": "={{ $json.id }}"
+      },
+      "id": "7aa56b8a-5c3b-4b33-b56b-7e8f34553669",
+      "name": "Delete Email",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        48,
+        128
+      ],
+      "typeVersion": 2.1,
+      "webhookId": "e4db125e-a260-45b0-b56c-2928e91ea6f4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the cleanup type from the executed Set Parameters nodes\nlet cleanupType = 'Unknown';\n\n// Check which Set Parameters node was executed by looking at the workflow execution context\ntry {\n  // Try to get from Set Draft Clean Parameters\n  const draftParams = $('Draft Parameters').first();\n  if (draftParams && draftParams.json) {\n    cleanupType = 'Draft';\n  }\n} catch (e) {}\n\ntry {\n  // Try to get from Set Spam Clean Parameters  \n  const spamParams = $('Spam Parameters').first();\n  if (spamParams && spamParams.json) {\n    cleanupType = 'Spam';\n  }\n} catch (e) {}\n\ntry {\n  // Try to get from Set Trash Clean Parameters\n  const trashParams = $('Trash Parameters').first();\n  if (trashParams && trashParams.json) {\n    cleanupType = 'Trash';\n  }\n} catch (e) {}\n\n// Aggregate all deleted emails and add cleanup type\nreturn [{\n  json: {\n    deleted_emails: items.map(item => item.json),\n    cleanupType: cleanupType,\n    totalDeleted: items.length\n  }\n}];"
+      },
+      "id": "e7954522-2b24-4789-bffa-6c7344d5206a",
+      "name": "Aggregate Deleted Emails",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        240,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "jomirusergiu@gmail.com",
+        "toEmail": "jomirusergiu@gmail.com",
+        "subject": "=Mail {{ $json.cleanupType }} Cleanup Report - {{ $json.totalDeleted }} emails deleted",
+        "emailFormat": "text",
+        "text": "=Mail {{ $json.cleanupType }} Cleanup completed successfully.\n\n{{ $json.totalDeleted }} emails were permanently deleted from your Gmail account.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
+        "options": {
+          "appendAttribution": false,
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "7bbe450d-0c77-41f1-8ebf-2f1f5921d537",
+      "name": "Send Cleanup Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        432,
+        128
+      ],
+      "webhookId": "3f4b5a8d-099c-4808-81c0-9179c269fe8d",
+      "credentials": {
+        "smtp": {
+          "id": "hDZ18LOe4Kax4dpH",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "options": {}
+      },
+      "id": "9db61f34-d6c3-4f7e-9ce0-bad144df91e5",
+      "name": "No Emails Found",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -144,
+        288
+      ],
+      "typeVersion": 3.4,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fromEmail": "jomirusergiu@gmail.com",
+        "toEmail": "jomirusergiu@gmail.com",
+        "subject": "=Mail Cleanup Report - no emails were found",
+        "emailFormat": "text",
+        "text": "=Mail Cleanup completed successfully.\n\nNo emails were found in the specified folder.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
+        "options": {
+          "appendAttribution": false,
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "155a0de9-cb91-4602-8117-38a1fd386ec9",
+      "name": "Send No Emails Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        432,
+        288
+      ],
+      "webhookId": "ae27f554-7b8a-4406-be36-4b01edfd300a",
+      "credentials": {
+        "smtp": {
+          "id": "hDZ18LOe4Kax4dpH",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1664,
+        48
+      ],
+      "id": "214bbea7-9e40-43a1-856d-b784c310afc2",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "folder-type",
+              "name": "folderType",
+              "type": "string",
+              "value": "SPAM"
+            },
+            {
+              "id": "operation-type",
+              "name": "operationType",
+              "type": "string",
+              "value": "clean_spam"
+            },
+            {
+              "id": "cleanup-type",
+              "name": "cleanupType",
+              "type": "string",
+              "value": "Spam"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6a10640d-7d25-47de-8682-686d507e1517",
+      "name": "Spam Parameters",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -720,
+        -32
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "folder-type",
+              "name": "folderType",
+              "type": "string",
+              "value": "DRAFT"
+            },
+            {
+              "id": "operation-type",
+              "name": "operationType",
+              "type": "string",
+              "value": "clean_drafts"
+            },
+            {
+              "id": "cleanup-type",
+              "name": "cleanupType",
+              "type": "string",
+              "value": "Draft"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c2c0854e-3601-4eb3-9ac5-f2647718cd7d",
+      "name": "Draft Parameters",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -720,
+        128
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "folder-type",
+              "name": "folderType",
+              "type": "string",
+              "value": "TRASH"
+            },
+            {
+              "id": "operation-type",
+              "name": "operationType",
+              "type": "string",
+              "value": "clean_trash"
+            },
+            {
+              "id": "cleanup-type",
+              "name": "cleanupType",
+              "type": "string",
+              "value": "Trash"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "77dd9f90-9fd9-4c14-a9b9-0c5be2cbbabf",
+      "name": "Trash Parameters",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -720,
+        288
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "subject-assignment",
+              "name": "subject",
+              "type": "string",
+              "value": "={{ $json.subject }}"
+            },
+            {
+              "id": "message-assignment",
+              "name": "message",
+              "type": "string",
+              "value": "={{ $json.body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "726730ff-891e-4f96-9564-7abc6549d65f",
+      "name": "Prepare Email",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -720,
+        -192
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {},
+      "id": "b6687824-d3fa-40bf-b42c-8131d74fcbd8",
+      "name": "Pause Deletion (5s)",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        -144,
+        128
+      ],
+      "typeVersion": 1.1,
+      "webhookId": "0919dfb4-0d8e-46d0-ab27-a20d86215162"
+    }
+  ],
+  "pinData": {
+    "Executed by other flow": []
+  },
+  "connections": {
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "AI Operation Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Operation Classifier": {
+      "main": [
+        [
+          {
+            "node": "Parse Operation Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Operation Decision": {
+      "main": [
+        [
+          {
+            "node": "Is Create Draft?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Create Draft?": {
+      "main": [
+        [
+          {
+            "node": "Generate Email with AI",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Clean Spam?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Clean Spam?": {
+      "main": [
+        [
+          {
+            "node": "Spam Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Clean Drafts?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Clean Drafts?": {
+      "main": [
+        [
+          {
+            "node": "Draft Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Clean Trash?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Clean Trash?": {
+      "main": [
+        [
+          {
+            "node": "Trash Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Draft Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Email with AI": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Response": {
+      "main": [
+        [
+          {
+            "node": "Prepare Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Emails": {
+      "main": [
+        [
+          {
+            "node": "Check if Emails Exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Emails Exist": {
+      "main": [
+        [
+          {
+            "node": "Pause Deletion (5s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Emails Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Email": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Deleted Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Deleted Emails": {
+      "main": [
+        [
+          {
+            "node": "Send Cleanup Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Emails Found": {
+      "main": [
+        [
+          {
+            "node": "Send No Emails Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Email with AI",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Operation Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spam Parameters": {
+      "main": [
+        [
+          {
+            "node": "Fetch Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft Parameters": {
+      "main": [
+        [
+          {
+            "node": "Fetch Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trash Parameters": {
+      "main": [
+        [
+          {
+            "node": "Fetch Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Email": {
+      "main": [
+        [
+          {
+            "node": "Save as Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pause Deletion (5s)": {
+      "main": [
+        [
+          {
+            "node": "Delete Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "816b186d-70cc-4e50-a668-3255a23aa7ec",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "luB6neTADgM0YTIH",
+  "tags": [
+    {
+      "createdAt": "2025-09-08T07:55:19.208Z",
+      "updatedAt": "2025-09-08T07:55:19.208Z",
+      "id": "8mzLwVwaYcqGeRXd",
+      "name": "email"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    },
+    {
+      "createdAt": "2025-09-25T04:42:40.454Z",
+      "updatedAt": "2025-09-25T04:42:40.454Z",
+      "id": "udnrQ7ZKmGDNQZo2",
+      "name": "unified"
+    }
+  ]
+}
