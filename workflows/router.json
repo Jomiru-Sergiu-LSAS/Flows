@@ -235,7 +235,7 @@
     {
       "parameters": {
         "options": {
-          "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\n\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For reports, weekly report, totals, summaries, git, prs, code review, pull requests, merge requests, updates, repositories, JIRA, tickets, issues, CI/CD, build, deploy, pipeline, general chat/questions → Director of Product\n- For engineering, development and reasearch → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}"
+          "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\n\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA, tickets, issues, CI/CD, build, deploy, pipeline, general chat/questions → Director of Product\n- For engineering, development and reasearch → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}"
         }
       },
       "id": "f5d7994b-0c0b-458a-a059-f1d74aac12bf",
@@ -283,7 +283,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        48,
+        -64,
         48
       ],
       "id": "ceaee4e4-f90e-4b32-a99c-6b41f43c524a",
@@ -309,7 +309,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        160,
+        48,
         48
       ],
       "id": "b6718cb9-50f4-4a1e-b1ac-880aa4ce4568",
@@ -335,7 +335,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        272,
+        160,
         48
       ],
       "id": "dfde27c0-ddf1-4fc5-893e-2c93e3737174",
@@ -361,37 +361,11 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        384,
+        272,
         48
       ],
       "id": "d1aab00b-b4ac-426c-93d9-f9f1db8d25c5",
       "name": "CI/CD Actions"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "bT8VKE7JFnOTfSaU",
-          "mode": "list",
-          "cachedResultName": "report-weekly"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        -64,
-        48
-      ],
-      "id": "851dfae5-848a-400f-b981-057108df751e",
-      "name": "Report Actions"
     },
     {
       "parameters": {
@@ -782,7 +756,7 @@
         "promptType": "define",
         "text": "={{ $json.action }}",
         "options": {
-          "systemMessage": "You are a helpful VP of Operations Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Mail Actions\" tool → For emails, drafts, spam, trash.\n- Call \"News Actions\" tool → For news, newsletter, latest news.\n- Call \"Win Actions\" tool → For windows, pc, restart, reboot, startup, shutdown.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Delete trash mails\",\n\"instructions\": \n\"Please delete all messages from the trash folder in the mail account.\"\n}"
+          "systemMessage": "You are a helpful VP of Operations Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Mail Actions\" tool → For emails, drafts, spam, trash.\n- Call \"News Actions\" tool → For news, newsletter, latest news.\n- Call \"Win Actions\" tool → For windows, pc, restart, reboot, startup, shutdown.\n- Call \"Report Actions\" tool → For handling all reports and summaries, including weekly, monthly, daily.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Delete trash mails\",\n\"instructions\": \n\"Please delete all messages from the trash folder in the mail account.\"\n}\n"
         }
       },
       "id": "d4fa38b1-a978-437d-91f7-9332547ff422",
@@ -892,6 +866,33 @@
         544
       ],
       "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to handle all reports, totals and summaries, including weekly, monthly, daily.\n",
+        "workflowId": {
+          "__rl": true,
+          "value": "bT8VKE7JFnOTfSaU",
+          "mode": "list",
+          "cachedResultName": "report-tool"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        272,
+        -304
+      ],
+      "id": "851dfae5-848a-400f-b981-057108df751e",
+      "name": "Report Actions"
     }
   ],
   "pinData": {},
@@ -1171,17 +1172,6 @@
         ]
       ]
     },
-    "Report Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "Director of Product",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "CI/CD Actions": {
       "ai_tool": [
         [
@@ -1365,13 +1355,24 @@
           }
         ]
       ]
+    },
+    "Report Actions": {
+      "ai_tool": [
+        [
+          {
+            "node": "Director of Operations",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "fdf377cf-6da6-412a-8e5d-cf9c1dfaab94",
+  "versionId": "d65fb9d4-a700-4d27-8366-a52e0866a7b6",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
