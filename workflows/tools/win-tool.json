@@ -1,0 +1,494 @@
+{
+  "name": "win-tool",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -752,
+        80
+      ],
+      "id": "a046911a-5cf2-4b59-ae60-a9c62d19f77e",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput || $json.action || $json.operation || 'No input provided' }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an AI operation classifier for general system tasks. Analyze the user's request and determine which operation they want to perform. |Available operations:1.  **WIN_REBOOT** - User wants to restart, reboot, or reset the Windows computer/system 2. **WIN_SHUTDOWN** - User wants to shutdown, power off, or turn off the Windows computer/system  3. **WIN_STARTUP** - User wants to run startup scripts, launch applications, or initialize development environment.  Analyze the user request and determine the most appropriate operation. Examples: - 'Restart computer' → WIN_REBOOT- 'Reboot system' → WIN_REBOOT- 'Shutdown computer' → WIN_SHUTDOWN- 'Power off system' → WIN_SHUTDOWN- 'Turn off computer' → WIN_SHUTDOWN- 'Run startup scripts' → WIN_STARTUP- 'Launch development environment' → WIN_STARTUP- 'Start all applications' → WIN_STARTUPIMPORTANT: Respond with ONLY the operation name in JSON format:{\"operation\": \"WIN_STARTUP\"}{\"operation\": \"WIN_REBOOT\"}{\"operation\": \"WIN_SHUTDOWN\"}. If unclear, default to \"WIN_STARTUP\". "
+            }
+          ]
+        }
+      },
+      "id": "935dbc4b-a528-4e6a-977b-ad023b3ac559",
+      "name": "AI Operation Classifier",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        -576,
+        0
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& { $ErrorActionPreference = 'SilentlyContinue'; Get-Process | Where-Object { $_.MainWindowHandle -ne 0 } | ForEach-Object { Stop-Process -Id $_.Id -Force }; Restart-Computer -Force }\""
+      },
+      "id": "596b6df2-9906-4340-9958-cb70fbdacdda",
+      "name": "Reboot System",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& { $ErrorActionPreference = 'SilentlyContinue'; Get-Process | Where-Object { $_.MainWindowHandle -ne 0 } | ForEach-Object { Stop-Process -Id $_.Id -Force }; Stop-Computer -Force }\""
+      },
+      "id": "c786c46f-d4bb-432a-b111-a87811e0f362",
+      "name": "Shutdown System",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Start-Process -FilePath 'powershell.exe' -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \\\"C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\Scripts\\Apps.ps1\\\"' -WorkingDirectory 'C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\Scripts' -WindowStyle Normal\""
+      },
+      "id": "77c07cf6-8af3-490c-bdc2-ce9042c02782",
+      "name": "Run Startup Apps",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Start-Process -FilePath 'powershell.exe' -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \\\"C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\Scripts\\React.ps1\\\"' -WorkingDirectory 'C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\Scripts' -WindowStyle Normal\""
+      },
+      "id": "5e21aa6c-483d-4569-9e85-8ee2d8c4dda9",
+      "name": "Run React Dev",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Start-Process -FilePath 'powershell.exe' -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \\\"C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\Scripts\\Claude.ps1\\\"' -WorkingDirectory 'C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\Scripts' -WindowStyle Normal\""
+      },
+      "id": "e6046e58-30eb-4734-9822-1d4067b4e8b1",
+      "name": "Run Claude",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "operation-assignment",
+              "name": "processedOperation",
+              "type": "string",
+              "value": "={{ $json.operation }}"
+            },
+            {
+              "id": "result-assignment",
+              "name": "result",
+              "type": "string",
+              "value": "Operation completed successfully"
+            },
+            {
+              "id": "timestamp-assignment",
+              "name": "completedAt",
+              "type": "string",
+              "value": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7ca7ab72-887e-4251-be8e-b2d29703ae19",
+      "name": "Operation Complete",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        928,
+        -32
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        176
+      ],
+      "id": "d79a0282-3a9f-42a2-9506-dba7386043e6",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Start-Process -FilePath 'powershell.exe' -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File \\\"C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\Scripts\\ClaudeMonitor.ps1\\\"' -WorkingDirectory 'C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\Scripts' -WindowStyle Normal\""
+      },
+      "id": "38e7844c-d8df-4965-97e8-6060bbf5fc21",
+      "name": "Run Monitor",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "events": [
+          "init",
+          "activate"
+        ]
+      },
+      "type": "n8n-nodes-base.n8nTrigger",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        -80
+      ],
+      "id": "d21271b9-1c60-4117-99fb-856f9c388f23",
+      "name": "n8n Startup Trigger"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.operation }}",
+                    "rightValue": "WIN_STARTUP",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "782e353f-5022-4a76-af87-7fcf2f82e34f"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "526da0a0-68c2-47eb-b770-d5724aa9fde4",
+                    "leftValue": "={{ $json.operation }}",
+                    "rightValue": "WIN_REBOOT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "458bb774-7f16-4155-8c17-9fdc7a908cca",
+                    "leftValue": "={{ $json.operation }}",
+                    "rightValue": "WIN_SHUTDOWN",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -96,
+        -16
+      ],
+      "id": "db2ff376-b7c1-4a85-89e0-94c00ceb8a36",
+      "name": "Win Operations"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  let parsed;\n  let originalInput = item.json; // ✅ define originalInput from the incoming item\n\n  try {\n    parsed = JSON.parse(item.json.text);\n    // Merge with original input data\n    return { \n      json: {\n        ...item.json,\n        ...parsed,\n        originalChatInput: parsed.chatInput || parsed.action || parsed.operation,\n        originalData: originalInput\n      }\n    };\n  } catch (e) {\n    // Default to N/A if parsing fails\n    return { \n      json: {\n        ...item.json,\n        operation: \"N/A\",\n        originalChatInput: originalInput.chatInput || originalInput.action || originalInput.operation,\n        originalData: originalInput\n      }\n    };\n  }\n});\n"
+      },
+      "id": "e55f1aa0-a19c-47ed-a532-40f77622cf18",
+      "name": "Parse Operation Decision",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -272,
+        0
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {
+    "Executed by other flow": [],
+    "n8n Startup Trigger": [
+      {
+        "json": {
+          "event": "Instance started",
+          "timestamp": "2025-09-26T07:11:59.290Z",
+          "workflow_id": "9MKVJd2X6cEHduCK"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "AI Operation Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Operation Classifier": {
+      "main": [
+        [
+          {
+            "node": "Parse Operation Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reboot System": {
+      "main": [
+        [
+          {
+            "node": "Operation Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Shutdown System": {
+      "main": [
+        [
+          {
+            "node": "Operation Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Startup Apps": {
+      "main": [
+        [
+          {
+            "node": "Operation Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run React Dev": {
+      "main": [
+        [
+          {
+            "node": "Operation Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Claude": {
+      "main": [
+        [
+          {
+            "node": "Operation Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Operation Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Monitor": {
+      "main": [
+        [
+          {
+            "node": "Operation Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n Startup Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Operation Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Operation Decision": {
+      "main": [
+        [
+          {
+            "node": "Win Operations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Win Operations": {
+      "main": [
+        [
+          {
+            "node": "Run Monitor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run Claude",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run React Dev",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run Startup Apps",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reboot System",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Shutdown System",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "64c29268-e01e-476e-8186-d80598fbcc53",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "9MKVJd2X6cEHduCK",
+  "tags": [
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    },
+    {
+      "createdAt": "2025-09-25T07:15:27.631Z",
+      "updatedAt": "2025-09-25T07:15:27.631Z",
+      "id": "lbNeed4rEshhUa7G",
+      "name": "general"
+    },
+    {
+      "createdAt": "2025-09-25T07:15:27.635Z",
+      "updatedAt": "2025-09-25T07:15:27.635Z",
+      "id": "s09d8AaOY7bJ2yIA",
+      "name": "tool"
+    }
+  ]
+}
