@@ -1,5 +1,5 @@
 {
-  "name": "newsletter",
+  "name": "news-tool",
   "nodes": [
     {
       "parameters": {
@@ -598,7 +598,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 15
   },
-  "versionId": "0b88f867-2767-4521-ba0b-4ac31871088c",
+  "versionId": "78d47dfc-07d4-45a6-bd8c-ce08ee5d5f07",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
