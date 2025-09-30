@@ -1,0 +1,498 @@
+{
+  "name": "rw-tool",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        192,
+        704
+      ],
+      "id": "47934f0b-082e-4369-8860-ee094e750123",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput + ' ' + ($json.emailInstructions || $json.query) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an AI operation classifier for file operations. Analyze the user's request and determine which file operation they want to perform.  | Available operations: 1. **FILE_READ** - The user wants to read, view, display, open, or show the contents of a file. 2. **FILE_WRITE** - The user wants to write, create, save, edit, or modify file content. 3. **FILE_DELETE** - The user wants to delete, remove, or erase a file.  Analyze the user request: '{{ $json.chatInput || $json.query }}' File instructions: '{{ $json.fileInstructions || 'None provided' }}'  Extract the file path if present. If no clear path, use the full request.  Respond ONLY in this JSON format: {\"operation\": \"<one of FILE_READ, FILE_WRITE, FILE_DELETE>\", \"input\": \"<file path if found, else original request>\"}  If unclear, default to FILE_READ."
+            }
+          ]
+        }
+      },
+      "id": "6b488e13-c396-4b30-a170-739e7ff04f2f",
+      "name": "AI Operation Classifier",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        352,
+        704
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the original input from the workflow trigger\nconst originalInput = $('Executed by other flow').first().json;\n\nreturn items.map(item => {\n  let parsed;\n  try {\n    parsed = JSON.parse(item.json.text);\n    // Merge with original input data\n    return { \n      json: {\n        ...item.json,\n        ...parsed,\n        originalChatInput: originalInput.chatInput,\n        originalFileInstructions: originalInput.fileInstructions,\n        file: originalInput.file || parsed.file,\n        data: originalInput.data || parsed.data\n      }\n    };\n  } catch (e) {\n    // Default to FILE_READ if parsing fails\n    return { \n      json: {\n        ...item.json,\n        operation: \"FILE_READ\",\n        originalChatInput: originalInput.chatInput,\n        originalFileInstructions: originalInput.fileInstructions,\n        file: originalInput.file,\n        data: originalInput.data\n      }\n    };\n  }\n});"
+      },
+      "id": "bb8321bf-bcd7-482d-88c5-3c8da83ee0c6",
+      "name": "Parse Operation Decision",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        640,
+        704
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.operation }}",
+                    "rightValue": "FILE_READ",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "read-operation"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "write-operation",
+                    "leftValue": "={{ $json.operation }}",
+                    "rightValue": "FILE_WRITE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "delete-operation",
+                    "leftValue": "={{ $json.operation }}",
+                    "rightValue": "FILE_DELETE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        912,
+        688
+      ],
+      "id": "5fdf8ad7-bb36-48d6-95f9-6197e6409b5e",
+      "name": "File Operations Router"
+    },
+    {
+      "parameters": {
+        "command": "=type \"{{ $json.input }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        608
+      ],
+      "id": "4a1c979c-3af5-4ad3-aa55-32d1612ca071",
+      "name": "Read File"
+    },
+    {
+      "parameters": {
+        "command": "=echo {{ $json.data }} > \"{{ $json.file }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        768
+      ],
+      "id": "bdfa04c9-c0bd-48ed-87e8-5122809fb2b1",
+      "name": "Write File"
+    },
+    {
+      "parameters": {
+        "command": "=del \"{{ $json.input }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        928
+      ],
+      "id": "2dd97349-2c7e-4cf7-8b1b-1a3ecf8b76f1",
+      "name": "Delete File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "operation-assignment",
+              "name": "operation",
+              "type": "string",
+              "value": "={{ $json.operation }}"
+            },
+            {
+              "id": "file-assignment",
+              "name": "file",
+              "type": "string",
+              "value": "={{ $json.file }}"
+            },
+            {
+              "id": "result-assignment",
+              "name": "result",
+              "type": "string",
+              "value": "={{ $('Read File').item.json.stdout || $('Write File').item.json.stdout || $('Delete File').item.json.stdout || 'Operation completed successfully' }}"
+            },
+            {
+              "id": "timestamp-assignment",
+              "name": "completedAt",
+              "type": "string",
+              "value": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}"
+            },
+            {
+              "id": "status-assignment",
+              "name": "status",
+              "type": "string",
+              "value": "success"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "27e5c880-02dc-4c2f-9a7f-05d1378620ed",
+      "name": "Format Output",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1376,
+        720
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        352,
+        896
+      ],
+      "id": "643707a7-8d9e-47f6-90b7-fc9fc3d70ae6",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "AI classifier analyzes user input to determine file operation intent (READ/WRITE/DELETE)",
+        "height": 112,
+        "width": 200,
+        "color": 5
+      },
+      "id": "8f706d19-fd26-4656-a4cc-de0187305828",
+      "name": "AI Classifier Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        352,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Parses AI response and merges with original input data including file paths and content",
+        "height": 112,
+        "width": 200,
+        "color": 6
+      },
+      "id": "4bf21520-6e25-40f6-b396-2cf38fbdd6ee",
+      "name": "Parse Decision Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        640,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Routes to appropriate file operation based on AI classification decision",
+        "height": 112,
+        "width": 200,
+        "color": 4
+      },
+      "id": "393925b3-690b-432b-afd5-b3e27b9b8074",
+      "name": "Router Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        912,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Executes Windows 'type' command to read and display file contents",
+        "height": 112,
+        "width": 200,
+        "color": 2
+      },
+      "id": "8f1d1c28-b80c-4daa-bf32-a13351c89b56",
+      "name": "Read Operation Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Executes Windows 'echo' command to write data to specified file path",
+        "height": 144,
+        "width": 200,
+        "color": 3
+      },
+      "id": "1e8d7c25-157e-4787-b125-935af94006c3",
+      "name": "Write Operation Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        1216
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Executes Windows 'del' command to delete the specified file",
+        "height": 112,
+        "width": 200,
+        "color": 7
+      },
+      "id": "56fba7f4-645e-4717-a109-1799c9d1bdc5",
+      "name": "Delete Operation Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        1056
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Formats operation results with metadata including timestamp and status information",
+        "height": 112,
+        "width": 200
+      },
+      "id": "2690ecaf-7d67-490c-b818-d2125335bdf8",
+      "name": "Output Format Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        544
+      ]
+    }
+  ],
+  "pinData": {
+    "Executed by other flow": [
+      {
+        "json": {
+          "query": "delete \"C:\\Users\\Jomiru Sergiu\\Downloads\\file-tool.json\" file"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "AI Operation Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Operation Classifier": {
+      "main": [
+        [
+          {
+            "node": "Parse Operation Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Operation Decision": {
+      "main": [
+        [
+          {
+            "node": "File Operations Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File Operations Router": {
+      "main": [
+        [
+          {
+            "node": "Read File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Write File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read File": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write File": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete File": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Operation Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "80c68204-1a6d-4c7b-8740-c7c3b051c121",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "vvKOjDSXDqyYbpok",
+  "tags": [
+    {
+      "name": "file-operations",
+      "id": "E9p4H6NTDopVmJKt",
+      "createdAt": "2025-09-29T03:44:11.788Z",
+      "updatedAt": "2025-09-29T03:44:11.788Z"
+    },
+    {
+      "createdAt": "2025-08-04T04:19:34.812Z",
+      "updatedAt": "2025-08-04T04:19:34.812Z",
+      "id": "i9zHVsEzM4VbgpCT",
+      "name": "automation"
+    },
+    {
+      "name": "unified-tool",
+      "id": "hADwGEI1MIRaCf1N",
+      "createdAt": "2025-09-29T03:44:11.792Z",
+      "updatedAt": "2025-09-29T03:44:11.792Z"
+    }
+  ]
+}
