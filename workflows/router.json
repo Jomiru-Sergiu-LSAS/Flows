@@ -249,7 +249,7 @@
     },
     {
       "parameters": {
-        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n     - **Git Actions** (repos, PRs, code reviews) \n     - **JIRA Actions** (tickets, issues, project tracking)\n     - **Chat Actions** (general conversations)\n     - **CI/CD Actions** (build, deploy, pipelines)\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Specialist Engineer Agents** with shared **RW Agent** and **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **Think** tool for coordination and planning\n\n3) **Robust Operation Decision & Switch**\n   - Advanced JSON parsing with multiple fallback mechanisms\n   - Handles markdown code blocks and malformed JSON\n   - Expression-based Decision Switch routes to Directors based on agent mapping\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (primary router with Model)\n- **Director of Operations:** O3 (General Model)\n- **Director of Product:** O3 (Product Model) \n- **Director of Engineering:** O3 (EM Model)\n- **7 Engineering Specialists:** GPT-4.1-mini (Engineer Model)\n- **RW Agent:** O3 (RW Model)\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, reports/git/JIRA tasks, or technical engineering solutions. Each Director manages specialized tools and actions for their domain.",
+        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Git Actions** (repos, PRs, code reviews) \n     - **JIRA Actions** (tickets, issues, project tracking)\n     - **Chat Actions** (general conversations)\n     - **CI/CD Actions** (build, deploy, pipelines)\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Specialist Engineer Agents** with shared **RW Agent** and **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **Think** tool for coordination and planning\n\n3) **Robust Operation Decision & Switch**\n   - Advanced JSON parsing with multiple fallback mechanisms\n   - Handles markdown code blocks and malformed JSON\n   - Expression-based Decision Switch routes to Directors based on agent mapping\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (primary router with Model)\n- **Director of Operations:** O3 (General Model)\n- **Director of Product:** O3 (Product Model) \n- **Director of Engineering:** O3 (EM Model)\n- **7 Engineering Specialists:** GPT-4.1-mini (Engineer Model)\n- **RW Agent:** O3 (RW Model)\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, reports/git/JIRA tasks, or technical engineering solutions. Each Director manages specialized tools and actions for their domain.",
         "height": 1044,
         "width": 948,
         "color": 7
@@ -265,11 +265,12 @@
     },
     {
       "parameters": {
+        "description": "Call this tool to handle all git updates, git pulls, git latest, pull requests, merge requests, pr's, mr's, code reviews, etc.\n",
         "workflowId": {
           "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
+          "value": "E58bptNtshnefZyz",
           "mode": "list",
-          "cachedResultName": "routing"
+          "cachedResultName": "git-tool"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -290,22 +291,7 @@
       "name": "Git Actions"
     },
     {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
+      "parameters": {},
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
@@ -316,22 +302,7 @@
       "name": "JIRA Actions"
     },
     {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
+      "parameters": {},
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
@@ -342,22 +313,7 @@
       "name": "Chat Actions"
     },
     {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
+      "parameters": {},
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
@@ -773,7 +729,7 @@
         "promptType": "define",
         "text": "={{ $json.action }}",
         "options": {
-          "systemMessage": "You are a helpful VP of Product Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- Call \"Report Actions\" tool → For handling all reports and summaries, including weekly, monthly, daily.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Generate Report\",\n\"instructions\": \n\"Please generate the weekly report.\"\n}"
+          "systemMessage": "You are a helpful VP of Product Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- Call \"Git Actions\" tool → For handling all git updates, git pulls, git latest, pull requests, merge requests, pr's, mr's, code reviews, etc.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Check prs\",\n\"instructions\": \n\"Please check if any pull requests are available.\"\n}"
         }
       },
       "id": "306ec933-4812-4674-aabc-62ec4e61aa47",
@@ -1372,7 +1328,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d65fb9d4-a700-4d27-8366-a52e0866a7b6",
+  "versionId": "b3f0942b-0818-49a6-b6fd-6cf776245257",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
