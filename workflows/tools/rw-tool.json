@@ -272,8 +272,8 @@
     },
     {
       "parameters": {
-        "content": "RW Module test querries:\n\n\"query\": \"read \\\"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\file-tool.json\\\"\"\n\"query\": \"write \\\"test\\\" to \\\"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\file-tool.json\\\"\"\n\"query\": \"delete \\\"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\file-tool.json\\\"\"",
-        "height": 112,
+        "content": "RW Module test queries:\n\n\"query\": \"read \\\"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\file-tool.json\\\"\"\n\"query\": \"write \\\"test\\\" to \\\"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\file-tool.json\\\"\"\n\"query\": \"delete \\\"C:\\\\Users\\\\Jomiru Sergiu\\\\Downloads\\\\file-tool.json\\\"\"\n\n\nCall this tool to handle all read, write, delete file operations.\n\n\nDo not reason or give any feedback, just trigger the tools depending on the instructions below.\nTrigger \"RW Actions\" tool → For operations like file read, content read, write content, write to file, delete file, etc.\n{{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "height": 288,
         "width": 536,
         "color": 5
       },
@@ -283,7 +283,7 @@
       "typeVersion": 1,
       "position": [
         -160,
-        -144
+        -320
       ]
     }
   ],
@@ -404,7 +404,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "0cc43445-2b44-4b03-83d8-fbb29447bc19",
+  "versionId": "7b444dc6-b524-4f74-8033-089807401825",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
