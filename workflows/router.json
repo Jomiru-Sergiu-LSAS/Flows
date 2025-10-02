@@ -3,263 +3,32 @@
   "nodes": [
     {
       "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        720,
-        1040
-      ],
-      "id": "e9a1690b-347e-45d7-ac95-641e6e217442",
-      "name": "Architect Actions"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        2000,
-        1040
-      ],
-      "id": "5c24be51-4dd2-40c3-9f3d-e3d68f977c5c",
-      "name": "DevOps Actions"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        1744,
-        1040
-      ],
-      "id": "073997c5-c479-4c5b-8124-74a5df363148",
-      "name": "Security Actions"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        1488,
-        1040
-      ],
-      "id": "0c993ef6-7edf-48d4-bee3-499e8e1408ed",
-      "name": "QA Actions"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        1232,
-        1040
-      ],
-      "id": "5995f999-1e85-42c6-91b2-b186b85a70cf",
-      "name": "Back Actions"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        976,
-        1040
-      ],
-      "id": "86d96277-f197-4423-81ed-155f23de81c0",
-      "name": "Front Actions"
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "988f9861-fd21-4085-9c43-ea452ae7e355",
-      "name": "RW Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        576,
-        1392
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "id": "cc444d66-a86e-4298-b273-0a6f5c0984c6",
-      "name": "Engineer Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        2256,
-        1248
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "ie0wpP3U9v0pVTfh",
-          "mode": "list",
-          "cachedResultName": "routing"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        2256,
-        1040
-      ],
-      "id": "f483fa16-03bf-4212-bac4-209ae68fdcb0",
-      "name": "Research Actions"
-    },
-    {
-      "parameters": {
         "options": {
           "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA, tickets, issues, CI/CD, build, deploy, pipeline, general chat/questions → Director of Product\n- For engineering, development, research, and read, write or delete operations → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}"
         }
       },
-      "id": "a4b4f287-8d3b-49c8-adc4-56fc991db329",
+      "id": "2cc7ca0c-d8c1-402f-8fa3-9a1d35dfee1b",
       "name": "CTO Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -176,
-        192
+        -48,
+        -256
       ],
       "typeVersion": 2.1
     },
     {
       "parameters": {
         "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Git Actions** (repos, PRs, code reviews, repository updates) \n     - **JIRA Actions** (tickets, issues, project tracking)\n     - **Chat Actions** (general conversations)\n     - **CI/CD Actions** (build, deploy, pipelines)\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Specialist Engineer Agents** with shared **RW Agent** and **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **RW Actions** (unified file read, write, delete operations with AI classification)\n     - **Think** tool for coordination and planning\n\n3) **Robust Operation Decision & Switch**\n   - Advanced JSON parsing with multiple fallback mechanisms\n   - Handles markdown code blocks and malformed JSON\n   - Expression-based Decision Switch routes to Directors based on agent mapping\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (primary router with Model)\n- **Director of Operations:** O3 (General Model)\n- **Director of Product:** O3 (Product Model) \n- **Director of Engineering:** O3 (EM Model)\n- **7 Engineering Specialists:** GPT-4.1-mini (Engineer Model)\n- **RW Agent:** O3 (RW Model)\n\n### 🔧 Unified Tools\n- **Git Actions:** Unified git-tool handling PR reviews and repository updates\n- **RW Actions:** Unified file-tool with AI classification for read/write/delete operations\n- **Mail Actions:** Email management with AI operation classification\n- **Win Actions:** System operations (startup, shutdown, reboot)\n- **News Actions:** Newsletter and news aggregation\n- **Report Actions:** Analytics and reporting generation\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, reports/git/JIRA tasks, or technical engineering solutions including file operations. Each Director manages specialized tools and actions for their domain.",
-        "height": 1044,
-        "width": 948,
+        "height": 1236,
+        "width": 900,
         "color": 7
       },
-      "id": "294855ce-9e2f-482a-96cd-a6ddd05f8bc8",
+      "id": "95c6cd83-7cf2-4170-9846-c45d9bbc41ef",
       "name": "Sticky Note Main",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -480,
-        544
+        -352,
+        64
       ],
       "typeVersion": 1
     },
@@ -284,10 +53,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        800,
-        384
+        944,
+        256
       ],
-      "id": "2aa66828-e005-4fa4-a108-95acf5bba3cf",
+      "id": "4dc86556-59f9-4559-bb0a-59b63d3627b9",
       "name": "Git Actions"
     },
     {
@@ -295,10 +64,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        912,
-        384
+        1056,
+        256
       ],
-      "id": "faff1083-d31c-4e9f-810d-a7628f37e604",
+      "id": "fd6b9902-8329-4986-9bf1-f4e2209480b2",
       "name": "JIRA Actions"
     },
     {
@@ -306,10 +75,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1024,
-        384
+        1168,
+        256
       ],
-      "id": "f3c7fb8f-6dfe-48e4-b857-43024e55f8f4",
+      "id": "6612af80-0299-4770-b9ae-66e2a665d8a2",
       "name": "Chat Actions"
     },
     {
@@ -396,12 +165,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "1c0b5be5-3077-4ea0-9ff9-07fef9e2b4ef",
+      "id": "b6ea230d-abeb-4c32-9ea9-adc999b76eac",
       "name": "Frontend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        832,
-        880
+        976,
+        752
       ],
       "typeVersion": 2.2
     },
@@ -411,12 +180,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "88e3b698-1cec-4087-a02b-de03253e9fc5",
+      "id": "c1c8ae9a-e230-409f-91d3-5bf3849de4c2",
       "name": "Backend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1088,
-        880
+        1232,
+        752
       ],
       "typeVersion": 2.2
     },
@@ -426,12 +195,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "5cdf044b-0643-4c5c-8d60-baa85dea11fd",
+      "id": "f30936c1-fe13-4882-b7a7-5ffb3159d1d3",
       "name": "QA Test Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1344,
-        880
+        1488,
+        752
       ],
       "typeVersion": 2.2
     },
@@ -441,12 +210,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "fb1bc276-b10e-4994-880b-2031c2952b2e",
+      "id": "275c5be3-d83a-4cc1-9460-522da270dbc6",
       "name": "Security Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1600,
-        880
+        1744,
+        752
       ],
       "typeVersion": 2.2
     },
@@ -456,12 +225,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "1905ca29-97e9-4377-9987-e0dfbcac4968",
+      "id": "5fe6eee0-7477-48c6-a2de-ab68045ee186",
       "name": "DevOps Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1856,
-        880
+        2000,
+        752
       ],
       "typeVersion": 2.2
     },
@@ -471,23 +240,23 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "15fbf43c-e17e-4ace-9f88-22214ad0df83",
+      "id": "455d9fa1-02f6-401e-9379-ea644ca9b073",
       "name": "Software Architect Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        576,
-        880
+        720,
+        752
       ],
       "typeVersion": 2.2
     },
     {
       "parameters": {},
-      "id": "e4f0c851-c800-464b-8355-c13433463692",
+      "id": "32854a2b-8f47-483f-90b1-39548acd7f79",
       "name": "Think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "position": [
-        736,
-        736
+        880,
+        608
       ],
       "typeVersion": 1.1
     },
@@ -530,10 +299,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        800,
-        32
+        944,
+        -96
       ],
-      "id": "c776fc6b-4fb0-4269-8cb9-795d5d62dd0d",
+      "id": "10076a6b-2952-45dc-a5cd-80388c6e6a7f",
       "name": "Mail Actions"
     },
     {
@@ -575,10 +344,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        912,
-        32
+        1056,
+        -96
       ],
-      "id": "bb9bbf0d-1f44-4de3-aad8-693611396c6d",
+      "id": "4804d919-1e91-46b7-aae9-0e61618c70ca",
       "name": "News Actions"
     },
     {
@@ -620,22 +389,22 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1024,
-        32
+        1168,
+        -96
       ],
-      "id": "8fefa9d1-4622-4100-a863-c358f9f76126",
+      "id": "d2932734-c6fa-4ebd-98e9-bd244d61de9e",
       "name": "Win Actions"
     },
     {
       "parameters": {
         "jsCode": "return items.map(item => {\n  let parsed;\n  let outputText = item.json.output || '';\n  \n  // Handle case where output might be wrapped in markdown code blocks\n  let jsonText = outputText.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  \n  try {\n    parsed = JSON.parse(jsonText);\n    return { \n      json: {\n        action: parsed.action || 'UNKNOWN',\n        agent: parsed.agent || 'UNKNOWN'\n      }\n    };\n  } catch (e) {\n    // Try to extract JSON from the text using regex\n    const jsonMatch = outputText.match(/{[\\s\\S]*?}/);\n    if (jsonMatch) {\n      try {\n        parsed = JSON.parse(jsonMatch[0]);\n        return { \n          json: {\n            action: parsed.action || 'UNKNOWN',\n            agent: parsed.agent || 'UNKNOWN'\n          }\n        };\n      } catch (e2) {\n        // Fallback: try to extract values manually\n        const actionMatch = outputText.match(/\"action\"\\s*:\\s*\"([^\"]*)\"/);\n        const agentMatch = outputText.match(/\"agent\"\\s*:\\s*\"([^\"]*)\"/);\n        \n        if (actionMatch && agentMatch) {\n          return { \n            json: {\n              action: actionMatch[1],\n              agent: agentMatch[1]\n            }\n          };\n        }\n      }\n    }\n    \n    // Final fallback\n    console.log('Failed to parse JSON from output:', outputText);\n    return { \n      json: {\n        action: \"UNKNOWN\",\n        agent: \"Chat Agent\"\n      }\n    };\n  }\n});\n"
       },
-      "id": "07071869-f083-4bb5-8979-1c3ec0c6488e",
+      "id": "2baa39a1-1c03-478e-b738-d31d9329a3b6",
       "name": "Operation Decision",
       "type": "n8n-nodes-base.code",
       "position": [
-        128,
-        192
+        256,
+        -256
       ],
       "typeVersion": 2
     },
@@ -646,12 +415,12 @@
           "loadPreviousSession": "memory"
         }
       },
-      "id": "67041508-fe57-45b6-b80d-b63f6cf630f3",
+      "id": "4309fe18-104b-4c27-912e-b61cb943b94b",
       "name": "When chat message received",
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "position": [
-        -480,
-        192
+        -352,
+        -256
       ],
       "webhookId": "9eab0524-6cd7-4b81-8bd8-4d050a972a08",
       "typeVersion": 1.1
@@ -666,12 +435,12 @@
         },
         "options": {}
       },
-      "id": "9c7b5847-9178-4138-8b3f-d1ab565b1cc5",
+      "id": "ba16a6ba-edae-44a7-9cef-aa6003acf6db",
       "name": "Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -176,
-        384
+        -48,
+        -64
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -688,10 +457,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -480,
-        384
+        -352,
+        -64
       ],
-      "id": "469b3eda-4343-40e0-a36e-81c346418894",
+      "id": "b83180c1-284d-40d8-b3db-5372b7a70ce9",
       "name": "Memory"
     },
     {
@@ -703,10 +472,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        320,
-        176
+        448,
+        -272
       ],
-      "id": "e99cc42c-8705-4d45-8e81-bfaebaed1b53",
+      "id": "a90be289-a2f1-4dc6-bbac-475f6b0e1640",
       "name": "Decision Switch"
     },
     {
@@ -717,12 +486,12 @@
           "systemMessage": "You are a helpful Director of Operations Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Mail Actions\" tool → For emails, drafts, spam, trash.\n- Call \"News Actions\" tool → For news, newsletter, latest news.\n- Call \"Win Actions\" tool → For windows, pc, restart, reboot, startup, shutdown.\n- Call \"Report Actions\" tool → For handling all reports and summaries, including weekly, monthly, daily.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Delete trash mails\",\n\"instructions\": \n\"Please delete all messages from the trash folder in the mail account.\"\n}\n"
         }
       },
-      "id": "1891f5c9-4fb8-4abd-86a7-f0688dfc09da",
+      "id": "c78268ae-3c19-4ac6-ba23-5470b863116e",
       "name": "Director of Operations",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        576,
-        -160
+        720,
+        -288
       ],
       "typeVersion": 2.1
     },
@@ -734,12 +503,12 @@
           "systemMessage": "You are a helpful Director of Product Assistant.\nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- Call \"Git Actions\" tool → For handling all git updates, git pulls, git latest, pull requests, merge requests, pr's, mr's, code reviews, etc.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Check prs\",\n\"instructions\": \n\"Please check if any pull requests are available.\"\n}"
         }
       },
-      "id": "f9b0fc44-5d70-4ad6-8af2-dcc482fd11fe",
+      "id": "1146edb7-a148-4440-a51c-982dcf79b6c7",
       "name": "Director of Product",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        576,
-        192
+        720,
+        64
       ],
       "typeVersion": 2.1
     },
@@ -751,64 +520,14 @@
           "systemMessage": "You are a helpful Director of Engineering Agent. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- For handling read, write or delete operations call \"RW Agent\" tool"
         }
       },
-      "id": "37f2e4ed-0d4c-474b-9436-b8d115d3bd21",
+      "id": "36536d74-bae4-4989-a64b-9b8d03b00267",
       "name": "Director of Engineering",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        576,
-        544
+        720,
+        416
       ],
       "typeVersion": 2.1
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "de4c2df0-cdc0-46b5-bd41-9257a8c9347e",
-      "name": "Product Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        576,
-        384
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "9b36bdf3-6f46-4d09-9bfa-c94c869bc966",
-      "name": "General Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        576,
-        32
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
     },
     {
       "parameters": {
@@ -816,12 +535,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "cbef737c-e8df-45a7-9eb7-345806b7359c",
+      "id": "6b9bc652-a88d-49cc-804a-74dda3993f55",
       "name": "Research Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        2112,
-        880
+        2256,
+        752
       ],
       "typeVersion": 2.2
     },
@@ -846,26 +565,114 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1136,
-        32
+        1280,
+        -96
       ],
-      "id": "b8e1b1b1-14fd-4203-ab2e-2b760a30cda2",
+      "id": "6e75bcc7-3cb5-4338-b849-a19da1db599e",
       "name": "Report Actions"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "id": "2c7d61d7-bff8-4361-979d-9a4193a7ca6f",
+      "name": "Specialist",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        720,
+        1200
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "ae252c74-9f52-4e98-9f6d-b941ffa5853a",
+      "name": "General",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        720,
+        -96
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "427246e9-4953-45bd-877f-53cf36ff02ce",
+      "name": "Product",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        720,
+        256
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "8691cf78-83cf-4822-b672-3fa0a5e681dc",
+      "name": "Engineering",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        720,
+        608
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
   "pinData": {},
   "connections": {
-    "Research Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "Research Engineer Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "CTO Agent": {
       "main": [
         [
@@ -877,182 +684,42 @@
         ]
       ]
     },
-    "Architect Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "Software Architect Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "DevOps Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "DevOps Engineer Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Security Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "Security Engineer Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "QA Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "QA Test Engineer Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Back Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "Backend Developer Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Front Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "Frontend Developer Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "EM Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Director of Engineering",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "RW Actions": {
       "ai_tool": [
         [
           {
-            "node": "RW Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "RW Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "RW Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "RW Agent": {
-      "ai_tool": [
-        [
-          {
-            "node": "Frontend Developer Agent",
-            "type": "ai_tool",
-            "index": 0
-          },
-          {
-            "node": "Backend Developer Agent",
-            "type": "ai_tool",
-            "index": 0
-          },
-          {
-            "node": "QA Test Engineer Agent",
-            "type": "ai_tool",
-            "index": 0
-          },
-          {
-            "node": "Security Engineer Agent",
-            "type": "ai_tool",
-            "index": 0
-          },
-          {
-            "node": "DevOps Engineer Agent",
-            "type": "ai_tool",
-            "index": 0
-          },
-          {
-            "node": "Software Architect Agent",
-            "type": "ai_tool",
-            "index": 0
-          },
-          {
-            "node": "Director of Engineering",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Engineer Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Frontend Developer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          },
-          {
-            "node": "Backend Developer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          },
-          {
-            "node": "QA Test Engineer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          },
-          {
-            "node": "Security Engineer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          },
-          {
-            "node": "DevOps Engineer Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          },
-          {
-            "node": "Software Architect Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          },
-          {
             "node": "Research Engineer Agent",
-            "type": "ai_languageModel",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "DevOps Engineer Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Security Engineer Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "QA Test Engineer Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Backend Developer Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Frontend Developer Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Software Architect Agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -1286,28 +953,6 @@
         ]
       ]
     },
-    "General Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Director of Operations",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Product Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Director of Product",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Research Engineer Agent": {
       "ai_tool": [
         [
@@ -1329,13 +974,87 @@
           }
         ]
       ]
+    },
+    "Specialist": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Software Architect Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Frontend Developer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Backend Developer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "QA Test Engineer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Security Engineer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "DevOps Engineer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Research Engineer Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "General": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Director of Operations",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Director of Product",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Engineering": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Director of Engineering",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "5c62815e-c12a-48c3-a4f7-44ee47aafd29",
+  "versionId": "b1239375-83ed-4afb-b452-36854c33442d",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
