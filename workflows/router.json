@@ -86,36 +86,11 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1136,
-        384
+        1280,
+        256
       ],
-      "id": "b92abc0c-673e-414d-9a5f-68b42b9dbfd6",
+      "id": "82ede10a-aec1-445d-ae2e-1d94f6323562",
       "name": "CI/CD Actions"
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "be5f7e7d-6dad-4bfe-9baf-6c98647db814",
-      "name": "EM Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        576,
-        736
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
     },
     {
       "parameters": {
@@ -139,25 +114,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        720,
-        1392
+        2400,
+        1200
       ],
-      "id": "7e694747-940c-4cee-be26-893529f0fb90"
-    },
-    {
-      "parameters": {
-        "toolDescription": "Call this tool to handle all read, write, delete file operations.",
-        "text": "=Do not reason or give any feedback, just trigger the tools depending on the instructions below.\n\nTrigger \"RW Actions\" tool → For operations like file read, content read, write content, write to file, delete file, etc.\n{{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
-        "options": {}
-      },
-      "id": "befe118b-727f-4822-a1c4-50a940012e99",
-      "name": "RW Agent",
-      "type": "@n8n/n8n-nodes-langchain.agentTool",
-      "position": [
-        576,
-        1248
-      ],
-      "typeVersion": 2.2
+      "id": "6c9457df-7f35-442c-850a-29295a1667ba"
     },
     {
       "parameters": {
