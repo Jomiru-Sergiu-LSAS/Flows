@@ -607,6 +607,34 @@
     },
     {
       "parameters": {
+        "mode": "expression",
+        "numberOutputs": 3,
+        "output": "={{ (() => {\n  const a = String($json.agent ?? '').trim().toLowerCase();\n  const map = {\n    'director of operations': 0,\n    'director of product': 1,\n    'director of engineering': 2,\n  };\n  return map[a] ?? -1; // -1 routes to fallback (enable it)\n})() }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -464,
+        -368
+      ],
+      "id": "012d5321-68e1-4477-b146-2cae5f26be0e",
+      "name": "Domain Decision"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  let parsed;\n  let outputText = item.json.output || '';\n  \n  // Handle case where output might be wrapped in markdown code blocks\n  let jsonText = outputText.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  \n  try {\n    parsed = JSON.parse(jsonText);\n    return { \n      json: {\n        action: parsed.action || 'UNKNOWN',\n        agent: parsed.agent || 'UNKNOWN'\n      }\n    };\n  } catch (e) {\n    // Try to extract JSON from the text using regex\n    const jsonMatch = outputText.match(/{[\\s\\S]*?}/);\n    if (jsonMatch) {\n      try {\n        parsed = JSON.parse(jsonMatch[0]);\n        return { \n          json: {\n            action: parsed.action || 'UNKNOWN',\n            agent: parsed.agent || 'UNKNOWN'\n          }\n        };\n      } catch (e2) {\n        // Fallback: try to extract values manually\n        const actionMatch = outputText.match(/\"action\"\\s*:\\s*\"([^\"]*)\"/);\n        const agentMatch = outputText.match(/\"agent\"\\s*:\\s*\"([^\"]*)\"/);\n        \n        if (actionMatch && agentMatch) {\n          return { \n            json: {\n              action: actionMatch[1],\n              agent: agentMatch[1]\n            }\n          };\n        }\n      }\n    }\n    \n    // Final fallback\n    console.log('Failed to parse JSON from output:', outputText);\n    return { \n      json: {\n        action: \"UNKNOWN\",\n        agent: \"Chat Agent\"\n      }\n    };\n  }\n});\n"
+      },
+      "id": "b63b91e9-5d8b-4ca3-90d6-cb6e043c9dbd",
+      "name": "Operation Parser",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -640,
+        -352
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
         "model": {
           "__rl": true,
           "mode": "list",
