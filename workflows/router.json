@@ -7,28 +7,28 @@
           "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA, tickets, issues, CI/CD, build, deploy, pipeline, general chat/questions → Director of Product\n- For engineering, development, research, and read, write or delete operations → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}"
         }
       },
-      "id": "2cc7ca0c-d8c1-402f-8fa3-9a1d35dfee1b",
+      "id": "071955ad-2c8f-468d-8711-a3ae6968777c",
       "name": "CTO Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -48,
-        -256
+        -944,
+        -352
       ],
       "typeVersion": 2.1
     },
     {
       "parameters": {
-        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Git Actions** (repos, PRs, code reviews, repository updates) \n     - **JIRA Actions** (tickets, issues, project tracking)\n     - **Chat Actions** (general conversations)\n     - **CI/CD Actions** (build, deploy, pipelines)\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Specialist Engineer Agents** with shared **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **RW Actions** (unified file read, write, delete operations with AI classification)\n     - **Think** tool for coordination and planning\n\n3) **Robust Operation Decision & Switch**\n   - Advanced JSON parsing with multiple fallback mechanisms\n   - Handles markdown code blocks and malformed JSON\n   - Expression-based Decision Switch routes to Directors based on agent mapping\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (Model)\n- **Director of Operations:** O3 (General)\n- **Director of Product:** O3 (Product) \n- **Director of Engineering:** O3 (Engineering)\n- **7 Engineering Specialists:** GPT-4.1-mini (Specialist)\n\n### 🔧 Unified Tools\n- **Git Actions:** Unified git-tool handling PR reviews and repository updates\n- **RW Actions:** Unified file-tool with AI classification for read/write/delete operations\n- **Mail Actions:** Email management with AI operation classification\n- **Win Actions:** System operations (startup, shutdown, reboot)\n- **News Actions:** Newsletter and news aggregation\n- **Report Actions:** Analytics and reporting generation\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, reports/git/JIRA tasks, or technical engineering solutions including file operations. Each Director manages specialized tools and actions for their domain.",
-        "height": 1236,
+        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Git Actions** (repos, PRs, code reviews, repository updates) \n     - **JIRA Actions** (tickets, issues, project tracking)\n     - **Chat Actions** (general conversations)\n     - **CI/CD Actions** (build, deploy, pipelines)\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Expert Engineer Agents** with shared **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **RW Actions** (unified file read, write, delete operations with AI classification)\n     - **Think** tool for coordination and planning\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (Model)\n- **Director of Operations:** O3 (General)\n- **Director of Product:** O3 (Product) \n- **Director of Engineering:** O3 (Engineer)\n- **7 Engineering Experts:** GPT-4.1-mini (Specialist)\n\n\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, reports/git/JIRA tasks, or technical engineering solutions including file operations. Each Director manages tools and actions for their domain.",
+        "height": 932,
         "width": 900,
         "color": 7
       },
-      "id": "95c6cd83-7cf2-4170-9846-c45d9bbc41ef",
+      "id": "a7bad6a2-7f2b-4a67-9c51-5406c31aa8d5",
       "name": "Sticky Note Main",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -352,
-        64
+        -1248,
+        -16
       ],
       "typeVersion": 1
     },
@@ -53,10 +53,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        944,
-        256
+        -64,
+        -80
       ],
-      "id": "4dc86556-59f9-4559-bb0a-59b63d3627b9",
+      "id": "88ec0a09-4a54-4f41-bcc0-06cbea9b121f",
       "name": "Git Actions"
     },
     {
@@ -64,10 +64,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1056,
-        256
+        48,
+        -80
       ],
-      "id": "fd6b9902-8329-4986-9bf1-f4e2209480b2",
+      "id": "8701353a-4523-4ac8-83ed-907191873c9e",
       "name": "JIRA Actions"
     },
     {
@@ -75,10 +75,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1168,
-        256
+        160,
+        -80
       ],
-      "id": "6612af80-0299-4770-b9ae-66e2a665d8a2",
+      "id": "eda03d79-ac48-4fdc-8a67-8e4128df1932",
       "name": "Chat Actions"
     },
     {
@@ -86,10 +86,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1280,
-        256
+        272,
+        -80
       ],
-      "id": "82ede10a-aec1-445d-ae2e-1d94f6323562",
+      "id": "efb888a3-c295-40c7-b6f1-20ca9fd1991b",
       "name": "CI/CD Actions"
     },
     {
@@ -114,10 +114,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        2400,
-        1200
+        1504,
+        816
       ],
-      "id": "6c9457df-7f35-442c-850a-29295a1667ba"
+      "id": "1dd07b84-2ed9-4b47-89ed-899a733726bf"
     },
     {
       "parameters": {
@@ -125,12 +125,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "b6ea230d-abeb-4c32-9ea9-adc999b76eac",
+      "id": "8ca6fbf5-458c-4a42-b34d-06d14f8a256a",
       "name": "Frontend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        976,
-        752
+        80,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -140,12 +140,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "c1c8ae9a-e230-409f-91d3-5bf3849de4c2",
+      "id": "6374240a-a15c-436b-8fe0-aa9dcb319a15",
       "name": "Backend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1232,
-        752
+        336,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -155,12 +155,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "f30936c1-fe13-4882-b7a7-5ffb3159d1d3",
+      "id": "55f46492-a15c-4bb4-8925-5c234b5da910",
       "name": "QA Test Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1488,
-        752
+        592,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -170,12 +170,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "275c5be3-d83a-4cc1-9460-522da270dbc6",
+      "id": "549644e7-0a39-4b71-bff9-ee964b6845b4",
       "name": "Security Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1744,
-        752
+        848,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -185,12 +185,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "5fe6eee0-7477-48c6-a2de-ab68045ee186",
+      "id": "7b02c526-d6ad-4fa4-8109-1f5b4dea4536",
       "name": "DevOps Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        2000,
-        752
+        1104,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -200,23 +200,23 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "455d9fa1-02f6-401e-9379-ea644ca9b073",
+      "id": "f056c2a8-d1eb-4e93-8ddd-a87d7b543c77",
       "name": "Software Architect Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        720,
-        752
+        -176,
+        448
       ],
       "typeVersion": 2.2
     },
     {
       "parameters": {},
-      "id": "32854a2b-8f47-483f-90b1-39548acd7f79",
+      "id": "7975d887-072b-42b7-8401-d2e06a91d4f0",
       "name": "Think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "position": [
-        880,
-        608
+        -16,
+        288
       ],
       "typeVersion": 1.1
     },
@@ -259,10 +259,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        944,
-        -96
+        544,
+        -80
       ],
-      "id": "10076a6b-2952-45dc-a5cd-80388c6e6a7f",
+      "id": "cd6eaef3-a6f5-4ecb-b0d6-ad81b099959e",
       "name": "Mail Actions"
     },
     {
@@ -304,10 +304,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1056,
-        -96
+        656,
+        -80
       ],
-      "id": "4804d919-1e91-46b7-aae9-0e61618c70ca",
+      "id": "ddb8d361-628c-44e3-908e-07ddd5454a86",
       "name": "News Actions"
     },
     {
@@ -349,24 +349,11 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1168,
-        -96
+        768,
+        -80
       ],
-      "id": "d2932734-c6fa-4ebd-98e9-bd244d61de9e",
+      "id": "4e86a0f1-3f2e-40cd-8a06-cc0236fab395",
       "name": "Win Actions"
-    },
-    {
-      "parameters": {
-        "jsCode": "return items.map(item => {\n  let parsed;\n  let outputText = item.json.output || '';\n  \n  // Handle case where output might be wrapped in markdown code blocks\n  let jsonText = outputText.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  \n  try {\n    parsed = JSON.parse(jsonText);\n    return { \n      json: {\n        action: parsed.action || 'UNKNOWN',\n        agent: parsed.agent || 'UNKNOWN'\n      }\n    };\n  } catch (e) {\n    // Try to extract JSON from the text using regex\n    const jsonMatch = outputText.match(/{[\\s\\S]*?}/);\n    if (jsonMatch) {\n      try {\n        parsed = JSON.parse(jsonMatch[0]);\n        return { \n          json: {\n            action: parsed.action || 'UNKNOWN',\n            agent: parsed.agent || 'UNKNOWN'\n          }\n        };\n      } catch (e2) {\n        // Fallback: try to extract values manually\n        const actionMatch = outputText.match(/\"action\"\\s*:\\s*\"([^\"]*)\"/);\n        const agentMatch = outputText.match(/\"agent\"\\s*:\\s*\"([^\"]*)\"/);\n        \n        if (actionMatch && agentMatch) {\n          return { \n            json: {\n              action: actionMatch[1],\n              agent: agentMatch[1]\n            }\n          };\n        }\n      }\n    }\n    \n    // Final fallback\n    console.log('Failed to parse JSON from output:', outputText);\n    return { \n      json: {\n        action: \"UNKNOWN\",\n        agent: \"Chat Agent\"\n      }\n    };\n  }\n});\n"
-      },
-      "id": "2baa39a1-1c03-478e-b738-d31d9329a3b6",
-      "name": "Operation Decision",
-      "type": "n8n-nodes-base.code",
-      "position": [
-        256,
-        -256
-      ],
-      "typeVersion": 2
     },
     {
       "parameters": {
@@ -375,12 +362,12 @@
           "loadPreviousSession": "memory"
         }
       },
-      "id": "4309fe18-104b-4c27-912e-b61cb943b94b",
+      "id": "e6df7977-170a-42d8-a89b-3a605b4d6930",
       "name": "When chat message received",
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "position": [
-        -352,
-        -256
+        -1248,
+        -352
       ],
       "webhookId": "9eab0524-6cd7-4b81-8bd8-4d050a972a08",
       "typeVersion": 1.1
@@ -395,12 +382,12 @@
         },
         "options": {}
       },
-      "id": "ba16a6ba-edae-44a7-9cef-aa6003acf6db",
+      "id": "2bfd059d-04d8-46f8-ad7f-5bb9a5cac71d",
       "name": "Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -48,
-        -64
+        -944,
+        -160
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -417,26 +404,11 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -352,
-        -64
+        -1248,
+        -160
       ],
-      "id": "b83180c1-284d-40d8-b3db-5372b7a70ce9",
+      "id": "acac0565-c302-4a83-bbaf-74308905f6ec",
       "name": "Memory"
-    },
-    {
-      "parameters": {
-        "mode": "expression",
-        "numberOutputs": 3,
-        "output": "={{ (() => {\n  const a = String($json.agent ?? '').trim().toLowerCase();\n  const map = {\n    'director of operations': 0,\n    'director of product': 1,\n    'director of engineering': 2,\n  };\n  return map[a] ?? -1; // -1 routes to fallback (enable it)\n})() }}"
-      },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        448,
-        -272
-      ],
-      "id": "a90be289-a2f1-4dc6-bbac-475f6b0e1640",
-      "name": "Decision Switch"
     },
     {
       "parameters": {
@@ -446,12 +418,12 @@
           "systemMessage": "You are a helpful Director of Operations Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Mail Actions\" tool → For emails, drafts, spam, trash.\n- Call \"News Actions\" tool → For news, newsletter, latest news.\n- Call \"Win Actions\" tool → For windows, pc, restart, reboot, startup, shutdown.\n- Call \"Report Actions\" tool → For handling all reports and summaries, including weekly, monthly, daily.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Delete trash mails\",\n\"instructions\": \n\"Please delete all messages from the trash folder in the mail account.\"\n}\n"
         }
       },
-      "id": "c78268ae-3c19-4ac6-ba23-5470b863116e",
+      "id": "24692e1d-de2a-4769-aa60-a4fe948e60b7",
       "name": "Director of Operations",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        720,
-        -288
+        544,
+        -384
       ],
       "typeVersion": 2.1
     },
@@ -463,12 +435,12 @@
           "systemMessage": "You are a helpful Director of Product Assistant.\nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- Call \"Git Actions\" tool → For handling all git updates, git pulls, git latest, pull requests, merge requests, pr's, mr's, code reviews, etc.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Check prs\",\n\"instructions\": \n\"Please check if any pull requests are available.\"\n}"
         }
       },
-      "id": "1146edb7-a148-4440-a51c-982dcf79b6c7",
+      "id": "d93a345a-aff2-4d2a-b5ac-a48239a8d49c",
       "name": "Director of Product",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        720,
-        64
+        -176,
+        -272
       ],
       "typeVersion": 2.1
     },
@@ -480,12 +452,12 @@
           "systemMessage": "You are a helpful Director of Engineering Agent. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- For handling read, write or delete operations call \"RW Agent\" tool"
         }
       },
-      "id": "36536d74-bae4-4989-a64b-9b8d03b00267",
+      "id": "8956aff8-5292-4ec7-a42e-3c67a074c0ad",
       "name": "Director of Engineering",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        720,
-        416
+        -176,
+        80
       ],
       "typeVersion": 2.1
     },
@@ -495,12 +467,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "6b9bc652-a88d-49cc-804a-74dda3993f55",
+      "id": "99dd4c7b-3c94-4494-a31b-4b095536b52e",
       "name": "Research Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        2256,
-        752
+        1360,
+        448
       ],
       "typeVersion": 2.2
     },
@@ -525,11 +497,36 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1280,
-        -96
+        880,
+        -80
       ],
-      "id": "6e75bcc7-3cb5-4338-b849-a19da1db599e",
+      "id": "57153017-42e4-43bd-9b1e-4ea069a2f126",
       "name": "Report Actions"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "o3",
+          "cachedResultName": "o3"
+        },
+        "options": {}
+      },
+      "id": "20756293-bbbf-4c25-a57a-bad4c481fbb1",
+      "name": "Product",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -176,
+        -80
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "wwvhoLcIlADIQmDC",
+          "name": "OpenAi account"
+        }
+      }
     },
     {
       "parameters": {
@@ -540,12 +537,12 @@
         },
         "options": {}
       },
-      "id": "2c7d61d7-bff8-4361-979d-9a4193a7ca6f",
-      "name": "Specialist",
+      "id": "1638b71b-31af-4575-bc8d-2cfd3497aab4",
+      "name": "Expert",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        720,
-        1200
+        -176,
+        816
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -565,37 +562,12 @@
         },
         "options": {}
       },
-      "id": "ae252c74-9f52-4e98-9f6d-b941ffa5853a",
-      "name": "General",
+      "id": "81993ca8-dd54-4720-92ad-6c77aa4b2dc0",
+      "name": "Engineer",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        720,
-        -96
-      ],
-      "typeVersion": 1.2,
-      "credentials": {
-        "openAiApi": {
-          "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "o3",
-          "cachedResultName": "o3"
-        },
-        "options": {}
-      },
-      "id": "427246e9-4953-45bd-877f-53cf36ff02ce",
-      "name": "Product",
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "position": [
-        720,
-        256
+        -176,
+        288
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -643,12 +615,12 @@
         },
         "options": {}
       },
-      "id": "8691cf78-83cf-4822-b672-3fa0a5e681dc",
-      "name": "Engineering",
+      "id": "09edeb6a-e262-4d48-bfe7-c74e212f51ce",
+      "name": "Operations",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        720,
-        608
+        432,
+        -80
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -665,7 +637,7 @@
       "main": [
         [
           {
-            "node": "Operation Decision",
+            "node": "Operation Parser",
             "type": "main",
             "index": 0
           }
@@ -867,17 +839,6 @@
         ]
       ]
     },
-    "Operation Decision": {
-      "main": [
-        [
-          {
-            "node": "Decision Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When chat message received": {
       "main": [
         [
@@ -916,31 +877,6 @@
         ]
       ]
     },
-    "Decision Switch": {
-      "main": [
-        [
-          {
-            "node": "Director of Operations",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Director of Product",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Director of Engineering",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Research Engineer Agent": {
       "ai_tool": [
         [
@@ -963,7 +899,18 @@
         ]
       ]
     },
-    "Specialist": {
+    "Product": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Director of Product",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expert": {
       "ai_languageModel": [
         [
           {
@@ -1004,33 +951,58 @@
         ]
       ]
     },
-    "General": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Director of Operations",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Product": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Director of Product",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Engineering": {
+    "Engineer": {
       "ai_languageModel": [
         [
           {
             "node": "Director of Engineering",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Domain Decision": {
+      "main": [
+        [
+          {
+            "node": "Director of Operations",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Director of Product",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Director of Engineering",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Operation Parser": {
+      "main": [
+        [
+          {
+            "node": "Domain Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Operations": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Director of Operations",
             "type": "ai_languageModel",
             "index": 0
           }
@@ -1042,7 +1014,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "b1239375-83ed-4afb-b452-36854c33442d",
+  "versionId": "d2504d05-7d87-45c6-bb16-4429308c51f7",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
