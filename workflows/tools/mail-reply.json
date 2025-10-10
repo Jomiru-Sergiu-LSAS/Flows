@@ -175,7 +175,7 @@
           "assignments": [
             {
               "id": "7d428c48-4809-45d8-ba1e-c96d68c02c07",
-              "name": "from",
+              "name": "to",
               "type": "string",
               "value": "={{ $('Check New Email (IMAP)').first().json.from }}"
             },
