@@ -50,142 +50,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": false,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 1
-          },
-          "conditions": [
-            {
-              "id": "operation-create-draft",
-              "leftValue": "={{ $json.operation }}",
-              "rightValue": "CREATE_DRAFT",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "id": "d9d7dd52-7abc-4efa-af93-5bf4405b1530",
-      "name": "Is Create Draft?",
-      "type": "n8n-nodes-base.if",
-      "position": [
-        -1488,
-        -192
-      ],
-      "typeVersion": 2
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": false,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 1
-          },
-          "conditions": [
-            {
-              "id": "operation-clean-spam",
-              "leftValue": "={{ $json.operation }}",
-              "rightValue": "CLEAN_SPAM",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "id": "69ac3605-b617-42d2-bbdd-cdb736adae11",
-      "name": "Is Clean Spam?",
-      "type": "n8n-nodes-base.if",
-      "position": [
-        -1264,
-        -32
-      ],
-      "typeVersion": 2
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": false,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 1
-          },
-          "conditions": [
-            {
-              "id": "operation-clean-drafts",
-              "leftValue": "={{ $json.operation }}",
-              "rightValue": "CLEAN_DRAFTS",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "id": "10015c5d-c291-43d5-9c66-5bd788ae46ed",
-      "name": "Is Clean Drafts?",
-      "type": "n8n-nodes-base.if",
-      "position": [
-        -1088,
-        128
-      ],
-      "typeVersion": 2
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": false,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 1
-          },
-          "conditions": [
-            {
-              "id": "operation-clean-trash",
-              "leftValue": "={{ $json.operation }}",
-              "rightValue": "CLEAN_TRASH",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "id": "04ec6a75-d52e-4249-81a3-586c28c1b555",
-      "name": "Is Clean Trash?",
-      "type": "n8n-nodes-base.if",
-      "position": [
-        -912,
-        288
-      ],
-      "typeVersion": 2
-    },
-    {
-      "parameters": {
         "promptType": "define",
         "text": "={{$json.originalChatInput}}",
         "messages": {
@@ -200,8 +64,8 @@
       "name": "Generate Email with AI",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "position": [
-        -1264,
-        -192
+        -1184,
+        -240
       ],
       "typeVersion": 1.6
     },
@@ -213,8 +77,8 @@
       "name": "Parse AI Response",
       "type": "n8n-nodes-base.code",
       "position": [
-        -928,
-        -192
+        -816,
+        -240
       ],
       "typeVersion": 2
     },
@@ -231,8 +95,8 @@
       "name": "Save as Gmail Draft",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        -528,
-        -192
+        -448,
+        -240
       ],
       "typeVersion": 2.1,
       "webhookId": "d298ef6b-b892-4eee-be31-caea6f5affdd",
@@ -257,8 +121,8 @@
       "name": "Fetch Emails",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        -528,
-        128
+        -816,
+        48
       ],
       "typeVersion": 2.1,
       "alwaysOutputData": true,
@@ -299,8 +163,8 @@
       "name": "Check if Emails Exist",
       "type": "n8n-nodes-base.if",
       "position": [
-        -352,
-        128
+        -640,
+        48
       ],
       "typeVersion": 2
     },
@@ -313,8 +177,8 @@
       "name": "Delete Email",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        48,
-        128
+        -288,
+        48
       ],
       "typeVersion": 2.1,
       "webhookId": "e4db125e-a260-45b0-b56c-2928e91ea6f4",
@@ -322,47 +186,6 @@
         "gmailOAuth2": {
           "id": "6ZNnHZRObc0alAvd",
           "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Get the cleanup type from the executed Set Parameters nodes\nlet cleanupType = 'Unknown';\n\n// Check which Set Parameters node was executed by looking at the workflow execution context\ntry {\n  // Try to get from Set Draft Clean Parameters\n  const draftParams = $('Draft Parameters').first();\n  if (draftParams && draftParams.json) {\n    cleanupType = 'Draft';\n  }\n} catch (e) {}\n\ntry {\n  // Try to get from Set Spam Clean Parameters  \n  const spamParams = $('Spam Parameters').first();\n  if (spamParams && spamParams.json) {\n    cleanupType = 'Spam';\n  }\n} catch (e) {}\n\ntry {\n  // Try to get from Set Trash Clean Parameters\n  const trashParams = $('Trash Parameters').first();\n  if (trashParams && trashParams.json) {\n    cleanupType = 'Trash';\n  }\n} catch (e) {}\n\n// Aggregate all deleted emails and add cleanup type\nreturn [{\n  json: {\n    deleted_emails: items.map(item => item.json),\n    cleanupType: cleanupType,\n    totalDeleted: items.length\n  }\n}];"
-      },
-      "id": "e7954522-2b24-4789-bffa-6c7344d5206a",
-      "name": "Aggregate Deleted Emails",
-      "type": "n8n-nodes-base.code",
-      "position": [
-        240,
-        128
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "fromEmail": "jomirusergiu@gmail.com",
-        "toEmail": "jomirusergiu@gmail.com",
-        "subject": "=Mail {{ $json.cleanupType }} Cleanup Report - {{ $json.totalDeleted }} emails deleted",
-        "emailFormat": "text",
-        "text": "=Mail {{ $json.cleanupType }} Cleanup completed successfully.\n\n{{ $json.totalDeleted }} emails were permanently deleted from your Gmail account.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
-        "options": {
-          "appendAttribution": false,
-          "allowUnauthorizedCerts": true
-        }
-      },
-      "id": "7bbe450d-0c77-41f1-8ebf-2f1f5921d537",
-      "name": "Send Cleanup Report",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
-      "position": [
-        432,
-        128
-      ],
-      "webhookId": "3f4b5a8d-099c-4808-81c0-9179c269fe8d",
-      "credentials": {
-        "smtp": {
-          "id": "hDZ18LOe4Kax4dpH",
-          "name": "SMTP account"
         }
       }
     },
@@ -377,8 +200,8 @@
       "name": "No Emails Found",
       "type": "n8n-nodes-base.set",
       "position": [
-        -144,
-        288
+        -448,
+        208
       ],
       "typeVersion": 3.4,
       "alwaysOutputData": true
@@ -400,8 +223,8 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        432,
-        288
+        32,
+        208
       ],
       "webhookId": "ae27f554-7b8a-4406-be36-4b01edfd300a",
       "credentials": {
@@ -423,8 +246,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        -1664,
-        48
+        -1568,
+        272
       ],
       "id": "214bbea7-9e40-43a1-856d-b784c310afc2",
       "name": "OpenAI Chat Model",
@@ -465,8 +288,8 @@
       "name": "Spam Parameters",
       "type": "n8n-nodes-base.set",
       "position": [
-        -720,
-        -32
+        -1104,
+        48
       ],
       "typeVersion": 3.4
     },
@@ -500,8 +323,8 @@
       "name": "Draft Parameters",
       "type": "n8n-nodes-base.set",
       "position": [
-        -720,
-        128
+        -1104,
+        -112
       ],
       "typeVersion": 3.4
     },
@@ -535,8 +358,8 @@
       "name": "Trash Parameters",
       "type": "n8n-nodes-base.set",
       "position": [
-        -720,
-        288
+        -1104,
+        208
       ],
       "typeVersion": 3.4
     },
@@ -564,8 +387,8 @@
       "name": "Prepare Email",
       "type": "n8n-nodes-base.set",
       "position": [
-        -720,
-        -192
+        -640,
+        -240
       ],
       "typeVersion": 3.4
     },
@@ -575,11 +398,66 @@
       "name": "Pause Deletion (5s)",
       "type": "n8n-nodes-base.wait",
       "position": [
-        -144,
-        128
+        -448,
+        48
       ],
       "typeVersion": 1.1,
       "webhookId": "0919dfb4-0d8e-46d0-ab27-a20d86215162"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "output": "={{ (() => {\n  const a = String($json.operation ?? '').trim().toLowerCase();\n  const map = {\n    'create_draft': 0,\n    'clean_drafts': 1,\n    'clean_spam': 2,\n    'clean_trash': 3,\n  };\n  return map[a] ?? -1; // -1 routes to fallback (enable it)\n})() }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1440,
+        -224
+      ],
+      "id": "d0726d09-3f86-41e7-981a-274cbd38bf4b",
+      "name": "Domain Decision"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the cleanup type from the executed Set Parameters nodes\nlet cleanupType = 'Unknown';\n\n// Check which Set Parameters node was executed by looking at the workflow execution context\ntry {\n  // Try to get from Set Draft Clean Parameters\n  const draftParams = $('Draft Parameters').first();\n  if (draftParams && draftParams.json) {\n    cleanupType = 'Draft';\n  }\n} catch (e) {}\n\ntry {\n  // Try to get from Set Spam Clean Parameters  \n  const spamParams = $('Spam Parameters').first();\n  if (spamParams && spamParams.json) {\n    cleanupType = 'Spam';\n  }\n} catch (e) {}\n\ntry {\n  // Try to get from Set Trash Clean Parameters\n  const trashParams = $('Trash Parameters').first();\n  if (trashParams && trashParams.json) {\n    cleanupType = 'Trash';\n  }\n} catch (e) {}\n\n// Aggregate all deleted emails and add cleanup type\nreturn [{\n  json: {\n    deleted_emails: items.map(item => item.json),\n    cleanupType: cleanupType,\n    totalDeleted: items.length\n  }\n}];"
+      },
+      "id": "e7954522-2b24-4789-bffa-6c7344d5206a",
+      "name": "Aggregate Emails",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -128,
+        48
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "jomirusergiu@gmail.com",
+        "toEmail": "jomirusergiu@gmail.com",
+        "subject": "=Mail {{ $json.cleanupType }} Cleanup Report - {{ $json.totalDeleted }} emails deleted",
+        "emailFormat": "text",
+        "text": "=Mail {{ $json.cleanupType }} Cleanup completed successfully.\n\n{{ $json.totalDeleted }} emails were permanently deleted from your Gmail account.\n\nCleanup Date: {{ $now.format(\"MMM dd, yyyy HH:mm:ss\") }}",
+        "options": {
+          "appendAttribution": false,
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "7bbe450d-0c77-41f1-8ebf-2f1f5921d537",
+      "name": "Send Clean Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        32,
+        48
+      ],
+      "webhookId": "3f4b5a8d-099c-4808-81c0-9179c269fe8d",
+      "credentials": {
+        "smtp": {
+          "id": "hDZ18LOe4Kax4dpH",
+          "name": "SMTP account"
+        }
+      }
     }
   ],
   "pinData": {
@@ -612,79 +490,7 @@
       "main": [
         [
           {
-            "node": "Is Create Draft?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Is Create Draft?": {
-      "main": [
-        [
-          {
-            "node": "Generate Email with AI",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Is Clean Spam?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Is Clean Spam?": {
-      "main": [
-        [
-          {
-            "node": "Spam Parameters",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Is Clean Drafts?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Is Clean Drafts?": {
-      "main": [
-        [
-          {
-            "node": "Draft Parameters",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Is Clean Trash?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Is Clean Trash?": {
-      "main": [
-        [
-          {
-            "node": "Trash Parameters",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Draft Parameters",
+            "node": "Domain Decision",
             "type": "main",
             "index": 0
           }
@@ -746,18 +552,7 @@
       "main": [
         [
           {
-            "node": "Aggregate Deleted Emails",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Aggregate Deleted Emails": {
-      "main": [
-        [
-          {
-            "node": "Send Cleanup Report",
+            "node": "Aggregate Emails",
             "type": "main",
             "index": 0
           }
@@ -845,13 +640,56 @@
           }
         ]
       ]
+    },
+    "Domain Decision": {
+      "main": [
+        [
+          {
+            "node": "Generate Email with AI",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Draft Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Spam Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Trash Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Emails": {
+      "main": [
+        [
+          {
+            "node": "Send Clean Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "816b186d-70cc-4e50-a668-3255a23aa7ec",
+  "versionId": "7df541f4-728a-439c-a685-c152ea0e9a6d",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
