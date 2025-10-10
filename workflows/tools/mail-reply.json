@@ -151,7 +151,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "={{ $json.textPlain }}",
+        "text": "=Sender: {{ $json.from }}\n\nEmail Content:\n{{ $json.textPlain }}",
         "messages": {
           "messageValues": [
             {
