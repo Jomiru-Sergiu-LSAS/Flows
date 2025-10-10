@@ -189,7 +189,7 @@
               "id": "11d94d3f-2170-4b54-b5f9-b85bb95ad472",
               "name": "text",
               "type": "string",
-              "value": "={{ $json.text }} "
+              "value": "={{ $json.text }}\n\nOn {{ $('Check New Email (IMAP)').first().json.date }}, {{ $('Check New Email (IMAP)').first().json.from }} wrote:\n> {{ $('Check New Email (IMAP)').first().json.textPlain.replace(/\\n/g, '\\n> ') }}"
             }
           ]
         },
