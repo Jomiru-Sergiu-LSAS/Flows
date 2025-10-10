@@ -390,13 +390,7 @@
     },
     "Run Monitor": {
       "main": [
-        [
-          {
-            "node": "Operation Complete",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "n8n Startup Trigger": {
@@ -424,11 +418,6 @@
     "Win Operations": {
       "main": [
         [
-          {
-            "node": "Run Monitor",
-            "type": "main",
-            "index": 0
-          },
           {
             "node": "Run Claude",
             "type": "main",
@@ -462,11 +451,11 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "64c29268-e01e-476e-8186-d80598fbcc53",
+  "versionId": "39d84817-da11-4adb-8427-7039372917bc",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
