@@ -285,13 +285,30 @@
         -160,
         -320
       ]
+    },
+    {
+      "parameters": {
+        "events": [
+          "init",
+          "activate"
+        ]
+      },
+      "type": "n8n-nodes-base.n8nTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        128
+      ],
+      "id": "4580e4e2-6dda-45ff-be94-face92565b84",
+      "name": "n8n Startup Trigger"
     }
   ],
   "pinData": {
-    "Executed by other flow": [
+    "Executed by other flow": [],
+    "n8n Startup Trigger": [
       {
         "json": {
-          "query": "delete \"C:\\Users\\Jomiru Sergiu\\Downloads\\file-tool.json\" file"
+          "query": "read \"C:\\Dev\\LSAS Tec Dropbox\\Jomiru Sergiu\\Work\\Key\\AgentWorklfows\\workflows\\router.json"
         }
       }
     ]
@@ -398,29 +415,40 @@
           }
         ]
       ]
+    },
+    "n8n Startup Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Operation Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "7b444dc6-b524-4f74-8033-089807401825",
+  "versionId": "ef0f842f-7353-486e-9820-8fe31e21ce9b",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
   "id": "vvKOjDSXDqyYbpok",
   "tags": [
     {
-      "name": "file-operations",
-      "id": "E9p4H6NTDopVmJKt",
       "createdAt": "2025-09-29T03:44:11.788Z",
-      "updatedAt": "2025-09-29T03:44:11.788Z"
+      "updatedAt": "2025-09-29T03:44:11.788Z",
+      "id": "E9p4H6NTDopVmJKt",
+      "name": "file-operations"
     },
     {
-      "name": "unified-tool",
-      "id": "hADwGEI1MIRaCf1N",
       "createdAt": "2025-09-29T03:44:11.792Z",
-      "updatedAt": "2025-09-29T03:44:11.792Z"
+      "updatedAt": "2025-09-29T03:44:11.792Z",
+      "id": "hADwGEI1MIRaCf1N",
+      "name": "unified-tool"
     },
     {
       "createdAt": "2025-08-04T04:19:34.812Z",
