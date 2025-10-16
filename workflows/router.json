@@ -7,28 +7,28 @@
           "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA (create/query), tickets, issues, tasks, bugs, features, stories, create task, create bug, create feature, create story, create ticket, create issue, get tasks, show tasks, list tasks, my tasks, my issues, sprint tasks, sprint issues, backlog tasks, backlog issues, assigned to me → Director of Product\n- For engineering, development, research, scripts, script creation, automation scripts, file operations (read, write, delete) → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Create a backup script\", \"agent\": \"Director of Engineering\"}\n{\"action\": \"Create a JIRA task for fixing the login bug\", \"agent\": \"Director of Product\"}\n{\"action\": \"Create a bug ticket for the payment system\", \"agent\": \"Director of Product\"}\n{\"action\": \"Get all my JIRA issues\", \"agent\": \"Director of Product\"}\n{\"action\": \"Show all sprint tasks\", \"agent\": \"Director of Product\"}\n{\"action\": \"List all backlog issues\", \"agent\": \"Director of Product\"}"
         }
       },
-      "id": "4df16fef-1e47-42a3-9523-fa8378fd52b1",
+      "id": "a25396f0-f575-448a-bcdc-0ea7b6b07291",
       "name": "CTO Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -1024,
-        -608
+        -3088,
+        -368
       ],
       "typeVersion": 2.1
     },
     {
       "parameters": {
-        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes to three specialized Director-level agents.\n\n### ⚙️ Architecture Flow\n**Chat Trigger ➜ CTO Agent ➜ Operation Parser ➜ Domain Decision ➜ Directors**\n\nCTO analyzes user requests and outputs JSON routing decisions. Operation Parser extracts routing info, and Domain Decision switch routes to the appropriate Director.\n\n---\n\n### 🎯 **Director of Operations** (O3 Model)\n*System Management & Communications*\n\n**Tools:**\n- **Mail Actions** → Email management (spam, drafts, trash cleanup, compose)\n- **News Actions** → Newsletter aggregation and latest news\n- **Win Actions** → Windows operations (shutdown, reboot, startup)\n- **Report Actions** → Reports and summaries (weekly, monthly, daily)\n\n---\n\n### 📦 **Director of Product** (O3 Model)\n*Project Management & Development Workflows*\n\n**Tools:**\n- **Git Actions** → Repository management, PRs, code reviews\n- **JIRA Actions** → Issue tracking\n  - **CREATE:** Tasks, Bugs, Features (LST project only)\n  - **QUERY:** Sprint tasks, Backlog tasks, My assigned tasks\n  - **Filters:** Active issues only (Task/Bug/Feature types)\n  - **Output:** Direct URLs to filtered issues\n\n---\n\n### 🛠️ **Director of Engineering** (O3 Model)\n*Technical Development & Engineering Solutions*\n\n**Expert Agents** (GPT-4.1-mini):\n- Software Architect → System design, patterns, architecture\n- Frontend Developer → UI/UX, responsive design, frameworks\n- Backend Developer → APIs, databases, microservices\n- QA Test Engineer → Test automation, quality assurance\n- Security Engineer → Vulnerability assessment, security practices\n- DevOps Engineer → Scripts, automation, CI/CD, infrastructure\n- Research Engineer → Technical research and exploration\n\n**Shared Tools:**\n- **RW Actions** → File operations (read, write, delete)\n- **Think** → Planning and coordination tool\n\n---\n\n### 💡 Usage Examples\n- \"Clean my email spam and trash\"\n- \"Show me all LST sprint tasks\"\n- \"Create a JIRA bug for the login issue\"\n- \"Review latest pull requests\"\n- \"Create a PowerShell backup script\"\n- \"Shutdown my computer in 10 minutes\"",
+        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes to three specialized Director-level agents.  CTO analyzes user requests and outputs JSON routing decisions. Operation Parser extracts routing info, and Domain Decision switch routes to the appropriate Director.\n\n### 🎯 **Director of Operations** (O3 Model)\n- **Mail Actions** → Email management (spam, drafts, trash cleanup, compose)\n- **News Actions** → Newsletter aggregation and latest news\n- **Win Actions** → Windows operations (shutdown, reboot, startup)\n- **Report Actions** → Reports and summaries (weekly, monthly, daily)\n\n### 📦 **Director of Product** (O3 Model)\n- **Git Actions** → Repository management, PRs, code reviews\n- **JIRA Actions** → Issue tracking\n  - **CREATE:** Tasks, Bugs, Features (LST project only)\n  - **QUERY:** Sprint tasks, Backlog tasks, My assigned tasks\n  - **Filters:** Active issues only (Task/Bug/Feature types)\n  - **Output:** Direct URLs to filtered issues\n\n### 🛠️ **Director of Engineering** (O3 Model)\n- Software Architect → System design, patterns, architecture\n- Frontend Developer → UI/UX, responsive design, frameworks\n- Backend Developer → APIs, databases, microservices\n- QA Test Engineer → Test automation, quality assurance\n- Security Engineer → Vulnerability assessment, security practices\n- DevOps Engineer → Scripts, automation, CI/CD, infrastructure\n- Research Engineer → Technical research and exploration\n\n### 💡 Usage Examples\n- \"Clean my email spam and trash\"\n- \"Show me all LST sprint tasks\"\n- \"Create a JIRA bug for the login issue\"\n- \"Review latest pull requests\"\n- \"Create a PowerShell backup script\"\n- \"Shutdown my computer in 10 minutes\"",
         "height": 964,
         "width": 900,
         "color": 7
       },
-      "id": "5837eef8-da67-4859-ab44-07bbfe6b2627",
+      "id": "e2e586f7-bdee-4162-aff6-79f7e13f708b",
       "name": "Sticky Note Main",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1328,
-        -272
+        -3392,
+        -32
       ],
       "typeVersion": 1
     },
@@ -53,10 +53,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -144,
-        -336
+        -2208,
+        -96
       ],
-      "id": "01bb02f9-b581-450f-b618-2ac87cc96702",
+      "id": "761ac2de-2a8e-43ab-b594-0ffaad915330",
       "name": "Git Actions"
     },
     {
@@ -123,10 +123,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -32,
-        -336
+        -2096,
+        -96
       ],
-      "id": "2c64984a-4f06-498f-b697-23bcb62bb215",
+      "id": "73e9bc85-e340-4443-8a22-2e4f7daccfde",
       "name": "JIRA Actions"
     },
     {
@@ -170,10 +170,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        1424,
-        592
+        -640,
+        832
       ],
-      "id": "99b073dc-88f7-413c-a29f-9953ec58e161"
+      "id": "fa1e8233-1112-49ba-875b-140a0cbef3b0"
     },
     {
       "parameters": {
@@ -181,12 +181,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "3a4333c1-d7af-4088-8245-b2f537100668",
+      "id": "f1eded33-fe5a-480d-b538-59620cb130b4",
       "name": "Frontend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        0,
-        224
+        -2064,
+        464
       ],
       "typeVersion": 2.2
     },
@@ -196,12 +196,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "4079946e-b548-4429-927f-cdefcb3392b0",
+      "id": "f3ecb714-1f61-4280-a7d4-1b1cb30232fc",
       "name": "Backend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        256,
-        224
+        -1808,
+        464
       ],
       "typeVersion": 2.2
     },
@@ -211,12 +211,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "ce57c0c8-f984-4e01-a350-5d9d2ff53a11",
+      "id": "483bd815-0891-45b8-8d2e-567a91f5fe76",
       "name": "QA Test Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        512,
-        224
+        -1552,
+        464
       ],
       "typeVersion": 2.2
     },
@@ -226,12 +226,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "ffdd3ca8-0daa-4e36-9bd4-2f646a807eed",
+      "id": "97d889b5-7d83-4f7d-a16b-a159e18f1d1d",
       "name": "Security Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        768,
-        224
+        -1296,
+        464
       ],
       "typeVersion": 2.2
     },
@@ -241,12 +241,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "c2ec81b3-76fe-40fe-9a3b-712415b9c0c9",
+      "id": "8eec2700-dfcc-4c3c-b42e-9eea46f6501c",
       "name": "DevOps Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1024,
-        224
+        -1040,
+        464
       ],
       "typeVersion": 2.2
     },
@@ -256,23 +256,23 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "1c49edde-b69b-4339-886a-bb10e2637d1f",
+      "id": "ca378fa9-1f18-4022-8b98-57b70a2f5d37",
       "name": "Software Architect Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        -256,
-        224
+        -2320,
+        464
       ],
       "typeVersion": 2.2
     },
     {
       "parameters": {},
-      "id": "b3b3a458-0cfd-4fe1-a53a-21a5f5d3320c",
+      "id": "4d0d94d9-0d69-4c00-97a3-cc1d6480d463",
       "name": "Think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "position": [
-        -96,
-        64
+        -2160,
+        304
       ],
       "typeVersion": 1.1
     },
@@ -316,10 +316,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        464,
-        -336
+        -1840,
+        -96
       ],
-      "id": "249bb51e-662f-4801-bc56-b0d8f148e64c",
+      "id": "af8ff852-5e47-42bc-ba9f-c9b9ac99c637",
       "name": "Mail Actions"
     },
     {
@@ -361,10 +361,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        576,
-        -336
+        -1728,
+        -96
       ],
-      "id": "e6aa997a-01c4-443c-9ad8-310d820fae58",
+      "id": "cc814879-aaf8-4ae9-921b-6f586d71f34a",
       "name": "News Actions"
     },
     {
@@ -406,10 +406,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        688,
-        -336
+        -1616,
+        -96
       ],
-      "id": "ed291562-991d-4700-8343-83f55f265f7d",
+      "id": "293932eb-a3ba-4938-a2c4-07c65067a5a0",
       "name": "Win Actions"
     },
     {
@@ -419,12 +419,12 @@
           "loadPreviousSession": "memory"
         }
       },
-      "id": "e4ce8ea5-1e65-4d7c-a6b8-43d36bafae30",
+      "id": "5c7d5662-6685-4aac-aca8-4267e29da2c9",
       "name": "When chat message received",
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "position": [
-        -1328,
-        -608
+        -3392,
+        -368
       ],
       "webhookId": "9eab0524-6cd7-4b81-8bd8-4d050a972a08",
       "typeVersion": 1.1
@@ -439,12 +439,12 @@
         },
         "options": {}
       },
-      "id": "cbc30159-a593-4d95-871d-241db5ee0c05",
+      "id": "6479bb9d-c1b3-4e1f-af20-7d0ade2a3dda",
       "name": "Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -1024,
-        -416
+        -3088,
+        -176
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -462,12 +462,12 @@
           "systemMessage": "You are a helpful Director of Operations Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Mail Actions\" tool → For emails, drafts, spam, trash.\n- Call \"News Actions\" tool → For news, newsletter, latest news.\n- Call \"Win Actions\" tool → For windows, pc, restart, reboot, startup, shutdown.\n- Call \"Report Actions\" tool → For handling all reports and summaries, including weekly, monthly, daily.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Delete trash mails\",\n\"instructions\": \n\"Please delete all messages from the trash folder in the mail account.\"\n}\n"
         }
       },
-      "id": "c6fed444-2f9c-4cbb-ae1c-ea4a7ec5f0ab",
+      "id": "fcc8e021-1713-4034-bd64-2e7399953b43",
       "name": "Director of Operations",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        464,
-        -640
+        -1840,
+        -400
       ],
       "typeVersion": 2.1
     },
@@ -479,12 +479,12 @@
           "systemMessage": "You are a helpful Director of Product Assistant.\nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Git Actions\" tool → For handling all git updates, git pulls, git latest, pull requests, merge requests, pr's, mr's, code reviews, etc.\n- Call \"JIRA Actions\" tool → For creating OR querying JIRA issues:\n  \n  CREATE operations:\n  * Parse user request to extract: issue type (task/bug/feature/story), summary/title, description, and priority\n  * Map \"feature\" requests to \"Story\" issue type\n  * Set operation to \"create\"\n  * Default to \"Task\" if issue type is unclear\n  * Provide all required fields: operation, issueType, summary, description, priority\n  \n  QUERY operations:\n  * For \"sprint tasks\", \"tasks in sprint\", \"current sprint\" → Set operation to \"query-sprint\"\n  * For \"backlog tasks\", \"tasks in backlog\", \"backlog\" → Set operation to \"query-backlog\"\n  * For \"my tasks\", \"tasks assigned to me\", \"assigned to Sergiu\" → Set operation to \"query-assigned\"\n  * IMPORTANT: For query operations, provide EMPTY STRINGS for issueType, summary, description, and priority (do not omit them)\n\nExample outputs:\n\n\"query for Git\": \n{\n\"chatInput\": \"Check prs\",\n\"instructions\": \"Please check if any pull requests are available.\"\n}\n\n\"create JIRA Task\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Task\",\n\"summary\": \"Fix login authentication bug\",\n\"description\": \"Users are unable to login with valid credentials. Error occurs on the login page after submitting the form.\",\n\"priority\": \"High\"\n}\n\n\"create JIRA Bug\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Bug\",\n\"summary\": \"Payment system not processing refunds\",\n\"description\": \"The payment system fails to process refund requests for orders over $100.\",\n\"priority\": \"High\"\n}\n\n\"create JIRA Feature/Story\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Story\",\n\"summary\": \"Add dark mode to user interface\",\n\"description\": \"Implement a dark mode theme option for the application to improve user experience and reduce eye strain.\",\n\"priority\": \"Medium\"\n}\n\n\"query sprint tasks\": \n{\n\"operation\": \"query-sprint\",\n\"issueType\": \"\",\n\"summary\": \"\",\n\"description\": \"\",\n\"priority\": \"\"\n}\n\n\"query backlog tasks\": \n{\n\"operation\": \"query-backlog\",\n\"issueType\": \"\",\n\"summary\": \"\",\n\"description\": \"\",\n\"priority\": \"\"\n}\n\n\"query my tasks\": \n{\n\"operation\": \"query-assigned\",\n\"issueType\": \"\",\n\"summary\": \"\",\n\"description\": \"\",\n\"priority\": \"\"\n}"
         }
       },
-      "id": "276c2330-29d7-44fc-bd7a-f00353637d70",
+      "id": "43cf08f6-f08c-4981-8b85-2375649d879c",
       "name": "Director of Product",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -256,
-        -528
+        -2320,
+        -288
       ],
       "typeVersion": 2.1
     },
@@ -496,12 +496,12 @@
           "systemMessage": "You are a helpful Director of Engineering Agent. \nMy name is Sergiu.\n\n📁 Default Working Directory: C:\\Dev\n- When file paths are not specified by the user, use C:\\Dev as the default directory\n- For script creation without a specified path, create files in C:\\Dev\n- If the user provides an explicit path, use that path instead\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- For script creation, automation scripts, or any scripting tasks → Call \"DevOps Engineer Agent\" tool (which will use RW Actions to create the script)\n  * IMPORTANT: When delegating file operations (create/read/delete), you MUST specify the full file path in your request\n  * If user didn't specify a path, use C:\\Dev\\<filename> as the default\n  * Always include the file extension (.ps1, .bat, .sh, .py, .txt, etc.)\n  * Example: \"Create a PowerShell script named ping_google.ps1 at C:\\Dev\\ping_google.ps1 that pings google.com\"\n- For architecture decisions and system design → Call \"Software Architect Agent\" tool\n- For UI/UX and frontend tasks → Call \"Frontend Developer Agent\" tool\n- For backend, API, and database tasks → Call \"Backend Developer Agent\" tool\n- For testing and quality assurance → Call \"QA Test Engineer Agent\" tool\n- For security assessments → Call \"Security Engineer Agent\" tool\n- For research and exploration → Call \"Research Engineer Agent\" tool"
         }
       },
-      "id": "60250223-bb4f-40f9-98a2-2ed7b59ca69c",
+      "id": "aa11a393-28ee-40e3-b03a-e0751515de5c",
       "name": "Director of Engineering",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -256,
-        -176
+        -2320,
+        64
       ],
       "typeVersion": 2.1
     },
@@ -511,12 +511,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "ab928e79-a52a-434c-b496-6f771cec5394",
+      "id": "63e4dcb6-6abb-4560-836d-fe16755ff47e",
       "name": "Research Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        1280,
-        224
+        -784,
+        464
       ],
       "typeVersion": 2.2
     },
@@ -541,10 +541,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        800,
-        -336
+        -1504,
+        -96
       ],
-      "id": "05e37d58-1c76-4466-ae43-c3787f6402b2",
+      "id": "8d9ed280-f1c2-4766-bc16-05499a68803a",
       "name": "Report Actions"
     },
     {
@@ -557,12 +557,12 @@
         },
         "options": {}
       },
-      "id": "4c946db5-ebab-4524-80e9-f2c433dc8180",
+      "id": "06498446-8a43-4896-b1d7-07f4d8688a0f",
       "name": "Product",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -256,
-        -336
+        -2320,
+        -96
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -581,12 +581,12 @@
         },
         "options": {}
       },
-      "id": "14e95bd7-32fe-406a-b144-9e776abd8119",
+      "id": "5a11b06e-ce47-487f-bbf2-b8cd9df07711",
       "name": "Expert",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -256,
-        592
+        -2320,
+        832
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -606,12 +606,12 @@
         },
         "options": {}
       },
-      "id": "78a4855b-2a0d-4fe4-965f-592581dd1f01",
+      "id": "e2a4a488-9e35-4c88-84c5-1ce923aa8423",
       "name": "Engineer",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -256,
-        64
+        -2320,
+        304
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -630,22 +630,22 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -544,
-        -624
+        -2608,
+        -384
       ],
-      "id": "403dfa14-a6de-430f-a8cb-9e49aebff8a1",
+      "id": "69563e3f-44aa-4f45-bb46-2558bda6f593",
       "name": "Domain Decision"
     },
     {
       "parameters": {
         "jsCode": "return items.map(item => {\n  let parsed;\n  let outputText = item.json.output || '';\n  \n  // Handle case where output might be wrapped in markdown code blocks\n  let jsonText = outputText.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  \n  try {\n    parsed = JSON.parse(jsonText);\n    return { \n      json: {\n        action: parsed.action || 'UNKNOWN',\n        agent: parsed.agent || 'UNKNOWN'\n      }\n    };\n  } catch (e) {\n    // Try to extract JSON from the text using regex\n    const jsonMatch = outputText.match(/{[\\s\\S]*?}/);\n    if (jsonMatch) {\n      try {\n        parsed = JSON.parse(jsonMatch[0]);\n        return { \n          json: {\n            action: parsed.action || 'UNKNOWN',\n            agent: parsed.agent || 'UNKNOWN'\n          }\n        };\n      } catch (e2) {\n        // Fallback: try to extract values manually\n        const actionMatch = outputText.match(/\"action\"\\s*:\\s*\"([^\"]*)\"/);\n        const agentMatch = outputText.match(/\"agent\"\\s*:\\s*\"([^\"]*)\"/);\n        \n        if (actionMatch && agentMatch) {\n          return { \n            json: {\n              action: actionMatch[1],\n              agent: agentMatch[1]\n            }\n          };\n        }\n      }\n    }\n    \n    // Final fallback\n    console.log('Failed to parse JSON from output:', outputText);\n    return { \n      json: {\n        action: \"UNKNOWN\",\n        agent: \"Chat Agent\"\n      }\n    };\n  }\n});\n"
       },
-      "id": "027de5ee-1cda-44d3-a566-c15fc68c6c61",
+      "id": "aecb8540-217d-4304-ae21-7dd741c26e8b",
       "name": "Operation Parser",
       "type": "n8n-nodes-base.code",
       "position": [
-        -720,
-        -608
+        -2784,
+        -368
       ],
       "typeVersion": 2
     },
@@ -659,12 +659,12 @@
         },
         "options": {}
       },
-      "id": "e6d28206-9d90-487e-857b-1edd5b113629",
+      "id": "d99dca4b-f01d-4386-aadd-5aba8a07abb4",
       "name": "Operations",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        352,
-        -336
+        -1952,
+        -96
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -681,10 +681,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -1328,
-        -416
+        -3392,
+        -176
       ],
-      "id": "fca25410-3200-435d-b74a-c3243013daaf",
+      "id": "7616bb6d-8ece-490d-8633-ac63116652de",
       "name": "Memory"
     }
   ],
@@ -1049,7 +1049,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "57414830-c84e-4194-8577-be5bf242abc2",
+  "versionId": "deea0ae5-4e36-4194-ad26-5dbe321159fe",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
