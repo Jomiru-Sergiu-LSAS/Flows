@@ -6,11 +6,25 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
-        -480,
-        256
+        -1312,
+        240
       ],
       "typeVersion": 1,
-      "id": "1ddad2e9-72c8-4714-b5b7-f08f4f995140"
+      "id": "3cd19c4e-de75-42ba-934d-09a497baf73f"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "output": "={{ (() => {\n  const op = String($json.operation ?? 'create').trim().toLowerCase();\n  const map = {\n    'create': 0,\n    'query-sprint': 1,\n    'query-backlog': 2,\n    'query-assigned': 3\n  };\n  return map[op] ?? 0;\n})() }}"
+      },
+      "name": "Operation Router",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -1072,
+        208
+      ],
+      "typeVersion": 3.2,
+      "id": "ddbe3e1d-57c2-46e1-a1a1-777ad664c35c"
     },
     {
       "parameters": {
@@ -21,11 +35,11 @@
       "name": "Issue Type Router",
       "type": "n8n-nodes-base.switch",
       "position": [
-        -240,
-        240
+        -752,
+        -32
       ],
       "typeVersion": 3.2,
-      "id": "2afe2914-4d37-4b33-ac48-80fc19a265e7"
+      "id": "b9cc6504-2e35-45e1-a9a6-5f0cc39e17e8"
     },
     {
       "parameters": {
@@ -54,11 +68,11 @@
       "name": "Create Task",
       "type": "n8n-nodes-base.jira",
       "position": [
-        0,
-        32
+        -480,
+        -176
       ],
       "typeVersion": 1,
-      "id": "8f1edf5d-ee1a-43b4-a862-7acf30defa4e",
+      "id": "f8560c87-6694-45b2-ae1e-4e89b83412ab",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
@@ -93,11 +107,11 @@
       "name": "Create Bug",
       "type": "n8n-nodes-base.jira",
       "position": [
-        0,
-        240
+        -480,
+        -16
       ],
       "typeVersion": 1,
-      "id": "2636ef24-7e75-46a3-96bf-782bc0e3cd4a",
+      "id": "6b314e1d-b193-453d-a8df-b48ae4108adb",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
@@ -133,11 +147,11 @@
       "name": "Create Story",
       "type": "n8n-nodes-base.jira",
       "position": [
-        0,
-        464
+        -480,
+        144
       ],
       "typeVersion": 1,
-      "id": "91c34c90-501a-49af-bfe1-991aaef27dca",
+      "id": "dedca245-00bf-4644-b7b1-111714311da0",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
@@ -145,6 +159,69 @@
         }
       },
       "notes": "REQUIRED: Open this node in n8n UI and select 'Story' (or 'Feature') from the Issue Type dropdown"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "options": {}
+      },
+      "name": "Query Sprint Tasks",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        -752,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "6bb7bb5b-4909-4468-a415-a9e6fa3988be",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "options": {}
+      },
+      "name": "Query Backlog Tasks",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        -752,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "f01e95f9-73fa-4564-a738-979c245d503a",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "options": {}
+      },
+      "name": "Query My Tasks",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        -752,
+        480
+      ],
+      "typeVersion": 1,
+      "id": "4a78c306-13ef-4082-b125-f8ea01bbb19c",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -153,7 +230,39 @@
       "main": [
         [
           {
+            "node": "Operation Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Operation Router": {
+      "main": [
+        [
+          {
             "node": "Issue Type Router",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query Sprint Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query Backlog Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query My Tasks",
             "type": "main",
             "index": 0
           }
@@ -188,7 +297,7 @@
   },
   "active": false,
   "settings": {},
-  "versionId": "560a0657-19e1-4b7c-b1c6-6c723c33dd2f",
+  "versionId": "34bfa67f-782e-4b45-bc6f-c52925b31a90",
   "meta": {
     "templateId": "459",
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
