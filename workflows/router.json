@@ -4,31 +4,31 @@
     {
       "parameters": {
         "options": {
-          "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA, tickets, issues, CI/CD, build, deploy, pipeline, general chat/questions → Director of Product\n- For engineering, development, research, and read, write or delete operations → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}"
+          "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA (create/query), tickets, issues, tasks, bugs, features, stories, create task, create bug, create feature, create story, create ticket, create issue, get tasks, show tasks, list tasks, my tasks, my issues, sprint tasks, sprint issues, backlog tasks, backlog issues, assigned to me, CI/CD, build, deploy, pipeline, general chat/questions → Director of Product\n- For engineering, development, research, scripts, script creation, automation scripts, file operations (read, write, delete) → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Create a backup script\", \"agent\": \"Director of Engineering\"}\n{\"action\": \"Create a JIRA task for fixing the login bug\", \"agent\": \"Director of Product\"}\n{\"action\": \"Create a bug ticket for the payment system\", \"agent\": \"Director of Product\"}\n{\"action\": \"Get all my JIRA issues\", \"agent\": \"Director of Product\"}\n{\"action\": \"Show all sprint tasks\", \"agent\": \"Director of Product\"}\n{\"action\": \"List all backlog issues\", \"agent\": \"Director of Product\"}"
         }
       },
-      "id": "a86c5857-5e23-40f5-af26-effc8c7a5989",
+      "id": "76d8e29c-3e1e-43d7-8ff5-ef6b8130974c",
       "name": "CTO Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -1872,
-        -560
+        -2624,
+        80
       ],
       "typeVersion": 2.1
     },
     {
       "parameters": {
-        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Git Actions** (repos, PRs, code reviews, repository updates) \n     - **JIRA Actions** (tickets, issues, project tracking)\n     - **Chat Actions** (general conversations)\n     - **CI/CD Actions** (build, deploy, pipelines)\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Expert Engineer Agents** with shared **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **RW Actions** (unified file read, write, delete operations with AI classification)\n     - **Think** tool for coordination and planning\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (Model)\n- **Director of Operations:** O3 (General)\n- **Director of Product:** O3 (Product) \n- **Director of Engineering:** O3 (Engineer)\n- **7 Engineering Experts:** GPT-4.1-mini (Specialist)\n\n\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, reports/git/JIRA tasks, or technical engineering solutions including file operations. Each Director manages tools and actions for their domain.",
-        "height": 932,
+        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Git Actions** (repos, PRs, code reviews, repository updates) \n     - **JIRA Actions** (create/query tickets, issues, project tracking)\n       * Create: tasks, bugs, features/stories with priority\n       * Query: sprint tasks, backlog tasks, my assigned tasks\n     - **Chat Actions** (general conversations)\n     - **CI/CD Actions** (build, deploy, pipelines)\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Expert Engineer Agents** with shared **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **RW Actions** (unified file read, write, delete operations with AI classification)\n     - **Think** tool for coordination and planning\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (Model)\n- **Director of Operations:** O3 (General)\n- **Director of Product:** O3 (Product) \n- **Director of Engineering:** O3 (Engineer)\n- **7 Engineering Experts:** GPT-4.1-mini (Specialist)\n\n\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, create/query JIRA tasks (sprint/backlog/assigned), manage git/PRs, or technical engineering solutions including file operations. Each Director manages tools and actions for their domain.",
+        "height": 964,
         "width": 900,
         "color": 7
       },
-      "id": "148e17f1-8403-4e8e-b5d7-6993ba43d108",
+      "id": "8f20bc82-fecd-4672-9e3f-97f4f0f10369",
       "name": "Sticky Note Main",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -2176,
-        -224
+        -2928,
+        416
       ],
       "typeVersion": 1
     },
@@ -53,21 +53,80 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -992,
-        -288
+        -1744,
+        352
       ],
-      "id": "0bd7c300-7440-46d9-be66-b8c5bc199c5e",
+      "id": "42da055a-38a1-4ada-b9a3-72301b7fe884",
       "name": "Git Actions"
     },
     {
-      "parameters": {},
+      "parameters": {
+        "description": "Call this tool to create JIRA tasks/bugs/features OR query JIRA issues (sprint tasks, backlog tasks, or tasks assigned to me).",
+        "workflowId": {
+          "__rl": true,
+          "value": "uPHpgToaQ0oK47hI",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/uPHpgToaQ0oK47hI",
+          "cachedResultName": "jira-tool"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "operation": "={{ $fromAI('operation', 'Operation type: create, query-sprint, query-backlog, or query-assigned. Use create to create new issues, query-sprint to get all sprint tasks, query-backlog to get all backlog tasks, or query-assigned to get tasks assigned to Sergiu.', 'string') }}",
+            "issueType": "={{ $fromAI('issueType', 'For create operation: Task, Bug, or Story. Not needed for query operations.', 'string') }}",
+            "summary": "={{ $fromAI('summary', 'For create operation: A concise summary/title. Not needed for query operations.', 'string') }}",
+            "description": "={{ $fromAI('description', 'For create operation: Detailed description. Not needed for query operations.', 'string') }}",
+            "priority": "={{ $fromAI('priority', 'For create operation: Low, Medium, High, or Critical. Not needed for query operations.', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "operation",
+              "displayName": "Operation",
+              "required": true,
+              "defaultValue": "create",
+              "type": "string"
+            },
+            {
+              "id": "issueType",
+              "displayName": "Issue Type",
+              "required": false,
+              "defaultValue": "Task",
+              "type": "string"
+            },
+            {
+              "id": "summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "description",
+              "displayName": "Description",
+              "required": false,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultValue": "Medium",
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -880,
-        -288
+        -1632,
+        352
       ],
-      "id": "1ce2e57a-42d9-4616-a8e2-f184ee8941f0",
+      "id": "bffbbd89-9c24-459d-9c1a-71c3e11cf3a9",
       "name": "JIRA Actions"
     },
     {
@@ -75,10 +134,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -768,
-        -288
+        -1520,
+        352
       ],
-      "id": "bd9ffe16-5ec4-4290-9b8d-19484ef35b9c",
+      "id": "c3edfaa7-0a08-4dae-aa40-f87a0fc37caf",
       "name": "Chat Actions"
     },
     {
@@ -86,26 +145,45 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -656,
-        -288
+        -1408,
+        352
       ],
-      "id": "f6a64173-fd2e-4807-9a17-092899b0d3ab",
+      "id": "defbeeac-3ceb-47e4-842a-bc367add2708",
       "name": "CI/CD Actions"
     },
     {
       "parameters": {
-        "description": "Call this tool to handle all read, write, delete file operations.",
+        "description": "Call this tool to handle all read, write, delete file operations, including creating scripts and automation files.",
         "workflowId": {
           "__rl": true,
           "value": "vvKOjDSXDqyYbpok",
           "mode": "list",
+          "cachedResultUrl": "/workflow/vvKOjDSXDqyYbpok",
           "cachedResultName": "rw-tool"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
-          "value": {},
+          "value": {
+            "chatInput": "={{ $fromAI('chatInput', 'The complete file content to write (for write operations), or the file path (for read/delete operations). For scripts, include the FULL script code here.', 'string') }}",
+            "fileInstructions": "={{ $fromAI('fileInstructions', 'Specify the operation (read/write/delete), the target file path with extension (e.g., C:\\\\scripts\\\\backup.ps1), and any additional context. For write operations, chatInput should contain the content and fileInstructions should specify the destination path.', 'string') }}"
+          },
           "matchingColumns": [],
-          "schema": [],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "File Content or Path",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            },
+            {
+              "id": "fileInstructions",
+              "displayName": "File Instructions",
+              "required": true,
+              "defaultValue": "",
+              "type": "string"
+            }
+          ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
         }
@@ -114,10 +192,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        576,
-        624
+        -176,
+        1280
       ],
-      "id": "f14d899b-1e82-432e-90ad-ee9acb10bc34"
+      "id": "4e6f49ee-d09a-46c5-9c59-5755e13e66da"
     },
     {
       "parameters": {
@@ -125,12 +203,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "bf2c83dd-57a5-4c5d-a4de-0b2ed2a6ae0b",
+      "id": "2b0c28bd-7d94-4d17-8166-4b39bb366d4b",
       "name": "Frontend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        -848,
-        256
+        -1600,
+        912
       ],
       "typeVersion": 2.2
     },
@@ -140,12 +218,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "7aaa3e8f-e65c-4468-bc22-9c3097eeab77",
+      "id": "e8dd73f1-6db9-4a97-bf63-af008fc1a728",
       "name": "Backend Developer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        -592,
-        256
+        -1344,
+        912
       ],
       "typeVersion": 2.2
     },
@@ -155,12 +233,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "a4810068-aaa5-430b-8364-1e3e3523ce19",
+      "id": "6e926d66-cb55-4fd5-9aba-1b1bf4076903",
       "name": "QA Test Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        -336,
-        256
+        -1088,
+        912
       ],
       "typeVersion": 2.2
     },
@@ -170,27 +248,27 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "6d45cf76-1f5d-408f-9171-2d18a471b9d0",
+      "id": "4d5ef76a-425c-4557-b2e3-168402a97c47",
       "name": "Security Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        -80,
-        256
+        -832,
+        912
       ],
       "typeVersion": 2.2
     },
     {
       "parameters": {
-        "toolDescription": "You are a DevOps Engineer Agent. \nYou manage CI/CD pipelines, cloud deployments, and infrastructure as code.\n\nCall this AI Agent that specializes in CI/CD pipelines, infrastructure automation, containerization, and deployment strategies\n\n📤 Output JSON:\n{\n  \"action\": \"respond\",\n  \"tool\": \"None\",\n  \"arguments\": { \"pipeline\": \"devops task\" },\n  \"response\": \"DevOps solution for Sergiu\"\n}\n",
+        "toolDescription": "You are a DevOps Engineer Agent specialized in SCRIPT CREATION and automation.\n\nPrimary responsibilities:\n- Creating scripts (batch files, PowerShell, bash scripts, automation scripts)\n- Writing automation code for system tasks\n- CI/CD pipelines, cloud deployments, and infrastructure as code\n\n📁 Default Working Directory: C:\\\\Dev\n- When no file path is specified, create scripts in C:\\\\Dev\n- If user provides a specific path, use that path instead\n- Always use the proper file extension (.ps1, .bat, .sh, .py, etc.)\n\n🔑 CRITICAL: When asked to CREATE, WRITE, or GENERATE scripts or files:\n1. First, generate the COMPLETE script content\n2. Call the \"RW Actions\" tool with two parameters:\n   - chatInput: The FULL script content (all code, multi-line, properly formatted)\n   - fileInstructions: \"write to <file_path>\" (e.g., \"write to C:\\\\Dev\\\\backup.ps1\")\n3. If no path specified, default to C:\\\\Dev\\\\<scriptname>.ext\n\nExample RW Actions call formats:\n- chatInput: \"@echo off\\necho Hello World\\npause\"\n- fileInstructions: \"write to C:\\\\Dev\\\\hello.bat\"\n\nCall this AI Agent for script creation, automation tasks, CI/CD, infrastructure automation, containerization, and deployment strategies.\n\n📤 Output JSON:\n{\n  \"action\": \"respond\",\n  \"tool\": \"RW Actions\",\n  \"arguments\": { \"chatInput\": \"<full_script_content>\", \"fileInstructions\": \"write to <path>\" },\n  \"response\": \"Script created for Sergiu\"\n}\n",
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "ec2ac4ad-0253-4f6e-8627-39ee0fa94dad",
+      "id": "1cd429b4-6fec-4c86-b17f-bdbfb1c9d63d",
       "name": "DevOps Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        176,
-        256
+        -576,
+        912
       ],
       "typeVersion": 2.2
     },
@@ -200,23 +278,23 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "981df550-4afd-4029-9a24-1d7ce11cee92",
+      "id": "3005dd6a-d15c-4091-a477-7d7c53f9ea0d",
       "name": "Software Architect Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        -1104,
-        256
+        -1856,
+        912
       ],
       "typeVersion": 2.2
     },
     {
       "parameters": {},
-      "id": "df9754f0-f4a3-41eb-a0d2-735c8544c344",
+      "id": "7c603984-f254-4962-b662-37a996c6d40f",
       "name": "Think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "position": [
-        -944,
-        96
+        -1696,
+        752
       ],
       "typeVersion": 1.1
     },
@@ -227,6 +305,7 @@
           "__rl": true,
           "value": "luB6neTADgM0YTIH",
           "mode": "list",
+          "cachedResultUrl": "/workflow/luB6neTADgM0YTIH",
           "cachedResultName": "mail-tool"
         },
         "workflowInputs": {
@@ -259,10 +338,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -384,
-        -288
+        -1136,
+        352
       ],
-      "id": "4aa53140-0dbb-42f4-a511-2ea77aabe363",
+      "id": "2f644e79-5fdd-4675-b0cb-e7c4c29a2ff1",
       "name": "Mail Actions"
     },
     {
@@ -304,10 +383,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -272,
-        -288
+        -1024,
+        352
       ],
-      "id": "e686bc3d-cf64-4755-80ba-517195ffd133",
+      "id": "8684714d-3e6a-41c9-aa7d-ee9fecd6caa1",
       "name": "News Actions"
     },
     {
@@ -349,10 +428,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -160,
-        -288
+        -912,
+        352
       ],
-      "id": "6655e8b4-4384-44da-aa3e-ad64962faeba",
+      "id": "9e64e9bf-2146-4e28-82a1-0abcda1d8a79",
       "name": "Win Actions"
     },
     {
@@ -362,12 +441,12 @@
           "loadPreviousSession": "memory"
         }
       },
-      "id": "6cfbc7be-3786-4fe5-b037-8396badfdfac",
+      "id": "94eaebe5-8bf7-4ade-a35e-aabe813fc7b2",
       "name": "When chat message received",
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "position": [
-        -2176,
-        -560
+        -2928,
+        80
       ],
       "webhookId": "9eab0524-6cd7-4b81-8bd8-4d050a972a08",
       "typeVersion": 1.1
@@ -382,12 +461,12 @@
         },
         "options": {}
       },
-      "id": "e3590138-2d66-4fd6-9f35-9e29dc547938",
+      "id": "5915b7cd-6858-4dec-8e87-575f7bb915b1",
       "name": "Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -1872,
-        -368
+        -2624,
+        272
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -405,12 +484,12 @@
           "systemMessage": "You are a helpful Director of Operations Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Mail Actions\" tool → For emails, drafts, spam, trash.\n- Call \"News Actions\" tool → For news, newsletter, latest news.\n- Call \"Win Actions\" tool → For windows, pc, restart, reboot, startup, shutdown.\n- Call \"Report Actions\" tool → For handling all reports and summaries, including weekly, monthly, daily.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Delete trash mails\",\n\"instructions\": \n\"Please delete all messages from the trash folder in the mail account.\"\n}\n"
         }
       },
-      "id": "46cbda9e-4264-4d57-85d4-6683d711a70e",
+      "id": "d960abff-6d8b-4b60-9651-1e170e66a485",
       "name": "Director of Operations",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -384,
-        -592
+        -1136,
+        48
       ],
       "typeVersion": 2.1
     },
@@ -419,15 +498,15 @@
         "promptType": "define",
         "text": "={{ $json.action }}",
         "options": {
-          "systemMessage": "You are a helpful Director of Product Assistant.\nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- Call \"Git Actions\" tool → For handling all git updates, git pulls, git latest, pull requests, merge requests, pr's, mr's, code reviews, etc.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Check prs\",\n\"instructions\": \n\"Please check if any pull requests are available.\"\n}"
+          "systemMessage": "You are a helpful Director of Product Assistant.\nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Git Actions\" tool → For handling all git updates, git pulls, git latest, pull requests, merge requests, pr's, mr's, code reviews, etc.\n- Call \"JIRA Actions\" tool → For creating OR querying JIRA issues:\n  \n  CREATE operations:\n  * Parse user request to extract: issue type (task/bug/feature/story), summary/title, description, and priority\n  * Map \"feature\" requests to \"Story\" issue type\n  * Set operation to \"create\"\n  * Default to \"Task\" if issue type is unclear\n  \n  QUERY operations:\n  * For \"sprint tasks\", \"tasks in sprint\", \"current sprint\" → Set operation to \"query-sprint\"\n  * For \"backlog tasks\", \"tasks in backlog\", \"backlog\" → Set operation to \"query-backlog\"\n  * For \"my tasks\", \"tasks assigned to me\", \"assigned to Sergiu\" → Set operation to \"query-assigned\"\n  * For query operations, only provide the operation field, other fields are not needed\n\nExample outputs:\n\n\"query for Git\": \n{\n\"chatInput\": \"Check prs\",\n\"instructions\": \"Please check if any pull requests are available.\"\n}\n\n\"create JIRA Task\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Task\",\n\"summary\": \"Fix login authentication bug\",\n\"description\": \"Users are unable to login with valid credentials. Error occurs on the login page after submitting the form.\",\n\"priority\": \"High\"\n}\n\n\"create JIRA Bug\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Bug\",\n\"summary\": \"Payment system not processing refunds\",\n\"description\": \"The payment system fails to process refund requests for orders over $100.\",\n\"priority\": \"High\"\n}\n\n\"create JIRA Feature/Story\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Story\",\n\"summary\": \"Add dark mode to user interface\",\n\"description\": \"Implement a dark mode theme option for the application to improve user experience and reduce eye strain.\",\n\"priority\": \"Medium\"\n}\n\n\"query sprint tasks\": \n{\n\"operation\": \"query-sprint\"\n}\n\n\"query backlog tasks\": \n{\n\"operation\": \"query-backlog\"\n}\n\n\"query my tasks\": \n{\n\"operation\": \"query-assigned\"\n}"
         }
       },
-      "id": "192b1933-9a5c-4f1a-89e9-66663f831c86",
+      "id": "006bbae8-4d25-4c38-925d-b6d486768a8f",
       "name": "Director of Product",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -1104,
-        -480
+        -1856,
+        160
       ],
       "typeVersion": 2.1
     },
@@ -436,15 +515,15 @@
         "promptType": "define",
         "text": "={{ $json.action }}",
         "options": {
-          "systemMessage": "You are a helpful Director of Engineering Agent. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- For handling read, write or delete operations call \"RW Agent\" tool"
+          "systemMessage": "You are a helpful Director of Engineering Agent. \nMy name is Sergiu.\n\n📁 Default Working Directory: C:\\Dev\n- When file paths are not specified by the user, use C:\\Dev as the default directory\n- For script creation without a specified path, create files in C:\\Dev\n- If the user provides an explicit path, use that path instead\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only.\n- For script creation, automation scripts, or any scripting tasks → Call \"DevOps Engineer Agent\" tool (which will use RW Actions to create the script)\n  * IMPORTANT: When delegating file operations (create/read/delete), you MUST specify the full file path in your request\n  * If user didn't specify a path, use C:\\Dev\\<filename> as the default\n  * Always include the file extension (.ps1, .bat, .sh, .py, .txt, etc.)\n  * Example: \"Create a PowerShell script named ping_google.ps1 at C:\\Dev\\ping_google.ps1 that pings google.com\"\n- For architecture decisions and system design → Call \"Software Architect Agent\" tool\n- For UI/UX and frontend tasks → Call \"Frontend Developer Agent\" tool\n- For backend, API, and database tasks → Call \"Backend Developer Agent\" tool\n- For testing and quality assurance → Call \"QA Test Engineer Agent\" tool\n- For security assessments → Call \"Security Engineer Agent\" tool\n- For research and exploration → Call \"Research Engineer Agent\" tool"
         }
       },
-      "id": "b470e28f-d0b8-4e0a-8760-e07e8a1f99e7",
+      "id": "e658deb9-9427-4ce4-868e-7723513f42f3",
       "name": "Director of Engineering",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -1104,
-        -128
+        -1856,
+        512
       ],
       "typeVersion": 2.1
     },
@@ -454,12 +533,12 @@
         "text": "={{ $fromAI('Prompt__User_Message_', ``, 'string') }}",
         "options": {}
       },
-      "id": "19ba618e-f9f8-471c-9533-aa9f7973bfe3",
+      "id": "8d40ef19-dca1-4c07-9f91-38d4f7ed8ac4",
       "name": "Research Engineer Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        432,
-        256
+        -320,
+        912
       ],
       "typeVersion": 2.2
     },
@@ -484,10 +563,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -48,
-        -288
+        -800,
+        352
       ],
-      "id": "24d05594-b10a-4e52-91f0-710fe4ab2fa4",
+      "id": "49f05fc2-50cf-41a9-af75-c3a44b003f16",
       "name": "Report Actions"
     },
     {
@@ -500,12 +579,12 @@
         },
         "options": {}
       },
-      "id": "661a5882-515a-4eb0-b117-485c0f21e0b2",
+      "id": "e2a2dbf4-9f4c-408f-bb0f-e4eb4ae225b2",
       "name": "Product",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -1104,
-        -288
+        -1856,
+        352
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -524,12 +603,12 @@
         },
         "options": {}
       },
-      "id": "36aca435-295d-4b29-b5d5-226f8a159efa",
+      "id": "e04d3c88-aefd-40e1-8062-a7b50c45a068",
       "name": "Expert",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -1104,
-        624
+        -1856,
+        1280
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -549,12 +628,12 @@
         },
         "options": {}
       },
-      "id": "45fa35d1-d067-4d39-98be-d03fdc8314b1",
+      "id": "2f930ddb-6757-4bf8-8795-d81fd006bea1",
       "name": "Engineer",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -1104,
-        96
+        -1856,
+        752
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -573,22 +652,22 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -1392,
-        -576
+        -2144,
+        64
       ],
-      "id": "e8bb6358-0866-4c1d-a679-b9a3d998ae36",
+      "id": "b6c7ced7-f6b7-4bf7-8dea-dc0126da24b6",
       "name": "Domain Decision"
     },
     {
       "parameters": {
         "jsCode": "return items.map(item => {\n  let parsed;\n  let outputText = item.json.output || '';\n  \n  // Handle case where output might be wrapped in markdown code blocks\n  let jsonText = outputText.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  \n  try {\n    parsed = JSON.parse(jsonText);\n    return { \n      json: {\n        action: parsed.action || 'UNKNOWN',\n        agent: parsed.agent || 'UNKNOWN'\n      }\n    };\n  } catch (e) {\n    // Try to extract JSON from the text using regex\n    const jsonMatch = outputText.match(/{[\\s\\S]*?}/);\n    if (jsonMatch) {\n      try {\n        parsed = JSON.parse(jsonMatch[0]);\n        return { \n          json: {\n            action: parsed.action || 'UNKNOWN',\n            agent: parsed.agent || 'UNKNOWN'\n          }\n        };\n      } catch (e2) {\n        // Fallback: try to extract values manually\n        const actionMatch = outputText.match(/\"action\"\\s*:\\s*\"([^\"]*)\"/);\n        const agentMatch = outputText.match(/\"agent\"\\s*:\\s*\"([^\"]*)\"/);\n        \n        if (actionMatch && agentMatch) {\n          return { \n            json: {\n              action: actionMatch[1],\n              agent: agentMatch[1]\n            }\n          };\n        }\n      }\n    }\n    \n    // Final fallback\n    console.log('Failed to parse JSON from output:', outputText);\n    return { \n      json: {\n        action: \"UNKNOWN\",\n        agent: \"Chat Agent\"\n      }\n    };\n  }\n});\n"
       },
-      "id": "a6a7ebf0-5dcd-4ba4-96c4-068acc7e02dd",
+      "id": "1a7dfed0-27da-40db-8ef2-bc2a43145e9b",
       "name": "Operation Parser",
       "type": "n8n-nodes-base.code",
       "position": [
-        -1568,
-        -560
+        -2320,
+        80
       ],
       "typeVersion": 2
     },
@@ -602,12 +681,12 @@
         },
         "options": {}
       },
-      "id": "28955c39-e811-4f35-8fd5-b3c7ddbfa89b",
+      "id": "7a8e8648-071b-4ec9-8114-22e23d78502c",
       "name": "Operations",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -496,
-        -288
+        -1248,
+        352
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -624,10 +703,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -2176,
-        -368
+        -2928,
+        272
       ],
-      "id": "5c8e6196-3f2e-4c71-a7f9-937631630e6c",
+      "id": "a4e330df-23a8-4ec8-9ec5-2b3cae3aa02f",
       "name": "Memory"
     }
   ],
@@ -1014,8 +1093,9 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "bb999cbb-950b-4706-a67b-fa0cc64f8570",
+  "versionId": "ea3e201f-914d-4952-b914-2d48860a34c7",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
   "id": "dE1U8rzi5S6fdB9E",
