@@ -6,11 +6,11 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
-        -1312,
-        240
+        -1440,
+        1088
       ],
       "typeVersion": 1,
-      "id": "3cd19c4e-de75-42ba-934d-09a497baf73f"
+      "id": "7e167e87-71f2-4fd5-bbfb-150a70a1d1db"
     },
     {
       "parameters": {
@@ -20,11 +20,11 @@
       "name": "Operation Router",
       "type": "n8n-nodes-base.switch",
       "position": [
-        -1072,
-        208
+        -1200,
+        1056
       ],
       "typeVersion": 3.2,
-      "id": "ddbe3e1d-57c2-46e1-a1a1-777ad664c35c"
+      "id": "46374237-7672-4899-bd15-85eb63ec8fd0"
     },
     {
       "parameters": {
@@ -35,11 +35,11 @@
       "name": "Issue Type Router",
       "type": "n8n-nodes-base.switch",
       "position": [
-        -752,
-        -32
+        -880,
+        944
       ],
       "typeVersion": 3.2,
-      "id": "b9cc6504-2e35-45e1-a9a6-5f0cc39e17e8"
+      "id": "66f1b765-1a46-42d8-97c2-18580e7cde07"
     },
     {
       "parameters": {
@@ -68,11 +68,11 @@
       "name": "Create Task",
       "type": "n8n-nodes-base.jira",
       "position": [
-        -480,
-        -176
+        -608,
+        672
       ],
       "typeVersion": 1,
-      "id": "f8560c87-6694-45b2-ae1e-4e89b83412ab",
+      "id": "4b0a5110-7aac-4bb2-b582-9268a1b0a2a6",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
@@ -107,11 +107,11 @@
       "name": "Create Bug",
       "type": "n8n-nodes-base.jira",
       "position": [
-        -480,
-        -16
+        -608,
+        832
       ],
       "typeVersion": 1,
-      "id": "6b314e1d-b193-453d-a8df-b48ae4108adb",
+      "id": "b5202641-e3e5-47b8-9a7d-916b53624a4c",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
@@ -147,11 +147,11 @@
       "name": "Create Story",
       "type": "n8n-nodes-base.jira",
       "position": [
-        -480,
-        144
+        -608,
+        992
       ],
       "typeVersion": 1,
-      "id": "dedca245-00bf-4644-b7b1-111714311da0",
+      "id": "df9ef6bb-9c1a-4cf1-b3f4-1ca131159297",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
@@ -169,17 +169,30 @@
       "name": "Query Sprint Tasks",
       "type": "n8n-nodes-base.jira",
       "position": [
-        -752,
-        160
+        -880,
+        1168
       ],
       "typeVersion": 1,
-      "id": "6bb7bb5b-4909-4468-a415-a9e6fa3988be",
+      "id": "67038d5c-9699-4751-8af8-77bf002e64da",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
           "name": "Jira SW Cloud account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract URLs from JIRA issues - Filter LST project: Task, Bug, Feature only, excluding Done/Closed/Declined/Resolved/Epics, must be in a sprint\nconst baseUrl = 'https://lsas-tec.atlassian.net/browse/';\n\nif (!items || items.length === 0) {\n  return [{ json: { message: 'No sprint tasks found', urls: [] } }];\n}\n\nconst excludedStatuses = ['done', 'closed', 'declined', 'resolved'];\nconst allowedIssueTypes = ['task', 'bug', 'feature'];\n\n// Filter: LST project, active status, Task/Bug/Feature only, must be assigned to a sprint (excludes epics, subtasks, etc.)\nconst filteredTasks = items.filter(item => {\n  const key = item.json.key || '';\n  const status = (item.json.fields?.status?.name || '').toLowerCase();\n  const issueType = (item.json.fields?.issuetype?.name || '').toLowerCase();\n  \n  // Check if task is in a sprint - look for sprint field (can be in different custom fields)\n  const hasSprint = item.json.fields?.sprint || \n                    item.json.fields?.customfield_10020 || // Common sprint field\n                    (item.json.fields && Object.keys(item.json.fields).some(key => \n                      key.startsWith('customfield_') && \n                      item.json.fields[key] && \n                      (Array.isArray(item.json.fields[key]) ? item.json.fields[key].length > 0 : true) &&\n                      String(item.json.fields[key]).toLowerCase().includes('sprint')\n                    ));\n  \n  return key.startsWith('LST-') && \n         !excludedStatuses.includes(status) && \n         allowedIssueTypes.includes(issueType) &&\n         !issueType.includes('epic') &&\n         hasSprint;\n});\n\nif (filteredTasks.length === 0) {\n  return [{ json: { message: 'No active LST sprint tasks found', urls: [] } }];\n}\n\nconst urls = filteredTasks.map(item => {\n  const key = item.json.key;\n  return `${baseUrl}${key}`;\n});\n\nreturn [{ \n  json: { \n    message: `Found ${urls.length} active sprint task(s) from LST project`,\n    urls: urls,\n    taskList: urls.join('\\n')\n  } \n}];"
+      },
+      "name": "Format Sprint URLs",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -608,
+        1168
+      ],
+      "typeVersion": 2,
+      "id": "c952a584-21c8-4d08-9962-7c34cfafd285"
     },
     {
       "parameters": {
@@ -190,17 +203,30 @@
       "name": "Query Backlog Tasks",
       "type": "n8n-nodes-base.jira",
       "position": [
-        -752,
-        320
+        -880,
+        1328
       ],
       "typeVersion": 1,
-      "id": "f01e95f9-73fa-4564-a738-979c245d503a",
+      "id": "721b42ed-025a-4489-922e-1c0758d2cf5f",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
           "name": "Jira SW Cloud account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract URLs from JIRA issues - Filter LST project: Task, Bug, Feature only, excluding Done/Closed/Declined/Resolved/Epics\nconst baseUrl = 'https://lsas-tec.atlassian.net/browse/';\n\nif (!items || items.length === 0) {\n  return [{ json: { message: 'No backlog tasks found', urls: [] } }];\n}\n\nconst excludedStatuses = ['done', 'closed', 'declined', 'resolved'];\nconst allowedIssueTypes = ['task', 'bug', 'feature'];\n\n// Filter: LST project, active status, Task/Bug/Feature only (excludes epics, subtasks, etc.)\nconst filteredTasks = items.filter(item => {\n  const key = item.json.key || '';\n  const status = (item.json.fields?.status?.name || '').toLowerCase();\n  const issueType = (item.json.fields?.issuetype?.name || '').toLowerCase();\n  \n  return key.startsWith('LST-') && \n         !excludedStatuses.includes(status) && \n         allowedIssueTypes.includes(issueType) &&\n         !issueType.includes('epic');\n});\n\nif (filteredTasks.length === 0) {\n  return [{ json: { message: 'No active LST backlog tasks found', urls: [] } }];\n}\n\nconst urls = filteredTasks.map(item => {\n  const key = item.json.key;\n  return `${baseUrl}${key}`;\n});\n\nreturn [{ \n  json: { \n    message: `Found ${urls.length} active backlog task(s) from LST project`,\n    urls: urls,\n    taskList: urls.join('\\n')\n  } \n}];"
+      },
+      "name": "Format Backlog URLs",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -608,
+        1328
+      ],
+      "typeVersion": 2,
+      "id": "ef8ed9c0-6bad-4604-a0e0-109bf74b2153"
     },
     {
       "parameters": {
@@ -211,17 +237,30 @@
       "name": "Query My Tasks",
       "type": "n8n-nodes-base.jira",
       "position": [
-        -752,
-        480
+        -880,
+        1488
       ],
       "typeVersion": 1,
-      "id": "4a78c306-13ef-4082-b125-f8ea01bbb19c",
+      "id": "906d3ec9-4221-4bec-b620-5607e504e9b7",
       "credentials": {
         "jiraSoftwareCloudApi": {
           "id": "CbxmZjl3ANH1DR0m",
           "name": "Jira SW Cloud account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract URLs from JIRA issues - Filter LST project: Task, Bug, Feature only, excluding Done/Closed/Declined/Resolved/Epics, assigned to Jomiru Sergiu\nconst baseUrl = 'https://lsas-tec.atlassian.net/browse/';\n\nif (!items || items.length === 0) {\n  return [{ json: { message: 'No tasks assigned to Jomiru Sergiu', urls: [] } }];\n}\n\nconst excludedStatuses = ['done', 'closed', 'declined', 'resolved'];\nconst allowedIssueTypes = ['task', 'bug', 'feature'];\n\n// Filter: LST project, active status, Task/Bug/Feature only, assigned to Jomiru Sergiu (excludes epics, subtasks, etc.)\nconst filteredTasks = items.filter(item => {\n  const key = item.json.key || '';\n  const status = (item.json.fields?.status?.name || '').toLowerCase();\n  const issueType = (item.json.fields?.issuetype?.name || '').toLowerCase();\n  const assignee = item.json.fields?.assignee?.displayName || '';\n  \n  return key.startsWith('LST-') && \n         !excludedStatuses.includes(status) && \n         allowedIssueTypes.includes(issueType) &&\n         !issueType.includes('epic') &&\n         assignee === 'Jomiru Sergiu';\n});\n\nif (filteredTasks.length === 0) {\n  return [{ json: { message: 'No active LST tasks assigned to Jomiru Sergiu', urls: [] } }];\n}\n\nconst urls = filteredTasks.map(item => {\n  const key = item.json.key;\n  return `${baseUrl}${key}`;\n});\n\nreturn [{ \n  json: { \n    message: `Found ${urls.length} active task(s) assigned to Jomiru Sergiu from LST project`,\n    urls: urls,\n    taskList: urls.join('\\n')\n  } \n}];"
+      },
+      "name": "Format My Tasks URLs",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -608,
+        1488
+      ],
+      "typeVersion": 2,
+      "id": "8d245d54-bf09-440b-b7fe-ca4530552420"
     }
   ],
   "pinData": {},
@@ -293,11 +332,44 @@
           }
         ]
       ]
+    },
+    "Query Sprint Tasks": {
+      "main": [
+        [
+          {
+            "node": "Format Sprint URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Backlog Tasks": {
+      "main": [
+        [
+          {
+            "node": "Format Backlog URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query My Tasks": {
+      "main": [
+        [
+          {
+            "node": "Format My Tasks URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {},
-  "versionId": "34bfa67f-782e-4b45-bc6f-c52925b31a90",
+  "versionId": "1c053fa3-480c-49fc-a1ed-30967fa1fd42",
   "meta": {
     "templateId": "459",
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
