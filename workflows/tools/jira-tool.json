@@ -1,0 +1,403 @@
+{
+  "name": "jira-tool",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        240,
+        340
+      ],
+      "typeVersion": 1,
+      "id": "651d8cd1-6b4f-4608-89c6-9134c7fb0232"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 4,
+        "output": "={{ (() => {\n  const op = String($json.operation ?? 'create').trim().toLowerCase();\n  const map = {\n    'create': 0,\n    'query-sprint': 1,\n    'query-backlog': 2,\n    'query-assigned': 3\n  };\n  return map[op] ?? 0;\n})() }}"
+      },
+      "name": "Operation Router",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        480,
+        340
+      ],
+      "typeVersion": 3.2,
+      "id": "op-router-1234-5678-9abc-def012345678"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 3,
+        "output": "={{ (() => {\n  const type = String($json.issueType ?? 'Task').trim().toLowerCase();\n  const map = {\n    'task': 0,\n    'bug': 1,\n    'story': 2,\n    'feature': 2\n  };\n  return map[type] ?? 0;\n})() }}"
+      },
+      "name": "Issue Type Router",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        720,
+        240
+      ],
+      "typeVersion": 3.2,
+      "id": "a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "10006",
+          "mode": "list",
+          "cachedResultName": "LSAS-Tec"
+        },
+        "issueType": {
+          "__rl": true,
+          "value": "10022",
+          "mode": "list",
+          "cachedResultName": "Task"
+        },
+        "summary": "={{ $json.summary }}",
+        "additionalFields": {
+          "description": "={{ $json.description ?? 'No description provided' }}",
+          "priority": {
+            "__rl": true,
+            "value": "={{ (() => {\n  const p = String($json.priority ?? 'Medium').trim().toLowerCase();\n  const map = {\n    'lowest': '5',\n    'low': '4',\n    'medium': '3',\n    'high': '2',\n    'highest': '1',\n    'critical': '1'\n  };\n  return map[p] ?? '3';\n})() }}",
+            "mode": "id"
+          }
+        }
+      },
+      "name": "Create Task",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        720,
+        140
+      ],
+      "typeVersion": 1,
+      "id": "f0116771-076d-4668-9caa-20c5c693d623",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "10006",
+          "mode": "list",
+          "cachedResultName": "LSAS-Tec"
+        },
+        "issueType": {
+          "__rl": true,
+          "mode": "list"
+        },
+        "summary": "={{ $json.summary }}",
+        "additionalFields": {
+          "description": "={{ $json.description ?? 'No description provided' }}",
+          "priority": {
+            "__rl": true,
+            "value": "={{ (() => {\n  const p = String($json.priority ?? 'High').trim().toLowerCase();\n  const map = {\n    'lowest': '5',\n    'low': '4',\n    'medium': '3',\n    'high': '2',\n    'highest': '1',\n    'critical': '1'\n  };\n  return map[p] ?? '2';\n})() }}",
+            "mode": "id"
+          }
+        }
+      },
+      "name": "Create Bug",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        720,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "b1c2d3e4-5f6a-7b8c-9d0e-1f2a3b4c5d6e",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "notes": "REQUIRED: Open this node in n8n UI and select 'Bug' from the Issue Type dropdown"
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "10006",
+          "mode": "list",
+          "cachedResultName": "LSAS-Tec"
+        },
+        "issueType": {
+          "__rl": true,
+          "mode": "list"
+        },
+        "summary": "={{ $json.summary }}",
+        "additionalFields": {
+          "description": "={{ $json.description ?? 'No description provided' }}",
+          "priority": {
+            "__rl": true,
+            "value": "={{ (() => {\n  const p = String($json.priority ?? 'Medium').trim().toLowerCase();\n  const map = {\n    'lowest': '5',\n    'low': '4',\n    'medium': '3',\n    'high': '2',\n    'highest': '1',\n    'critical': '1'\n  };\n  return map[p] ?? '3';\n})() }}",
+            "mode": "id"
+          }
+        }
+      },
+      "name": "Create Story",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        720,
+        340
+      ],
+      "typeVersion": 1,
+      "id": "c2d3e4f5-6a7b-8c9d-0e1f-2a3b4c5d6e7f",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "notes": "REQUIRED: Open this node in n8n UI and select 'Story' (or 'Feature') from the Issue Type dropdown"
+    },
+    {
+      "parameters": {
+        "resource": "issue",
+        "operation": "getAll",
+        "project": {
+          "__rl": true,
+          "value": "10006",
+          "mode": "list",
+          "cachedResultName": "LSAS-Tec"
+        },
+        "returnAll": true,
+        "additionalFields": {
+          "jql": "sprint in openSprints() ORDER BY updated DESC"
+        }
+      },
+      "name": "Query Sprint Tasks",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        720,
+        440
+      ],
+      "typeVersion": 1,
+      "id": "query-sprint-1234-5678-9abc-def012345678",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract URLs from JIRA issues\nconst baseUrl = 'https://lsas-tec.atlassian.net/browse/';\n\nif (!items || items.length === 0) {\n  return [{ json: { message: 'No sprint tasks found', urls: [] } }];\n}\n\nconst urls = items.map(item => {\n  const key = item.json.key;\n  return `${baseUrl}${key}`;\n});\n\nreturn [{ \n  json: { \n    message: `Found ${urls.length} sprint task(s)`,\n    urls: urls,\n    taskList: urls.join('\\n')\n  } \n}];"
+      },
+      "name": "Format Sprint URLs",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        960,
+        440
+      ],
+      "typeVersion": 2,
+      "id": "format-sprint-1234-5678-9abc-def012345678"
+    },
+    {
+      "parameters": {
+        "resource": "issue",
+        "operation": "getAll",
+        "project": {
+          "__rl": true,
+          "value": "10006",
+          "mode": "list",
+          "cachedResultName": "LSAS-Tec"
+        },
+        "returnAll": true,
+        "additionalFields": {
+          "jql": "project = LSAS-Tec AND sprint is EMPTY AND resolution = Unresolved ORDER BY updated DESC"
+        }
+      },
+      "name": "Query Backlog Tasks",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        720,
+        540
+      ],
+      "typeVersion": 1,
+      "id": "query-backlog-1234-5678-9abc-def012345678",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract URLs from JIRA issues\nconst baseUrl = 'https://lsas-tec.atlassian.net/browse/';\n\nif (!items || items.length === 0) {\n  return [{ json: { message: 'No backlog tasks found', urls: [] } }];\n}\n\nconst urls = items.map(item => {\n  const key = item.json.key;\n  return `${baseUrl}${key}`;\n});\n\nreturn [{ \n  json: { \n    message: `Found ${urls.length} backlog task(s)`,\n    urls: urls,\n    taskList: urls.join('\\n')\n  } \n}];"
+      },
+      "name": "Format Backlog URLs",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        960,
+        540
+      ],
+      "typeVersion": 2,
+      "id": "format-backlog-1234-5678-9abc-def012345678"
+    },
+    {
+      "parameters": {
+        "resource": "issue",
+        "operation": "getAll",
+        "project": {
+          "__rl": true,
+          "value": "10006",
+          "mode": "list",
+          "cachedResultName": "LSAS-Tec"
+        },
+        "returnAll": true,
+        "additionalFields": {
+          "jql": "assignee = currentUser() AND resolution = Unresolved ORDER BY updated DESC"
+        }
+      },
+      "name": "Query My Tasks",
+      "type": "n8n-nodes-base.jira",
+      "position": [
+        720,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "query-assigned-1234-5678-9abc-def012345678",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "CbxmZjl3ANH1DR0m",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract URLs from JIRA issues\nconst baseUrl = 'https://lsas-tec.atlassian.net/browse/';\n\nif (!items || items.length === 0) {\n  return [{ json: { message: 'No tasks assigned to you', urls: [] } }];\n}\n\nconst urls = items.map(item => {\n  const key = item.json.key;\n  return `${baseUrl}${key}`;\n});\n\nreturn [{ \n  json: { \n    message: `Found ${urls.length} task(s) assigned to you`,\n    urls: urls,\n    taskList: urls.join('\\n')\n  } \n}];"
+      },
+      "name": "Format My Tasks URLs",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        960,
+        640
+      ],
+      "typeVersion": 2,
+      "id": "format-assigned-1234-5678-9abc-def012345678"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Operation Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Operation Router": {
+      "main": [
+        [
+          {
+            "node": "Issue Type Router",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query Sprint Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query Backlog Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Query My Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Sprint Tasks": {
+      "main": [
+        [
+          {
+            "node": "Format Sprint URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Backlog Tasks": {
+      "main": [
+        [
+          {
+            "node": "Format Backlog URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query My Tasks": {
+      "main": [
+        [
+          {
+            "node": "Format My Tasks URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Issue Type Router": {
+      "main": [
+        [
+          {
+            "node": "Create Task",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Bug",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "f47c9b3b-4803-4738-957a-eaca040cac02",
+  "meta": {
+    "templateId": "459",
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "uPHpgToaQ0oK47hI",
+  "tags": []
+}
