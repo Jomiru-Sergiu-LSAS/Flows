@@ -8,90 +8,71 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -16,
-        288
+        -3440,
+        1024
       ],
-      "id": "2a8cd9d1-c6f9-40c4-a051-f61b9ec801c9",
+      "id": "24c98eb2-0670-4c8a-819a-6504cbb57ea8",
       "name": "Executed by other flow"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "={{ $json.chatInput + ' ' + ($json.emailInstructions || '') }}",
+        "text": "={{ ($json.chatInput || $json.query) + ' ' + ($json.gitInstructions || '') }}",
         "messages": {
           "messageValues": [
             {
-              "message": "You are an AI operation classifier for git tasks. Analyze the user's request and determine which git operation they want to perform.  | Available operations: 1. **UPDATE_REPOS** - The user wants to update/synchronize repositories or branches (e.g., pull, fetch, rebase, merge upstream, sync fork, update dependencies across repos). 2. **CODE_REVIEW** - The user wants a review/evaluation of code changes or PR/MR (e.g., review a pull request, provide feedback on a diff, check code quality).  Analyze the user request: '{{ $json.chatInput }}' Git instructions: '{{ $json.gitInstructions || 'None provided' }}'  Examples: - 'Pull the latest changes in all repos' → UPDATE_REPOS - 'Sync my fork with upstream main' → UPDATE_REPOS - 'Fetch & rebase my feature branch onto develop' → UPDATE_REPOS - 'Update dependencies across repos' → UPDATE_REPOS  - 'Review my PR #42' → CODE_REVIEW - 'Do a code review on feature/login' → CODE_REVIEW - 'Check the diff and leave feedback' → CODE_REVIEW - 'Approve the merge request if it looks good' → CODE_REVIEW  IMPORTANT: Respond with ONLY JSON in this exact format: {\"operation\": \"UPDATE_REPOS\", \"input\": \"<echo the original user request here>\"} or {\"operation\": \"CODE_REVIEW\", \"input\": \"<echo the original user request here>\"}  If unclear, default to UPDATE_REPOS. Also send the input as a result too."
+              "message": "You are an AI operation classifier for git tasks. Analyze the user's request and determine which git operation they want to perform.|Available operations:1. **CODE_REVIEW** - ANY request that mentions pull requests, PRs, merge requests, MRs, code changes, diffs, or code review. This includes checking if PRs exist, listing PRs, viewing PRs, or reviewing code.2. **UPDATE_REPOS** - Requests to update, pull, fetch, sync, rebase, or merge branches in repositories.Analyze the user request: '{{ $json.chatInput || $json.query }}'Git instructions: '{{ $json.gitInstructions || 'None provided' }}'CRITICAL RULES:- If the request mentions \"pull request\", \"PR\", \"merge request\", or \"MR\" in ANY context → CODE_REVIEW- If the request asks to \"check\", \"list\", \"show\", \"view\", or \"see\" PRs/code → CODE_REVIEW- If the request asks to \"review\", \"examine\", or \"analyze\" code → CODE_REVIEWExamples:- 'Check if any pull requests are available' → CODE_REVIEW- 'Are there any PRs?' → CODE_REVIEW- 'Check for open pull requests' → CODE_REVIEW- 'List all PRs in the repository' → CODE_REVIEW- 'Show me open pull requests' → CODE_REVIEW- 'Review my PR #42' → CODE_REVIEW- 'Do a code review on feature/login' → CODE_REVIEW- 'Check the diff and leave feedback' → CODE_REVIEW- 'Pull the latest changes in all repos' → UPDATE_REPOS- 'Sync my fork with upstream main' → UPDATE_REPOS- 'Fetch & rebase my feature branch onto develop' → UPDATE_REPOS- 'Update dependencies across repos' → UPDATE_REPOSIMPORTANT: Respond with ONLY the operation name in JSON format:{\"operation\": \"CODE_REVIEW\"} or {\"operation\": \"UPDATE_REPOS\"}When in doubt about PRs or code changes, ALWAYS choose CODE_REVIEW."
             }
           ]
         }
       },
-      "id": "cc71fb94-8b6a-408f-82a2-c0af695c62e2",
+      "id": "cca75893-53cb-4589-95df-8abc608a5a19",
       "name": "AI Operation Classifier",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "position": [
-        144,
-        288
+        -3280,
+        1024
       ],
       "typeVersion": 1.6
     },
     {
       "parameters": {
-        "jsCode": "// Get the original input from the workflow trigger\nconst originalInput = $('Executed by other flow').first().json;\n\nreturn items.map(item => {\n  let parsed;\n  try {\n    parsed = JSON.parse(item.json.text);\n    // Merge with original input data\n    return { \n      json: {\n        ...item.json,\n        ...parsed,\n        originalChatInput: originalInput.chatInput,\n        originalEmailInstructions: originalInput.emailInstructions\n      }\n    };\n  } catch (e) {\n    // Default to CREATE_DRAFT if parsing fails\n    return { \n      json: {\n        ...item.json,\n        operation: \"UPDATE_REPOS\",\n        originalChatInput: originalInput.chatInput,\n        originalEmailInstructions: originalInput.emailInstructions\n      }\n    };\n  }\n});"
+        "jsCode": "// Get the original input from the workflow trigger\nconst originalInput = $('Executed by other flow').first().json;\n\nreturn items.map(item => {\n  let parsed;\n  try {\n    parsed = JSON.parse(item.json.text);\n    // Merge with original input data\n    return { \n      json: {\n        ...item.json,\n        ...parsed,\n        originalChatInput: originalInput.chatInput || originalInput.query,\n        originalGitInstructions: originalInput.gitInstructions\n      }\n    };\n  } catch (e) {\n    // Default to UPDATE_REPOS if parsing fails\n    return { \n      json: {\n        ...item.json,\n        operation: \"UPDATE_REPOS\",\n        originalChatInput: originalInput.chatInput || originalInput.query,\n        originalGitInstructions: originalInput.gitInstructions\n      }\n    };\n  }\n});"
       },
-      "id": "42eb3108-a758-4cbb-9bbb-526fafe16029",
+      "id": "b4764e09-a333-470b-b1fa-de6f716a88d5",
       "name": "Parse Operation Decision",
       "type": "n8n-nodes-base.code",
       "position": [
-        432,
-        288
+        -2992,
+        1024
       ],
       "typeVersion": 2
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 1
-          },
-          "conditions": [
-            {
-              "id": "operation-create-draft",
-              "leftValue": "={{ $json.operation }}",
-              "rightValue": "UPDATE_REPOS",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ (() => {\n  const a = String($json.operation ?? '').trim().toLowerCase();\n  const map = {\n    'update_repos': 0,\n    'code_review': 1,\n  };\n  return map[a] ?? -1; // -1 routes to fallback (enable it)\n})() }}"
       },
-      "id": "34cf8b9a-e3f4-42cb-aa4d-5fba29ea11d9",
-      "name": "Is Create Draft?",
-      "type": "n8n-nodes-base.if",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
       "position": [
-        592,
-        288
+        -2832,
+        1024
       ],
-      "typeVersion": 2
+      "id": "3942a925-3cac-4deb-a849-a075ebbcde5b",
+      "name": "Domain Decision"
     },
     {
       "parameters": {
         "jsCode": "try {\n  const inputData = $input.all();\n  \n  if (!inputData || inputData.length === 0) {\n    return [{\n      json: {\n        user_message: \"No file changes found in the pull requests.\",\n        error: \"Empty input data\"\n      }\n    }];\n  }\n\n  const files = inputData.map(item => item.json).filter(file => file && typeof file === 'object');\n  \n  if (files.length === 0) {\n    return [{\n      json: {\n        user_message: \"No valid file data found in the pull requests.\",\n        error: \"No valid files\"\n      }\n    }];\n  }\n\n  let diffs = '';\n  let currentPR = null;\n  let prCount = 0;\n\n  // Group files by PR\n  const prGroups = {};\n  files.forEach(file => {\n    const prKey = `${file.repository}#${file.prNumber}`;\n    if (!prGroups[prKey]) {\n      prGroups[prKey] = {\n        repository: file.repository,\n        prNumber: file.prNumber,\n        prTitle: file.prTitle,\n        prUrl: file.prUrl,\n        files: []\n      };\n    }\n    prGroups[prKey].files.push(file);\n  });\n\n  // Process each PR group\n  Object.keys(prGroups).forEach(prKey => {\n    const pr = prGroups[prKey];\n    prCount++;\n    \n    diffs += `\\n## PR ${prCount}: ${pr.repository} #${pr.prNumber}\\n`;\n    diffs += `**Title:** ${pr.prTitle}\\n`;\n    diffs += `**URL:** ${pr.prUrl}\\n\\n`;\n\n    for (const file of pr.files) {\n      if (!file.filename) continue;\n      \n      diffs += `### File: ${file.filename}\\n`;\n      diffs += `**Status:** ${file.status || 'unknown'} | **Changes:** +${file.additions || 0}/-${file.deletions || 0}\\n\\n`;\n\n      if (file.patch) {\n        // Replace triple backticks to avoid markdown conflicts\n        const safePatch = file.patch.replace(/```/g, \"''\");\n\n        diffs += \"```diff\\n\";\n        diffs += safePatch;\n        diffs += \"\\n```\\n\";\n      } else {\n        diffs += \"_No patch available (likely binary file or too large)._\";\n      }\n\n      diffs += \"\\n---\\n\\n\";\n    }\n\n    diffs += \"\\n===========================\\n\\n\";\n  });\n\n  if (!diffs.trim()) {\n    return [{\n      json: {\n        user_message: \"No file diffs found to review.\",\n        error: \"No diffs available\"\n      }\n    }];\n  }\n\n  const userMessage = `Please review the following code changes across ${prCount} pull request(s):\\n\\n${diffs}`;\n\n  return [\n    {\n      json: {\n        user_message: userMessage.trim(),\n        totalPRs: prCount,\n        totalFiles: files.length\n      }\n    }\n  ];\n} catch (error) {\n  return [{\n    json: {\n      user_message: \"Error processing pull request files: \" + error.message,\n      error: error.message\n    }\n  }];\n}"
       },
-      "id": "6949abff-387d-494a-a1b6-c99d35aa7029",
+      "id": "b9aa52b1-d31d-4089-9916-06418d9a7373",
       "name": "Create target Prompt from PR Diffs",
       "type": "n8n-nodes-base.code",
       "position": [
-        1744,
-        400
+        -1680,
+        1040
       ],
       "typeVersion": 2
     },
@@ -101,12 +82,12 @@
         "text": "You are a code reviewer. \n\nSTEPS:\n1. Call 'getInputData' tool to get the actual file changes to review\n2. Call 'codeBestPractices' tool to get review guidelines\n3. Review each file in the data from step 1\n\nLook for lines starting with \"### File:\" in the input data, extract exact filenames, and review the diff content.\n\nFormat:\n### File: [exact filename from input]\n[review] OR LGTM\n\nSummary: Reviewed X files.",
         "options": {}
       },
-      "id": "974c3a14-b0af-4c1d-a62b-fc20192a3f1f",
+      "id": "3be153b4-215d-4e79-b5ba-3eb04714bba8",
       "name": "Code Review Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        1984,
-        288
+        -1440,
+        1040
       ],
       "typeVersion": 1.9
     },
@@ -114,13 +95,13 @@
       "parameters": {
         "jsCode": "// Get first input item\nconst data = $input.first();\n\nif (!data || !data.json || !data.json.output) {\n  throw new Error('No output found in input item.');\n}\n\n// Only replace literal backslash + n that are followed by a space or end-of-string\n// This prevents messing with LaTeX commands\nconst cleanTex = data.json.output.replace(/\\\\n(?=\\s|$)/g, \"\\n\");\n\n// Return both viewable JSON and downloadable binary\nreturn {\n  json: {\n    reviewContent: cleanTex,\n    fileName: \"review.txt\",\n    mimeType: \"text/plain\",\n    size: cleanTex.length\n  },\n  binary: {\n    data: {\n      data: Buffer.from(cleanTex, \"utf8\").toString(\"base64\"),\n      mimeType: \"text/plain\",\n      fileName: \"review.txt\"\n    }\n  }\n};\n"
       },
-      "id": "76349309-5287-473c-a2e9-0c4e34e5507e",
+      "id": "2b5db790-c87b-4eea-b399-f294f9f0b719",
       "name": "Export File",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2336,
-        400
+        -1008,
+        1040
       ]
     },
     {
@@ -132,12 +113,12 @@
         },
         "options": {}
       },
-      "id": "9c200230-0d3f-44f0-bda6-1cdabf5f9656",
+      "id": "0ed18fac-467b-4b1c-b49a-8fc9b90f15e9",
       "name": "OpenAI Brain",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        1952,
-        512
+        -1472,
+        1248
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -154,28 +135,12 @@
         "width": 184,
         "color": 5
       },
-      "id": "d546b195-99bb-4fe0-9515-18de1927c888",
+      "id": "e801e91e-5147-4741-818a-51b99f938b08",
       "name": "Tardigrade PR Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        944,
-        160
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Fetches open pull requests from Tardigrade-Data repository using GitHub API.",
-        "height": 112,
-        "width": 182,
-        "color": 5
-      },
-      "id": "160d1f1b-ba28-460b-8277-ff156b392b40",
-      "name": "Data PR Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        944,
-        464
+        -2480,
+        896
       ],
       "typeVersion": 1
     },
@@ -186,28 +151,12 @@
         "width": 216,
         "color": 4
       },
-      "id": "5596723d-d9de-4215-ab4a-3ce1cb4ec632",
+      "id": "00bbea22-6735-4fec-93de-563f3f5678e7",
       "name": "Check Tardigrade Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1136,
-        160
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Checks if any pull requests exist in Data repository before proceeding with processing.",
-        "height": 112,
-        "width": 216,
-        "color": 4
-      },
-      "id": "e1ad6d0b-d65e-41c6-9bbf-3d6358c924dd",
-      "name": "Check Data Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        1136,
-        464
+        -2288,
+        896
       ],
       "typeVersion": 1
     },
@@ -215,31 +164,15 @@
       "parameters": {
         "content": "Processes multiple Tardigrade PRs and creates metadata for file fetching including PR numbers & URLs.",
         "height": 112,
-        "width": 168,
+        "width": 200,
         "color": 6
       },
-      "id": "5b7afba6-9c65-4c8c-9f77-90a770059ead",
+      "id": "e95a29a0-9c6d-45b5-b1bd-cdd53a02fb97",
       "name": "Process Tardigrade Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1360,
-        160
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "Processes multiple Data PRs and creates metadata for file fetching including PR numbers and URLs.",
-        "height": 112,
-        "width": 168,
-        "color": 6
-      },
-      "id": "7384c7dd-fd48-41bf-a056-2da96b41bf11",
-      "name": "Process Data Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        1360,
-        464
+        -2064,
+        896
       ],
       "typeVersion": 1
     },
@@ -250,12 +183,12 @@
         "width": 166,
         "color": 2
       },
-      "id": "d4b47a87-205b-453e-b93e-500593f7d8c1",
+      "id": "d65d06e0-1e33-4f99-ae6e-2d1d3a2a8388",
       "name": "Fetch Files Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1568,
-        256
+        -1856,
+        896
       ],
       "typeVersion": 1
     },
@@ -265,12 +198,12 @@
         "height": 112,
         "width": 166
       },
-      "id": "2a479048-f102-49d3-b911-e59895db9ab7",
+      "id": "34c4a94c-b944-4430-ae9e-e49b3d6cb7ad",
       "name": "Create Prompt Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1744,
-        256
+        -1680,
+        896
       ],
       "typeVersion": 1
     },
@@ -280,12 +213,12 @@
         "height": 112,
         "width": 232
       },
-      "id": "c53fa674-eba9-4b44-88fa-63833b2cf528",
+      "id": "51a1e8b4-0563-4008-b067-02c589e4c903",
       "name": "AI Review Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1984,
-        160
+        -1440,
+        896
       ],
       "typeVersion": 1
     },
@@ -295,12 +228,12 @@
         "height": 112,
         "width": 168
       },
-      "id": "e0b1a880-dd1b-42f3-8223-0205f2c6936b",
+      "id": "6cb0180c-d35e-44b3-8a9f-f595a8f6aad1",
       "name": "Export Review Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2304,
-        256
+        -1040,
+        896
       ],
       "typeVersion": 1
     },
@@ -310,12 +243,12 @@
         "description": "Provides comprehensive code best practices and guidelines for code review. Use this tool to get coding standards, security practices, performance guidelines, and language-specific recommendations.",
         "jsCode": "// Code Best Practices Tool\nconst codeBestPractices = {\n  general: [\n    \"Follow consistent naming conventions throughout the codebase\",\n    \"Write clear, self-documenting code with meaningful variable names\",\n    \"Keep functions small and focused on a single responsibility\",\n    \"Use proper error handling and logging\",\n    \"Write unit tests for critical functionality\",\n    \"Follow DRY (Don't Repeat Yourself) principle\",\n    \"Use version control effectively with clear commit messages\",\n    \"Document complex business logic and algorithms\"\n  ],\n  security: [\n    \"Validate and sanitize all user inputs\",\n    \"Use parameterized queries to prevent SQL injection\",\n    \"Implement proper authentication and authorization\",\n    \"Store sensitive data securely (encrypted)\",\n    \"Keep dependencies up to date\",\n    \"Use HTTPS for all data transmission\",\n    \"Implement proper session management\",\n    \"Follow principle of least privilege\"\n  ],\n  performance: [\n    \"Optimize database queries and use indexes appropriately\",\n    \"Implement caching strategies where beneficial\",\n    \"Use lazy loading for large datasets\",\n    \"Minimize network requests and payload sizes\",\n    \"Profile and monitor application performance\",\n    \"Use appropriate data structures for the task\",\n    \"Avoid premature optimization\",\n    \"Implement proper memory management\"\n  ],\n  csharp: [\n    \"Use nullable reference types appropriately\",\n    \"Follow Microsoft C# coding conventions\",\n    \"Use async/await for I/O operations\",\n    \"Implement IDisposable for resource cleanup\",\n    \"Use LINQ appropriately for data operations\",\n    \"Follow SOLID principles in class design\",\n    \"Use dependency injection for loose coupling\",\n    \"Handle exceptions at appropriate levels\"\n  ]\n};\n\n// Get the category requested or return all if no specific category\nconst category = $input.first()?.json?.category || 'all';\n\nlet output = 'CODE BEST PRACTICES FOR REVIEW:\\n\\n';\n\nif (category === 'all') {\n  for (const [cat, practices] of Object.entries(codeBestPractices)) {\n    output += `## ${cat.toUpperCase()} PRACTICES:\\n`;\n    practices.forEach((practice, index) => {\n      output += `${index + 1}. ${practice}\\n`;\n    });\n    output += '\\n';\n  }\n} else if (codeBestPractices[category]) {\n  output += `## ${category.toUpperCase()} PRACTICES:\\n`;\n  codeBestPractices[category].forEach((practice, index) => {\n    output += `${index + 1}. ${practice}\\n`;\n  });\n} else {\n  output = `Error: Category '${category}' not found. Available categories: ${Object.keys(codeBestPractices).join(', ')}`;\n}\n\n// LangChain tool must return a string\nreturn output;"
       },
-      "id": "27d7f1db-25f0-42ea-956b-e4fd11ba775e",
+      "id": "d55e9739-1fca-423b-bf6a-eedf132727ec",
       "name": "Get Best Practices",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "position": [
-        2192,
-        512
+        -1232,
+        1248
       ],
       "typeVersion": 1.1
     },
@@ -325,12 +258,12 @@
         "description": "Gets the actual file changes to review from the workflow input",
         "jsCode": "// Get the input data from the workflow\nconst inputData = $input.all();\n\n// Look for user_message in the input data\nfor (const item of inputData) {\n  if (item.json && item.json.user_message) {\n    return item.json.user_message;\n  }\n}\n\n// Fallback - return raw input for debugging\nreturn 'Input data: ' + JSON.stringify(inputData, null, 2);"
       },
-      "id": "ce2c3d35-e40a-449c-9be7-b5fb3dd0c8e1",
+      "id": "41267d97-8f0b-43aa-a7fd-a3454b58acab",
       "name": "Get Input",
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "position": [
-        2064,
-        512
+        -1360,
+        1248
       ],
       "typeVersion": 1.1
     },
@@ -348,41 +281,12 @@
           }
         }
       },
-      "id": "e36dc938-9856-41cd-80b1-d1050606eb88",
+      "id": "f150dcd3-26bd-4586-b60e-f4b5d6ef2ff6",
       "name": "Get Tardigrade",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        944,
-        304
-      ],
-      "typeVersion": 4.2,
-      "credentials": {
-        "githubOAuth2Api": {
-          "id": "Twucb529Xms8saey",
-          "name": "GitHub account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "url": "https://api.github.com/repos/LSAS-Tec/Tardigrade-Data/pulls?q=is%3Aopen+is%3Apr+draft%3Afalse",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "githubOAuth2Api",
-        "options": {
-          "response": {
-            "response": {
-              "neverError": true,
-              "responseFormat": "json"
-            }
-          }
-        }
-      },
-      "id": "3951ec17-6aea-4f03-95fe-280b252db9cb",
-      "name": "Get Data",
-      "type": "n8n-nodes-base.httpRequest",
-      "position": [
-        944,
-        608
+        -2480,
+        1040
       ],
       "typeVersion": 4.2,
       "credentials": {
@@ -416,45 +320,12 @@
         },
         "options": {}
       },
-      "id": "fa34bed6-f17e-4467-86c3-62e711053f36",
+      "id": "6986d6d0-19a8-4a9a-85ae-ed4da43e5e5d",
       "name": "Check Tardigrade",
       "type": "n8n-nodes-base.if",
       "position": [
-        1136,
-        304
-      ],
-      "typeVersion": 2
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 1
-          },
-          "conditions": [
-            {
-              "id": "condition1",
-              "leftValue": "={{ Array.isArray($json) ? $json.length > 0 : $json.number }}",
-              "rightValue": "",
-              "operator": {
-                "operation": "exists",
-                "type": "any"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "d980a9e8-47af-474a-973b-fd0141a8b04a",
-      "name": "Check Data",
-      "type": "n8n-nodes-base.if",
-      "position": [
-        1136,
-        608
+        -2288,
+        1040
       ],
       "typeVersion": 2
     },
@@ -462,25 +333,12 @@
       "parameters": {
         "jsCode": "// Process multiple PRs from Tardigrade repository\nconst inputData = $input.first();\nconsole.log('Processing Tardigrade PRs:', JSON.stringify(inputData.json, null, 2));\n\n// Handle both array and single PR formats\nlet prs = [];\nif (Array.isArray(inputData.json)) {\n  prs = inputData.json;\n} else if (inputData.json && inputData.json.number) {\n  prs = [inputData.json];\n} else {\n  return [{\n    json: {\n      repository: 'LSAS-Tec/Tardigrade',\n      prs: [],\n      message: 'No PRs found to process'\n    }\n  }];\n}\n\nconsole.log(`Found ${prs.length} Tardigrade PRs to process`);\n\n// Create individual items for each PR that will be processed\nconst results = [];\nfor (const pr of prs) {\n  if (pr.number) {\n    results.push({\n      json: {\n        repository: 'LSAS-Tec/Tardigrade',\n        prNumber: pr.number,\n        prTitle: pr.title || 'Untitled PR',\n        prUrl: pr.html_url || '',\n        filesUrl: `https://api.github.com/repos/LSAS-Tec/Tardigrade/pulls/${pr.number}/files`\n      }\n    });\n  }\n}\n\nconsole.log(`Created ${results.length} items for Tardigrade PR processing`);\nreturn results;"
       },
-      "id": "c1043bc2-717c-42dc-89e1-353c6a5aa60b",
+      "id": "de3b2b86-f832-4571-a79b-bb9ca78a15a5",
       "name": "Process Tardigrade PRs",
       "type": "n8n-nodes-base.code",
       "position": [
-        1360,
-        304
-      ],
-      "typeVersion": 2
-    },
-    {
-      "parameters": {
-        "jsCode": "// Process multiple PRs from Tardigrade-Data repository\nconst inputData = $input.first();\nconsole.log('Processing Data PRs:', JSON.stringify(inputData.json, null, 2));\n\n// Handle both array and single PR formats\nlet prs = [];\nif (Array.isArray(inputData.json)) {\n  prs = inputData.json;\n} else if (inputData.json && inputData.json.number) {\n  prs = [inputData.json];\n} else {\n  return [{\n    json: {\n      repository: 'LSAS-Tec/Tardigrade-Data',\n      prs: [],\n      message: 'No PRs found to process'\n    }\n  }];\n}\n\nconsole.log(`Found ${prs.length} Data PRs to process`);\n\n// Create individual items for each PR that will be processed\nconst results = [];\nfor (const pr of prs) {\n  if (pr.number) {\n    results.push({\n      json: {\n        repository: 'LSAS-Tec/Tardigrade-Data',\n        prNumber: pr.number,\n        prTitle: pr.title || 'Untitled PR',\n        prUrl: pr.html_url || '',\n        filesUrl: `https://api.github.com/repos/LSAS-Tec/Tardigrade-Data/pulls/${pr.number}/files`\n      }\n    });\n  }\n}\n\nconsole.log(`Created ${results.length} items for Data PR processing`);\nreturn results;"
-      },
-      "id": "6d673bef-b780-43bc-a0dc-4a4a5494f9a6",
-      "name": "Process Data PRs",
-      "type": "n8n-nodes-base.code",
-      "position": [
-        1360,
-        608
+        -2064,
+        1040
       ],
       "typeVersion": 2
     },
@@ -498,12 +356,12 @@
           }
         }
       },
-      "id": "2d2212cf-4efe-4740-aa9d-2946be481c10",
+      "id": "429370e7-fb7b-40ed-b5a6-19535e2133cc",
       "name": "Fetch PR Files",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1568,
-        400
+        -1856,
+        1040
       ],
       "typeVersion": 4.2,
       "credentials": {
@@ -519,12 +377,12 @@
         "height": 112,
         "width": 166
       },
-      "id": "5aa188e4-43dd-4295-9fb8-00a2828f0b20",
+      "id": "105d561d-7295-41d3-af02-35382ecb7b31",
       "name": "Export File Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2528,
-        256
+        -864,
+        896
       ],
       "typeVersion": 1
     },
@@ -540,13 +398,13 @@
           "allowUnauthorizedCerts": true
         }
       },
-      "id": "025761ba-cd88-4bf2-b6be-5c37604ab1f7",
+      "id": "848d8510-9684-4bbc-9465-9ad0a5cc78e7",
       "name": "Send Email Briefing",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2560,
-        400
+        -848,
+        1040
       ],
       "webhookId": "52757a00-9c6f-4c00-b7b2-03bc25c4b28d",
       "credentials": {
@@ -560,12 +418,12 @@
       "parameters": {
         "command": "={{ $json.batchCommand }}"
       },
-      "id": "1ce68350-1bed-486c-8636-30ce80fc9c90",
+      "id": "cf81577a-385b-48b4-a8f2-4fa83cb378b5",
       "name": "Execute Status Check",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
-        1104,
-        -16
+        -2320,
+        720
       ],
       "typeVersion": 1
     },
@@ -573,12 +431,12 @@
       "parameters": {
         "jsCode": "// Parse the JSON output from the PowerShell script and split repos that need updates\nconst inputData = $input.first();\nconst stdout = inputData.json.stdout || '';\n\ntry {\n  // Parse the JSON output from PowerShell\n  const statusData = JSON.parse(stdout);\n  const results = [];\n  \n  // Create separate items for repos that are behind (need updates)\n  Object.keys(statusData.repositories).forEach(repoName => {\n    const repo = statusData.repositories[repoName];\n    if (repo.status === 'BEHIND') {\n      results.push({\n        json: {\n          name: repoName,\n          path: repo.path,\n          status: repo.status,\n          behind: repo.behind,\n          ahead: repo.ahead,\n          lastCommit: repo.lastCommit,\n          needsUpdate: true\n        }\n      });\n    }\n  });\n  \n  // If no repos need updates, return a single status summary\n  if (results.length === 0) {\n    return [{\n      json: {\n        timestamp: statusData.timestamp,\n        summary: statusData.summary,\n        message: 'All repositories are up to date',\n        needsUpdate: false\n      }\n    }];\n  }\n  \n  return results;\n} catch (error) {\n  // Fallback if JSON parsing fails\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      error: 'Failed to parse PowerShell output',\n      rawOutput: stdout,\n      parseError: error.message,\n      needsUpdate: false\n    }\n  }];\n}"
       },
-      "id": "864f574d-d949-4abd-a871-97d0fa4e048c",
+      "id": "cb4f8a0f-58ef-47f9-adf6-53e062f96611",
       "name": "Parse JSON Status",
       "type": "n8n-nodes-base.code",
       "position": [
-        1264,
-        -16
+        -2160,
+        720
       ],
       "typeVersion": 2
     },
@@ -586,12 +444,12 @@
       "parameters": {
         "jsCode": "// Process repos and split flow: pull updates OR go to summary\nconst inputData = $input.all();\nconsole.log('Route for Updates input:', JSON.stringify(inputData, null, 2));\n\n// Check if we have any repos that actually need updates\nconst reposWithUpdates = inputData.filter(item => item.json.needsUpdate === true);\nconsole.log(`Found ${reposWithUpdates.length} repos with needsUpdate=true`);\n\nconst results = [];\n\nif (reposWithUpdates.length > 0) {\n  // We have repos that need updates - create pull commands for each\n  console.log('Creating pull commands for repositories:');\n  \n  reposWithUpdates.forEach(repo => {\n    console.log(`- Processing ${repo.json.name}: ${repo.json.behind} commits behind`);\n    \n    // Create pull command for this repo\n    const pullCommand = `powershell -Command \"git config --global --add safe.directory '${repo.json.path}'; cd '${repo.json.path}'; git fetch origin; if (-not (git branch --list main)) { git checkout -b main origin/main } else { git checkout main }; git pull origin main\"`;\n    \n    results.push({\n      json: {\n        name: repo.json.name,\n        path: repo.json.path,\n        pullCommand: pullCommand,\n        behind: repo.json.behind,\n        status: 'PULLING_UPDATES'\n      }\n    });\n  });\n  \n  console.log(`Created ${results.length} pull commands`);\n  return results;\n} else {\n  // No repos need updates\n  console.log('No repositories need updates - creating summary');\n  return [{\n    json: {\n      message: 'All repositories are up to date',\n      timestamp: new Date().toISOString(),\n      totalRepos: 0,\n      status: 'ALL_UP_TO_DATE'\n    }\n  }];\n}"
       },
-      "id": "5a61876f-8912-4ddc-9640-49a4d4d3837b",
+      "id": "c7ee1bd1-35df-402c-9080-b87035fe2388",
       "name": "Route for Updates",
       "type": "n8n-nodes-base.code",
       "position": [
-        1584,
-        -16
+        -1840,
+        720
       ],
       "typeVersion": 2
     },
@@ -599,12 +457,12 @@
       "parameters": {
         "jsCode": "// Filter repos that need pulling vs summary-only\nconst inputData = $input.all();\nconsole.log('Filter input:', JSON.stringify(inputData.map(item => ({name: item.json.name || 'N/A', status: item.json.status, message: item.json.message})), null, 2));\n\nconst reposForPulling = inputData.filter(item => item.json.status === 'PULLING_UPDATES');\nconst allUpToDate = inputData.filter(item => item.json.status === 'ALL_UP_TO_DATE');\n\nconsole.log(`${reposForPulling.length} repos need pulling, ${allUpToDate.length} items indicate all up to date`);\n\nif (reposForPulling.length > 0) {\n  // Return repos for pulling\n  console.log('Routing to pull operations:');\n  reposForPulling.forEach(repo => {\n    console.log(`- ${repo.json.name} will be pulled`);\n  });\n  return reposForPulling;\n} else if (allUpToDate.length > 0) {\n  // All repos are up to date - create a summary item that bypasses pull command\n  console.log('All repositories are up to date - creating summary for no updates');\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      summary: 'No repositories required updates - all are up to date',\n      updatedRepos: [],\n      totalUpdated: 0,\n      successCount: 0,\n      failureCount: 0,\n      message: allUpToDate[0].json.message,\n      totalRepos: allUpToDate[0].json.totalRepos,\n      skipPullCommand: true\n    }\n  }];\n} else {\n  // Fallback case\n  console.log('No clear status found - defaulting to no updates summary');\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      summary: 'No repositories required updates',\n      updatedRepos: [],\n      totalUpdated: 0,\n      successCount: 0,\n      failureCount: 0,\n      skipPullCommand: true\n    }\n  }];\n}"
       },
-      "id": "2daa92e2-cf27-4bb9-bb56-941a5af3aaa6",
+      "id": "7e34c934-7d08-4391-97af-3a7c0b486ef7",
       "name": "Filter by Status",
       "type": "n8n-nodes-base.code",
       "position": [
-        1744,
-        -16
+        -1680,
+        720
       ],
       "typeVersion": 2
     },
@@ -612,12 +470,12 @@
       "parameters": {
         "jsCode": "// Route based on whether we have pull commands or summary data\nconst inputData = $input.all();\nconsole.log('Check Skip Pull input:', JSON.stringify(inputData.map(item => ({\n  name: item.json.name || 'N/A',\n  pullCommand: item.json.pullCommand ? 'EXISTS' : 'MISSING',\n  skipPullCommand: item.json.skipPullCommand,\n  summary: item.json.summary\n})), null, 2));\n\nconst itemsWithPullCommands = inputData.filter(item => \n  item.json.pullCommand && typeof item.json.pullCommand === 'string'\n);\n\nconst summaryItems = inputData.filter(item => \n  item.json.skipPullCommand === true || \n  item.json.summary || \n  !item.json.pullCommand\n);\n\nconsole.log(`${itemsWithPullCommands.length} items have pull commands, ${summaryItems.length} items are summary-only`);\n\nif (itemsWithPullCommands.length > 0) {\n  // Route to pull command execution\n  console.log('Routing to Execute Pull Command:');\n  itemsWithPullCommands.forEach(item => {\n    console.log(`- ${item.json.name}: has pullCommand`);\n  });\n  return itemsWithPullCommands;\n} else if (summaryItems.length > 0) {\n  // Route directly to summary\n  console.log('Routing directly to Generate Update Summary (no pulls needed)');\n  return summaryItems;\n} else {\n  // Fallback - create empty summary\n  console.log('No valid items found - creating empty summary');\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      summary: 'No repositories processed',\n      updatedRepos: [],\n      totalUpdated: 0,\n      successCount: 0,\n      failureCount: 0\n    }\n  }];\n}"
       },
-      "id": "9655c401-ec9d-45b4-9ae3-34ba7a9a3235",
+      "id": "9a24377e-6b1d-4975-a1f4-c0834e86c4e9",
       "name": "Route Pull or Summary",
       "type": "n8n-nodes-base.code",
       "position": [
-        1904,
-        -16
+        -1520,
+        720
       ],
       "typeVersion": 2
     },
@@ -645,12 +503,12 @@
         },
         "options": {}
       },
-      "id": "cbaad8ef-1a48-4db7-81c3-c4f46c4662d2",
+      "id": "eee3fe6e-a4c5-4a12-b98f-bbd66bc04c4c",
       "name": "Has Pull Command",
       "type": "n8n-nodes-base.if",
       "position": [
-        2064,
-        -16
+        -1360,
+        720
       ],
       "typeVersion": 2
     },
@@ -659,12 +517,12 @@
         "executeOnce": false,
         "command": "={{ $json.pullCommand }}"
       },
-      "id": "359cc337-e83e-4b91-b336-05ffb4b13dae",
+      "id": "579befad-da30-4abc-a66b-5b4810ebdc9f",
       "name": "Execute Pull Command",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
-        2240,
-        -96
+        -1184,
+        640
       ],
       "typeVersion": 1
     },
@@ -672,13 +530,13 @@
       "parameters": {
         "jsCode": "// Get first input item\nconst data = $input.first();\n\nif (!data || !data.json || !data.json.logContent) {\n  throw new Error('No logContent found in input item.');\n}\n\n// Only replace literal backslash + n that are followed by a space or end-of-string\n// This prevents messing with LaTeX commands\nconst cleanTex = data.json.logContent.replace(/\\\\n(?=\\s|$)/g, \"\\n\");\n\n// Return both viewable JSON and downloadable binary\nreturn {\n  json: {\n    logContent: cleanTex,\n    fileName: \"log.txt\",\n    mimeType: \"text/plain\",\n    size: cleanTex.length\n  },\n  binary: {\n    data: {\n      data: Buffer.from(cleanTex, \"utf8\").toString(\"base64\"),\n      mimeType: \"text/plain\",\n      fileName: \"log.txt\"\n    }\n  }\n};\n"
       },
-      "id": "b5f35615-56c6-4969-9f15-a5306a24b8bc",
+      "id": "d6ace117-d635-41d4-a769-c1738411f1b7",
       "name": "Export Log File",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2576,
-        0
+        -848,
+        736
       ]
     },
     {
@@ -692,12 +550,12 @@
           ]
         }
       },
-      "id": "3ae3e2b4-0063-4e7f-9a67-2a3563f3ada3",
+      "id": "ea583035-43aa-46c6-8764-165ea30a139c",
       "name": "Check Every Hour",
       "type": "n8n-nodes-base.scheduleTrigger",
       "position": [
-        592,
-        -16
+        -2832,
+        720
       ],
       "typeVersion": 1.2
     },
@@ -705,12 +563,12 @@
       "parameters": {
         "jsCode": "// Create PowerShell script to check git status and output JSON\n// Repository configurations\nconst inputData = [\n  { name: 'Agent Flows', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Work/Key/AgentWorklfows'},\n  { name: 'Tardigrade', path: 'C:/Repo/Tardigrade' },\n  { name: 'Tardigrade Data', path: 'C:/Users/Jomiru Sergiu/Documents/Terminal' },\n  { name: 'JP-Tardigrade-api', path: 'C:/Repo/JP-Tardigrade-api' },\n  { name: 'JP-AI', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-AI' },\n  { name: 'JP-Tardigrade', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Tardigrade' },\n  { name: 'JP-Tardigrade-Data', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Tardigrade-Data' },\n  { name: 'JP-Tardigrade-test-actions', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Tardigrade-test-actions' },\n  { name: 'JP-Tardigrade-UPK284', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Tardigrade-UPK284' },\n  { name: 'JP-UMA-License', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-UMA-License' },\n  { name: 'JP-UMA-X-Doc', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-UMAX-Doc' },\n  { name: 'JP-MAX-Toolbox', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-MAX-Toolbox' },\n  { name: 'JP-Template_NetCore_Stk', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Template_NetCore_Stk' },\n  { name: 'JP-umalib', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-umalib' },\n  { name: 'JP-umaLib-old', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-umaLib-old' },\n  { name: 'JP-UMATraining', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-UMATraining' },\n  { name: 'JP-vite-cesium-ion', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-vite-cesium-ion' },\n  { name: 'JP-Walrus', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Walrus' },\n  { name: 'JP-SensorCalibrationTool', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-SensorCalibrationTool' },\n  { name: 'JP-SEGPythonAPI', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-SEGPythonAPI' },\n  { name: 'JP-SatelliteMissionScenarioDesigner', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-SatelliteMissionScenarioDesigner' },\n  { name: 'JP-PENGUIN', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-PENGUIN' },\n  { name: 'JP-ORCA-Validation', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-ORCA-Validation' },\n  { name: 'JP-ORCA', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-ORCA' },\n  { name: 'JP-ODTKPythonAPI', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-ODTKPythonAPI' },\n  { name: 'JP-MolaMola', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-MolaMola' },\n  { name: 'JP-JFD_FileConverter', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-JFD_FileConverter' },\n  { name: 'JP-JFD-demo', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-JFD-demo' },\n  { name: 'JP-JAXA-FCS', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-JAXA-FCS' },\n  { name: 'JP-EOISTJpC', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-EOISTJpC' },\n  { name: 'JP-Dragonfly', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-Dragonfly' },\n  { name: 'JP-AutoMP-QualityAssurance', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/JP-AutoMP-QualityAssurance' },\n  { name: 'US-votw', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-votw' },\n  { name: 'US-tardis', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-tardis' },\n  { name: 'US-general', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-general' },\n  { name: 'US-hail-mary', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-hail-mary' },\n  { name: 'US-hott', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-hott' },\n  { name: 'US-ishimura', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-ishimura' },\n  { name: 'US-JCO', path: 'C:/Dev/LSAS Tec Dropbox/Jomiru Sergiu/Backup/US-JCO' }\n].map(repo => ({ json: repo }));\n\n// Build simpler PowerShell command without here-string issues\nconst repos = inputData.map(item => {\n  const name = item.json.name.replace(/'/g, \"''\");\n  const path = item.json.path.replace(/'/g, \"''\");\n  return `@{Name='${name}'; Path='${path}'}`;\n}).join(',');\n\n// Create a direct PowerShell command without file creation\nconst command = `powershell -Command \"` +\n  `$ErrorActionPreference='SilentlyContinue'; ` +\n  `$results = @{timestamp=(Get-Date).ToString('yyyy-MM-ddTHH:mm:ss.fffZ'); repositories=@{}}; ` +\n  `$repos = @(${repos}); ` +\n  `foreach ($repo in $repos) { ` +\n    `try { ` +\n      `git config --global --add safe.directory $repo.Path 2>$null; ` +\n      `Set-Location $repo.Path; ` +\n      `if (Test-Path '.git') { ` +\n        `$current = git rev-parse HEAD 2>$null; ` +\n        `git fetch origin --quiet 2>$null; ` +\n        `$remote = git rev-parse origin/main 2>$null; ` +\n        `$behind = if ($current -and $remote) { (git rev-list HEAD..origin/main --count 2>$null) } else { 0 }; ` +\n        `$ahead = if ($current -and $remote) { (git rev-list origin/main..HEAD --count 2>$null) } else { 0 }; ` +\n        `$lastCommit = git log -1 --format='%H %s' 2>$null; ` +\n        `$status = if ($behind -gt 0) { 'BEHIND' } elseif ($ahead -gt 0) { 'AHEAD' } else { 'UP_TO_DATE' }; ` +\n        `$results.repositories[$repo.Name] = @{path=$repo.Path; status=$status; behind=[int]$behind; ahead=[int]$ahead; lastCommit=$lastCommit; error=$null}; ` +\n      `} else { ` +\n        `$results.repositories[$repo.Name] = @{path=$repo.Path; status='NOT_A_REPO'; behind=0; ahead=0; lastCommit=$null; error='Directory is not a git repository'}; ` +\n      `} ` +\n    `} catch { ` +\n      `$results.repositories[$repo.Name] = @{path=$repo.Path; status='ERROR'; behind=0; ahead=0; lastCommit=$null; error=$_.Exception.Message}; ` +\n    `} ` +\n  `}; ` +\n  `$results.summary = @{totalRepos=$results.repositories.Count; upToDate=($results.repositories.Values | Where-Object { $_.status -eq 'UP_TO_DATE' }).Count; behind=($results.repositories.Values | Where-Object { $_.status -eq 'BEHIND' }).Count; ahead=($results.repositories.Values | Where-Object { $_.status -eq 'AHEAD' }).Count; errors=($results.repositories.Values | Where-Object { $_.status -eq 'ERROR' -or $_.status -eq 'NOT_A_REPO' }).Count}; ` +\n  `$results | ConvertTo-Json -Depth 4` +\n`\"`;\n\nreturn [{\n  json: {\n    totalRepos: inputData.length,\n    batchCommand: command,\n    repoList: inputData.map(item => ({ name: item.json.name, path: item.json.path }))\n  }\n}];"
       },
-      "id": "4b9d5b4f-33ee-4045-8c79-1fa09046ece5",
+      "id": "02a6639c-7640-44ca-8dd8-695d07dd27d8",
       "name": "Prepare Repos",
       "type": "n8n-nodes-base.code",
       "position": [
-        944,
-        -16
+        -2480,
+        720
       ],
       "typeVersion": 2
     },
@@ -718,12 +576,12 @@
       "parameters": {
         "jsCode": "// Filter and process repositories that need updates\nconst inputData = $input.all();\n\nconst reposNeedingUpdates = [];\nconst reposUpToDate = [];\n\ninputData.forEach(item => {\n  if (item.json.needsUpdate === true) {\n    reposNeedingUpdates.push({\n      json: {\n        name: item.json.name,\n        path: item.json.path,\n        status: item.json.status,\n        behind: item.json.behind,\n        ahead: item.json.ahead,\n        lastCommit: item.json.lastCommit,\n        needsUpdate: true\n      }\n    });\n  } else {\n    reposUpToDate.push(item);\n  }\n});\n\n// If we have repos that need updates, return them for pulling\nif (reposNeedingUpdates.length > 0) {\n  console.log(`Found ${reposNeedingUpdates.length} repositories that need updates:`);\n  reposNeedingUpdates.forEach(repo => {\n    console.log(`- ${repo.json.name}: ${repo.json.behind} commits behind`);\n  });\n  return reposNeedingUpdates;\n}\n\n// If no repos need updates, return a summary\nreturn [{\n  json: {\n    message: 'All repositories are up to date',\n    timestamp: new Date().toISOString(),\n    needsUpdate: false,\n    totalRepos: inputData.length\n  }\n}];"
       },
-      "id": "dc2cb981-b9d4-4c85-b14b-1bb8c454ac00",
+      "id": "5759ab5f-52e0-47d5-82ac-9ff5927a9dd5",
       "name": "Filter Needing Updates",
       "type": "n8n-nodes-base.code",
       "position": [
-        1424,
-        -16
+        -2000,
+        720
       ],
       "typeVersion": 2
     },
@@ -731,12 +589,12 @@
       "parameters": {
         "jsCode": "// Generate summary of update operations\nconst inputData = $input.all();\n\nif (!inputData || inputData.length === 0) {\n  return [{\n    json: {\n      timestamp: new Date().toISOString(),\n      summary: 'No repositories required updates',\n      updatedRepos: [],\n      totalUpdated: 0,\n      successCount: 0,\n      failureCount: 0\n    }\n  }];\n}\n\nconst updatedRepos = inputData.map(item => ({\n  Repo: item.json.stderr\n}));\n\nconst successCount = updatedRepos.filter(repo => repo.success).length;\nconst failureCount = updatedRepos.length - successCount;\n\n// Format Entry\n// Create log entry for updates\nconst data = {\n    timestamp: new Date().toISOString(),\n    summary: `Updated ${successCount} repositories successfully${failureCount > 0 ? `, ${failureCount} failed` : ''}`,\n    updatedRepos: updatedRepos,\n    totalUpdated: updatedRepos.length,\n    successCount: successCount,\n    failureCount: failureCount\n  };\n\nif (data.totalUpdated === 0) {\n  return [{\n    json: {\n      logContent: `\\n=== Repository Status Check - ${data.timestamp} ===\\nNo repositories required updates. All repositories are up to date.\\n`,\n      shouldLog: false\n    }\n  }];\n}\n\nlet logContent = `\\n=== Repository Update Log - ${data.timestamp} ===\\n`;\n    logContent += '---\\n';\n\nif (data.updatedRepos && data.updatedRepos.length > 0) {\n  data.updatedRepos.forEach(repo => {\n\n    \n  if (`${repo.Repo}` == \"undefined\"){\n    logContent += `Summary: No repositories were updated`\n  \n    return [{\n      json: {\n        logContent: logContent\n      }\n      }];\n    };\n    \n    logContent += `Repository: ${repo.Repo}\\n`;\n    logContent += `Status: SUCCESS\\n`;\n    logContent += '---\\n';\n  });\n}\n\n\n  if (!logContent.includes(\"No repositories were updated\")){\n    logContent += `Total repositories updated: ${data.totalUpdated}\\n`;\n  }\n\nreturn [{\n  json: {\n    logContent: logContent\n  }\n}];"
       },
-      "id": "64df38c5-32be-4230-b90d-d8424ac2c47e",
+      "id": "82ca3ff2-74c0-4ec2-b480-e65734a542ed",
       "name": "Generate Summary",
       "type": "n8n-nodes-base.code",
       "position": [
-        2416,
-        0
+        -1008,
+        736
       ],
       "typeVersion": 2
     },
@@ -747,12 +605,12 @@
         "width": 150,
         "color": 3
       },
-      "id": "ea085c8a-fd3b-4372-914f-efa689349925",
+      "id": "5aa27b3b-f3ce-47d5-8961-b61a110df2fc",
       "name": "Schedule Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        560,
-        -144
+        -2864,
+        592
       ],
       "typeVersion": 1
     },
@@ -763,12 +621,12 @@
         "width": 152,
         "color": 5
       },
-      "id": "bcb0bcde-e933-4ccc-9d53-2a8247d415d0",
+      "id": "3bbe4533-9a30-481b-9bef-b5175385131b",
       "name": "Prepare Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        928,
-        -160
+        -2496,
+        576
       ],
       "typeVersion": 1
     },
@@ -779,12 +637,12 @@
         "width": 150,
         "color": 2
       },
-      "id": "5c66d813-16a7-4d4a-92b1-55364f7c5765",
+      "id": "a7b6fe62-a68f-4a20-bf13-46c4967057c1",
       "name": "Status Check Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1088,
-        -160
+        -2336,
+        576
       ],
       "typeVersion": 1
     },
@@ -795,12 +653,12 @@
         "width": 150,
         "color": 6
       },
-      "id": "40cfbfcd-9d9d-4b8a-97f7-1be648174a9d",
+      "id": "c31f514b-0d08-4798-b49c-6f3e89571b5b",
       "name": "Parse Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1248,
-        -160
+        -2176,
+        576
       ],
       "typeVersion": 1
     },
@@ -811,12 +669,12 @@
         "width": 152,
         "color": 4
       },
-      "id": "f9f5f976-95f7-4835-9369-dd9973f50222",
+      "id": "7d7ab831-dd07-4ffc-8be7-f646c12bec3f",
       "name": "Filter Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1408,
-        -160
+        -2016,
+        576
       ],
       "typeVersion": 1
     },
@@ -827,12 +685,12 @@
         "width": 150,
         "color": 7
       },
-      "id": "25d5564a-5ad8-4ec4-8746-0b64274a71e1",
+      "id": "72fe79b9-1caf-4723-9b23-d315ebeaa7f6",
       "name": "Route Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1568,
-        -160
+        -1856,
+        576
       ],
       "typeVersion": 1
     },
@@ -843,12 +701,12 @@
         "width": 150,
         "color": 4
       },
-      "id": "6fc7ee40-c197-4729-8214-4f02dacf462e",
+      "id": "b637f27b-5fcb-4823-92fb-9b50c7cf25c6",
       "name": "Pull Check Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2048,
-        -160
+        -1376,
+        576
       ],
       "typeVersion": 1
     },
@@ -858,12 +716,12 @@
         "height": 112,
         "width": 166
       },
-      "id": "8a3c0f39-2992-4b25-8964-36dc177dc891",
+      "id": "2f02ae3a-05d0-412d-9ffd-f72a7673082a",
       "name": "Execute Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2208,
-        -224
+        -1216,
+        512
       ],
       "typeVersion": 1
     },
@@ -873,12 +731,12 @@
         "height": 112,
         "width": 150
       },
-      "id": "5f245e0d-55af-4f3e-8241-f403563064c0",
+      "id": "698e0f65-eaba-4db0-a6a4-07e3b5e56c5e",
       "name": "Summary Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2384,
-        -160
+        -1040,
+        576
       ],
       "typeVersion": 1
     },
@@ -888,12 +746,12 @@
         "height": 112,
         "width": 150
       },
-      "id": "cdec0fa9-324d-4014-b141-db51a603b53f",
+      "id": "22425ec4-a6af-4285-9bbb-e82bc5f17421",
       "name": "Export Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2544,
-        -160
+        -880,
+        576
       ],
       "typeVersion": 1
     },
@@ -904,12 +762,12 @@
         "width": 150,
         "color": 7
       },
-      "id": "ec169609-716e-4c6a-9524-3d0bfce22dc9",
+      "id": "23899a96-e5db-4ec4-82cf-cf1e288e03eb",
       "name": "Route Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1728,
-        -160
+        -1696,
+        576
       ],
       "typeVersion": 1
     },
@@ -920,12 +778,12 @@
         "width": 150,
         "color": 7
       },
-      "id": "6d69afde-1c3b-4723-a2c1-d8b4734824aa",
+      "id": "157639b8-93cf-403b-8e44-f646e42ef91e",
       "name": "Route Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1888,
-        -160
+        -1536,
+        576
       ],
       "typeVersion": 1
     },
@@ -936,12 +794,12 @@
         "width": 150,
         "color": 3
       },
-      "id": "af671883-4294-4722-9f39-95e62de0bf62",
+      "id": "69dd02ab-2670-425a-b0bf-948e28f4d344",
       "name": "Startup Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        560,
-        480
+        -2864,
+        1216
       ],
       "typeVersion": 1
     },
@@ -951,12 +809,12 @@
         "height": 112,
         "width": 166
       },
-      "id": "3f362425-ea3e-4563-8bb5-5d31328d4963",
+      "id": "f3064273-1008-4ddd-a742-f7d280d9a0a5",
       "name": "Export File Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2704,
-        -160
+        -720,
+        576
       ],
       "typeVersion": 1
     },
@@ -972,10 +830,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        144,
-        480
+        -3280,
+        1216
       ],
-      "id": "0015e991-6f87-4932-850b-04cff1db5cf8",
+      "id": "af2247b0-cb58-45cc-b78d-de26e7fa6fb4",
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
@@ -996,13 +854,13 @@
           "allowUnauthorizedCerts": true
         }
       },
-      "id": "590336ba-d4f1-4a81-8a33-fc3f6ff0fa03",
+      "id": "d11cdca9-b60a-4c2f-a64c-6b95d7eda9dc",
       "name": "Send Email Updates",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2736,
-        0
+        -688,
+        736
       ],
       "webhookId": "52757a00-9c6f-4c00-b7b2-03bc25c4b28d",
       "credentials": {
@@ -1019,12 +877,12 @@
         "width": 150,
         "color": 3
       },
-      "id": "acb8e416-0177-4c56-b316-aaeaef6ae239",
+      "id": "f2ab29ca-61e9-473c-9d49-95022e9de721",
       "name": "Schedule Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        560,
-        160
+        -2864,
+        896
       ],
       "typeVersion": 1
     },
@@ -1038,10 +896,10 @@
       "type": "n8n-nodes-base.n8nTrigger",
       "typeVersion": 1,
       "position": [
-        592,
-        608
+        -2832,
+        1344
       ],
-      "id": "a72b8e9f-5cd7-4cb1-8e8d-6654e021db2f",
+      "id": "bcc2ba1f-080e-4033-87e6-04dee04abbed",
       "name": "n8n Startup Trigger"
     }
   ],
@@ -1075,7 +933,7 @@
       "main": [
         [
           {
-            "node": "Is Create Draft?",
+            "node": "Domain Decision",
             "type": "main",
             "index": 0
           }
@@ -1159,17 +1017,6 @@
         ]
       ]
     },
-    "Get Data": {
-      "main": [
-        [
-          {
-            "node": "Check Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Check Tardigrade": {
       "main": [
         [
@@ -1178,32 +1025,11 @@
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "Check Data": {
-      "main": [
-        [
-          {
-            "node": "Process Data PRs",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        ],
+        []
       ]
     },
     "Process Tardigrade PRs": {
-      "main": [
-        [
-          {
-            "node": "Fetch PR Files",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Process Data PRs": {
       "main": [
         [
           {
@@ -1225,7 +1051,7 @@
         ]
       ]
     },
-    "Is Create Draft?": {
+    "Domain Decision": {
       "main": [
         [
           {
@@ -1237,11 +1063,6 @@
         [
           {
             "node": "Get Tardigrade",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get Data",
             "type": "main",
             "index": 0
           }
@@ -1387,11 +1208,6 @@
         ]
       ]
     },
-    "Send Email Briefing": {
-      "main": [
-        []
-      ]
-    },
     "OpenAI Chat Model": {
       "ai_languageModel": [
         [
@@ -1401,11 +1217,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Send Email Updates": {
-      "main": [
-        []
       ]
     },
     "n8n Startup Trigger": {
@@ -1420,11 +1231,6 @@
             "node": "Get Tardigrade",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Get Data",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1436,7 +1242,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "timeSavedPerExecution": 60
   },
-  "versionId": "3658c06b-704c-423f-b648-92799abdb8c6",
+  "versionId": "54401241-43ba-498b-8145-058e912ffa35",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
