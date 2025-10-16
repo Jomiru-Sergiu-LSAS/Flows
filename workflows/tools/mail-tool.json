@@ -8,10 +8,10 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -704,
-        -544
+        -240,
+        -96
       ],
-      "id": "2ff6b991-1975-4424-bcc1-c27b5011257c",
+      "id": "30f3b3fb-05f1-4659-a973-ad1821eb264c",
       "name": "Executed by other flow"
     },
     {
@@ -21,17 +21,17 @@
         "messages": {
           "messageValues": [
             {
-              "message": "You are an AI operation classifier for email tasks. Analyze the user's request and determine which email operation they want to perform.|Available operations:1. **CREATE_DRAFT** - User wants to compose, write, create, or draft a new email2. **CLEAN_SPAM** - User wants to clean, delete, or remove spam emails3. **CLEAN_DRAFTS** - User wants to clean, delete, or remove draft emails4. **CLEAN_TRASH** - User wants to clean, delete, or remove trash/deleted emailsAnalyze the user request: '{{ $json.chatInput }}'Email instructions: '{{ $json.emailInstructions || 'None provided' }}'Examples:- 'Create a new email' → CREATE_DRAFT- 'Write an email to John' → CREATE_DRAFT  - 'Draft a reply to the meeting request' → CREATE_DRAFT- 'Clean up spam emails' → CLEAN_SPAM- 'Delete all spam' → CLEAN_SPAM- 'Remove draft emails' → CLEAN_DRAFTS- 'Clear my drafts folder' → CLEAN_DRAFTS- 'Empty trash' → CLEAN_TRASH- 'Delete trash emails' → CLEAN_TRASHIMPORTANT: Respond with ONLY the operation name in JSON format:{\"operation\": \"CREATE_DRAFT\"}{\"operation\": \"CLEAN_SPAM\"}{\"operation\": \"CLEAN_DRAFTS\"}{\"operation\": \"CLEAN_TRASH\"}If unclear, default to CREATE_DRAFT. Also send the input as a result too."
+              "message": "You are an AI operation classifier for email tasks. Analyze the user's request and determine which email operation they want to perform.|Available operations:1. **CREATE_DRAFT** - User wants to compose, write, create, or draft a new email2. **CLEAN_SPAM** - User wants to clean, delete, or remove spam emails3. **CLEAN_DRAFTS** - User wants to clean, delete, or remove draft emails4. **CLEAN_TRASH** - User wants to clean, delete, or remove trash/deleted emails5. **REPLY_EMAIL** - User wants to auto-reply to incoming emails from IMAPAnalyze the user request: '{{ $json.chatInput }}'Email instructions: '{{ $json.emailInstructions || 'None provided' }}'Examples:- 'Create a new email' → CREATE_DRAFT- 'Write an email to John' → CREATE_DRAFT  - 'Draft a reply to the meeting request' → CREATE_DRAFT- 'Clean up spam emails' → CLEAN_SPAM- 'Delete all spam' → CLEAN_SPAM- 'Remove draft emails' → CLEAN_DRAFTS- 'Clear my drafts folder' → CLEAN_DRAFTS- 'Empty trash' → CLEAN_TRASH- 'Delete trash emails' → CLEAN_TRASH- 'Auto-reply to emails' → REPLY_EMAIL- 'Reply to incoming emails' → REPLY_EMAILIMPORTANT: Respond with ONLY the operation name in JSON format:{\"operation\": \"CREATE_DRAFT\"}{\"operation\": \"CLEAN_SPAM\"}{\"operation\": \"CLEAN_DRAFTS\"}{\"operation\": \"CLEAN_TRASH\"}{\"operation\": \"REPLY_EMAIL\"}If unclear, default to CREATE_DRAFT. Also send the input as a result too."
             }
           ]
         }
       },
-      "id": "680eb2ba-0dd6-4ea1-9133-ea32bcb14e4d",
+      "id": "88cff77d-e6c4-4bdf-a83f-add6aefc0e25",
       "name": "AI Operation Classifier",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "position": [
-        -544,
-        -544
+        -80,
+        -96
       ],
       "typeVersion": 1.6
     },
@@ -39,12 +39,12 @@
       "parameters": {
         "jsCode": "// Get the original input from the workflow trigger\nconst originalInput = $('Executed by other flow').first().json;\n\nreturn items.map(item => {\n  let parsed;\n  try {\n    parsed = JSON.parse(item.json.text);\n    // Merge with original input data\n    return { \n      json: {\n        ...item.json,\n        ...parsed,\n        originalChatInput: originalInput.chatInput,\n        originalEmailInstructions: originalInput.emailInstructions\n      }\n    };\n  } catch (e) {\n    // Default to CREATE_DRAFT if parsing fails\n    return { \n      json: {\n        ...item.json,\n        operation: \"CREATE_DRAFT\",\n        originalChatInput: originalInput.chatInput,\n        originalEmailInstructions: originalInput.emailInstructions\n      }\n    };\n  }\n});"
       },
-      "id": "64a1d03d-d251-46e0-8792-2ebfa0642485",
+      "id": "8b915b39-7544-4d73-82b7-e371b1049e89",
       "name": "Parse Operation Decision",
       "type": "n8n-nodes-base.code",
       "position": [
-        -256,
-        -544
+        208,
+        -96
       ],
       "typeVersion": 2
     },
@@ -60,12 +60,12 @@
           ]
         }
       },
-      "id": "f7be2447-61f2-44ea-b4e0-2068fc684b37",
+      "id": "6d6a6e4b-0cfe-46b9-8270-a9e9c89aad4f",
       "name": "Generate Email with AI",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "position": [
-        272,
-        -592
+        720,
+        -432
       ],
       "typeVersion": 1.6
     },
@@ -73,12 +73,12 @@
       "parameters": {
         "jsCode": "return items.map(item => {\n  let parsed;\n  try {\n    parsed = JSON.parse(item.json.text);\n  } catch (e) {\n    parsed = { subject: \"\", body: item.json.text };\n  }\n  return { json: parsed };\n});"
       },
-      "id": "a174aa85-7673-43e7-a32e-c54f22f516ff",
+      "id": "4a0a2db3-e7e3-4f8a-9ed3-c37bb0065072",
       "name": "Parse AI Response",
       "type": "n8n-nodes-base.code",
       "position": [
-        576,
-        -592
+        1024,
+        -432
       ],
       "typeVersion": 2
     },
@@ -91,12 +91,12 @@
           "sendTo": ""
         }
       },
-      "id": "15c8f000-5609-4d01-990e-2ee45fe13b30",
+      "id": "ed9ca22d-8b34-4d2e-b2ac-f907a56b1746",
       "name": "Save as Gmail Draft",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        944,
-        -592
+        1392,
+        -432
       ],
       "typeVersion": 2.1,
       "webhookId": "d298ef6b-b892-4eee-be31-caea6f5affdd",
@@ -117,12 +117,12 @@
           ]
         }
       },
-      "id": "7b85a18a-d3b7-4d0b-b94f-101b76e87f5c",
+      "id": "9daf2333-2693-4dd9-8347-a6dd8533305d",
       "name": "Fetch Emails",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        752,
-        -288
+        1200,
+        -96
       ],
       "typeVersion": 2.1,
       "alwaysOutputData": true,
@@ -159,12 +159,12 @@
         },
         "options": {}
       },
-      "id": "3800c7ff-a843-49ee-8716-4a99a9c0af39",
+      "id": "c8165a1c-236f-4d5c-ad26-d69d779b2376",
       "name": "Check if Emails Exist",
       "type": "n8n-nodes-base.if",
       "position": [
-        944,
-        -288
+        1392,
+        -96
       ],
       "typeVersion": 2
     },
@@ -173,12 +173,12 @@
         "operation": "delete",
         "messageId": "={{ $json.id }}"
       },
-      "id": "ad59e9ea-ba34-42c8-ae1c-1829ca006821",
+      "id": "7e605508-fbd7-407b-8ad3-60c1e19ab35c",
       "name": "Delete Email",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        1312,
-        -288
+        1760,
+        -96
       ],
       "typeVersion": 2.1,
       "webhookId": "e4db125e-a260-45b0-b56c-2928e91ea6f4",
@@ -196,12 +196,12 @@
         },
         "options": {}
       },
-      "id": "561d6b17-74da-4bb1-83e5-63db4f1e5203",
+      "id": "3fc08408-7124-4fb5-bdb7-508853413ab6",
       "name": "No Emails Found",
       "type": "n8n-nodes-base.set",
       "position": [
-        1152,
-        -128
+        1600,
+        64
       ],
       "typeVersion": 3.4,
       "alwaysOutputData": true
@@ -218,13 +218,13 @@
           "allowUnauthorizedCerts": true
         }
       },
-      "id": "ffd74fe0-801a-4b66-aa0a-5002c2abd82b",
+      "id": "bef9658b-0f14-4719-abb1-a5cbc3d14d95",
       "name": "Send No Emails Report",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        1632,
-        -128
+        2080,
+        64
       ],
       "webhookId": "ae27f554-7b8a-4406-be36-4b01edfd300a",
       "credentials": {
@@ -246,10 +246,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        -176,
-        -112
+        192,
+        592
       ],
-      "id": "5220baf9-7c92-437c-8c6e-2fb8471386e2",
+      "id": "abd03a2c-451f-49e2-a2d1-9db405c09216",
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
@@ -284,12 +284,12 @@
         },
         "options": {}
       },
-      "id": "db7a9e0f-865e-4556-85b6-a7c55b5c7486",
+      "id": "ed91120e-d2c8-463f-bcf6-eff489b777b0",
       "name": "Spam Parameters",
       "type": "n8n-nodes-base.set",
       "position": [
-        576,
-        -288
+        1024,
+        -96
       ],
       "typeVersion": 3.4
     },
@@ -319,12 +319,12 @@
         },
         "options": {}
       },
-      "id": "62f0e85d-5401-40ff-8a34-81f8776a1332",
+      "id": "a85bc058-12cd-4afa-b5ed-8c334dc37d3e",
       "name": "Draft Parameters",
       "type": "n8n-nodes-base.set",
       "position": [
-        576,
-        -448
+        1024,
+        -272
       ],
       "typeVersion": 3.4
     },
@@ -354,12 +354,12 @@
         },
         "options": {}
       },
-      "id": "25ef2bc3-965d-4192-bed7-0fa1ffd90669",
+      "id": "64cbf333-0108-42c6-b81f-48076e11ac67",
       "name": "Trash Parameters",
       "type": "n8n-nodes-base.set",
       "position": [
-        576,
-        -128
+        1024,
+        64
       ],
       "typeVersion": 3.4
     },
@@ -383,23 +383,23 @@
         },
         "options": {}
       },
-      "id": "602cbe93-cf37-4744-ae4e-cf395208186c",
+      "id": "f1b2ce6b-8fa3-4a02-a44c-06c6b637adad",
       "name": "Prepare Email",
       "type": "n8n-nodes-base.set",
       "position": [
-        752,
-        -592
+        1200,
+        -432
       ],
       "typeVersion": 3.4
     },
     {
       "parameters": {},
-      "id": "4db964c5-f188-4ca3-9114-6837bed3cc71",
+      "id": "791e9e50-b237-45eb-ae39-8e25b149a969",
       "name": "Pause Deletion (5s)",
       "type": "n8n-nodes-base.wait",
       "position": [
-        1152,
-        -288
+        1600,
+        -96
       ],
       "typeVersion": 1.1,
       "webhookId": "0919dfb4-0d8e-46d0-ab27-a20d86215162"
@@ -407,27 +407,28 @@
     {
       "parameters": {
         "mode": "expression",
-        "output": "={{ (() => {\n  const a = String($json.operation ?? '').trim().toLowerCase();\n  const map = {\n    'create_draft': 0,\n    'clean_drafts': 1,\n    'clean_spam': 2,\n    'clean_trash': 3,\n  };\n  return map[a] ?? -1; // -1 routes to fallback (enable it)\n})() }}"
+        "numberOutputs": 5,
+        "output": "={{ (() => {\n  const a = String($json.operation ?? '').trim().toLowerCase();\n  const map = {\n    'create_draft': 0,\n    'clean_drafts': 1,\n    'clean_spam': 2,\n    'clean_trash': 3,\n    'reply_email': 4,\n  };\n  return map[a] ?? -1; // -1 routes to fallback (enable it)\n})() }}"
       },
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -48,
-        -576
+        416,
+        -144
       ],
-      "id": "ada9d4c8-8900-4bf6-aeb7-41eb2d83c199",
+      "id": "b8ecf31f-a55b-44bf-a5d6-5a26c90784dc",
       "name": "Domain Decision"
     },
     {
       "parameters": {
         "jsCode": "// Get the cleanup type from the executed Set Parameters nodes\nlet cleanupType = 'Unknown';\n\n// Check which Set Parameters node was executed by looking at the workflow execution context\ntry {\n  // Try to get from Set Draft Clean Parameters\n  const draftParams = $('Draft Parameters').first();\n  if (draftParams && draftParams.json) {\n    cleanupType = 'Draft';\n  }\n} catch (e) {}\n\ntry {\n  // Try to get from Set Spam Clean Parameters  \n  const spamParams = $('Spam Parameters').first();\n  if (spamParams && spamParams.json) {\n    cleanupType = 'Spam';\n  }\n} catch (e) {}\n\ntry {\n  // Try to get from Set Trash Clean Parameters\n  const trashParams = $('Trash Parameters').first();\n  if (trashParams && trashParams.json) {\n    cleanupType = 'Trash';\n  }\n} catch (e) {}\n\n// Aggregate all deleted emails and add cleanup type\nreturn [{\n  json: {\n    deleted_emails: items.map(item => item.json),\n    cleanupType: cleanupType,\n    totalDeleted: items.length\n  }\n}];"
       },
-      "id": "f6fe58f5-02c7-4ee0-bc0a-edad047f2dfa",
+      "id": "c76ad196-4913-4d7c-9860-147662e1ceae",
       "name": "Aggregate Emails",
       "type": "n8n-nodes-base.code",
       "position": [
-        1472,
-        -288
+        1920,
+        -96
       ],
       "typeVersion": 1
     },
@@ -443,13 +444,13 @@
           "allowUnauthorizedCerts": true
         }
       },
-      "id": "86956636-afb1-4727-82a2-619016d18cbd",
+      "id": "b7e3d351-c49d-4220-9bac-dcaff47681bb",
       "name": "Send Clean Report",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        1632,
-        -288
+        2080,
+        -96
       ],
       "webhookId": "3f4b5a8d-099c-4808-81c0-9179c269fe8d",
       "credentials": {
@@ -458,6 +459,150 @@
           "name": "SMTP account"
         }
       }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "600f94bc-c1d2-4933-8f9d-f7b9e1317a0f",
+      "name": "Check New Email (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "position": [
+        416,
+        240
+      ],
+      "typeVersion": 2,
+      "credentials": {
+        "imap": {
+          "id": "NBfMzCctD9ha97vJ",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "c1e4c0b4-7a5b-4b19-8f3e-2d1c9e8f7a6b",
+              "leftValue": "={{ $json.from }}",
+              "rightValue": "jomirusergiu@gmail.com",
+              "operator": {
+                "type": "string",
+                "operation": "notContains",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e5586824-55be-4978-b2b5-243a70d60232",
+      "name": "Filter Out Own Emails",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        864,
+        240
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Sender: {{ $json.from }}\n\nEmail Content:\n{{ $json.textPlain }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an AI email assistant.  \nYour task is to generate professional, well-structured email replies based on the incoming email content.  \n\nGuidelines:\n- Extract the sender's name from the 'Sender' field. If it contains a name before the email address (e.g., 'John Doe <john@example.com>'), use that name. Otherwise, use a generic greeting.\n- Always address the sender by their actual name in the greeting (e.g., 'Dear John,' or 'Dear Mr. Smith,').\n- Keep the tone respectful, clear, and professional. \n- Structure the email with proper greeting, body, and closing \n- Every new sentence in the body should be from new line\n- Ensure proper grammar and formatting for paragraphs in the body\n- Include all necessary information mentioned\n- Summarize long emails before replying if needed.  \n- Provide clear answers or actions, and confirm receipt when appropriate.  \n- If the request is unclear, politely ask for clarification.  \n- Keep replies short (3–6 sentences), unless a longer explanation is required.  \n- Use correct grammar and formatting.  \n- Do not include subject line in the email body \n\nEmail structure example:\n'Dear John,\n\nThank you for your message.\n\nI appreciate you taking the time to review my application and proceed accordingly.\nPlease let me know if you need any additional information from my side.\n\nBest regards,\nSergiu'\n\nInput: The sender information and email content are provided above.\n\nOutput: Drafted email reply body only, with Best Regards, my name is Sergiu. Use the actual sender's name in the greeting."
+            }
+          ]
+        }
+      },
+      "id": "1ed8b927-0afb-4e67-a17c-1dad50496912",
+      "name": "Process Email with AI (Reply)",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1088,
+        240
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7d428c48-4809-45d8-ba1e-c96d68c02c07",
+              "name": "to",
+              "type": "string",
+              "value": "={{ $('Check New Email (IMAP)').first().json.from }}"
+            },
+            {
+              "id": "63b99545-3d2d-4563-b9d7-078cbc20dbcc",
+              "name": "subject",
+              "type": "string",
+              "value": "=Re: {{ $('Check New Email (IMAP)').first().json.subject }}"
+            },
+            {
+              "id": "11d94d3f-2170-4b54-b5f9-b85bb95ad472",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.text }}\n\nOn {{ $('Check New Email (IMAP)').first().json.date }}, {{ $('Check New Email (IMAP)').first().json.from }} wrote:\n> {{ $('Check New Email (IMAP)').first().json.textPlain.replace(/\\n/g, '\\n> ') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5b44f78e-6ee2-41c8-99c7-8be9f9eeca6b",
+      "name": "Prepare Email Reply Content",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1392,
+        240
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "id": "7437f5e4-6808-4623-87f7-80270eaa992c",
+      "name": "Save as Gmail Draft1",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1776,
+        240
+      ],
+      "webhookId": "12345678-90ab-cdef-1234-567890abcdef",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6ZNnHZRObc0alAvd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "370f7068-f275-4319-94d1-4083cad59404",
+      "name": "Pause",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        1600,
+        240
+      ],
+      "webhookId": "0b2f9902-fd7b-4a98-87a3-f36c74b0af32",
+      "typeVersion": 1.1
     }
   ],
   "pinData": {
@@ -582,6 +727,11 @@
             "node": "AI Operation Classifier",
             "type": "ai_languageModel",
             "index": 0
+          },
+          {
+            "node": "Process Email with AI (Reply)",
+            "type": "ai_languageModel",
+            "index": 0
           }
         ]
       ]
@@ -670,6 +820,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Filter Out Own Emails",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -683,13 +840,68 @@
           }
         ]
       ]
+    },
+    "Check New Email (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Filter Out Own Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Out Own Emails": {
+      "main": [
+        [
+          {
+            "node": "Process Email with AI (Reply)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Email with AI (Reply)": {
+      "main": [
+        [
+          {
+            "node": "Prepare Email Reply Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Email Reply Content": {
+      "main": [
+        [
+          {
+            "node": "Pause",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pause": {
+      "main": [
+        [
+          {
+            "node": "Save as Gmail Draft1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "d1e5c6dc-fec7-4901-b10f-c374d97bf249",
+  "versionId": "dcba3f23-0a16-41cb-a8a7-123dd4b30517",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
