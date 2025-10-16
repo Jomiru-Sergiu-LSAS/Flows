@@ -4,7 +4,7 @@
     {
       "parameters": {
         "options": {
-          "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA (create/query), tickets, issues, tasks, bugs, features, stories, create task, create bug, create feature, create story, create ticket, create issue, get tasks, show tasks, list tasks, my tasks, my issues, sprint tasks, sprint issues, backlog tasks, backlog issues, assigned to me, CI/CD, build, deploy, pipeline, general chat/questions → Director of Product\n- For engineering, development, research, scripts, script creation, automation scripts, file operations (read, write, delete) → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Create a backup script\", \"agent\": \"Director of Engineering\"}\n{\"action\": \"Create a JIRA task for fixing the login bug\", \"agent\": \"Director of Product\"}\n{\"action\": \"Create a bug ticket for the payment system\", \"agent\": \"Director of Product\"}\n{\"action\": \"Get all my JIRA issues\", \"agent\": \"Director of Product\"}\n{\"action\": \"Show all sprint tasks\", \"agent\": \"Director of Product\"}\n{\"action\": \"List all backlog issues\", \"agent\": \"Director of Product\"}"
+          "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA (create/query), tickets, issues, tasks, bugs, features, stories, create task, create bug, create feature, create story, create ticket, create issue, get tasks, show tasks, list tasks, my tasks, my issues, sprint tasks, sprint issues, backlog tasks, backlog issues, assigned to me → Director of Product\n- For engineering, development, research, scripts, script creation, automation scripts, file operations (read, write, delete) → Director of Engineering\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Create a backup script\", \"agent\": \"Director of Engineering\"}\n{\"action\": \"Create a JIRA task for fixing the login bug\", \"agent\": \"Director of Product\"}\n{\"action\": \"Create a bug ticket for the payment system\", \"agent\": \"Director of Product\"}\n{\"action\": \"Get all my JIRA issues\", \"agent\": \"Director of Product\"}\n{\"action\": \"Show all sprint tasks\", \"agent\": \"Director of Product\"}\n{\"action\": \"List all backlog issues\", \"agent\": \"Director of Product\"}"
         }
       },
       "id": "4df16fef-1e47-42a3-9523-fa8378fd52b1",
@@ -18,7 +18,7 @@
     },
     {
       "parameters": {
-        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Git Actions** (repos, PRs, code reviews, repository updates) \n     - **JIRA Actions** (create/query tickets, issues, project tracking)\n       * Create: tasks, bugs, features/stories with priority\n       * Query: sprint tasks, backlog tasks, my assigned tasks\n     - **Chat Actions** (general conversations)\n     - **CI/CD Actions** (build, deploy, pipelines)\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Expert Engineer Agents** with shared **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **RW Actions** (unified file read, write, delete operations with AI classification)\n     - **Think** tool for coordination and planning\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (Model)\n- **Director of Operations:** O3 (General)\n- **Director of Product:** O3 (Product) \n- **Director of Engineering:** O3 (Engineer)\n- **7 Engineering Experts:** GPT-4.1-mini (Specialist)\n\n\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, create/query JIRA tasks (sprint/backlog/assigned), manage git/PRs, or technical engineering solutions including file operations. Each Director manages tools and actions for their domain.",
+        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes through an **Operation Decision** node to three Director-level agents for specialized domains.\n\n### ⚙️ How it works\n1) **Chat Trigger ➜ CTO Agent (O3) ➜ Operation Decision ➜ Decision Switch**  \n   CTO analyzes user requests and outputs JSON routing decisions with memory persistence. Operation Decision node parses JSON and Decision Switch routes to appropriate Director based on agent type.\n\n2) **Three-Domain Director Architecture**\n   - **Director of Operations** *(Operations & System Management)*\n     - **Mail Actions** (spam, drafts, trash cleanup, mail replies)\n     - **News Actions** (newsletters, latest news updates)\n     - **Win Actions** (shutdown, reboot, startup, system operations)\n     - **Report Actions** (weekly/monthly reports, summaries, analytics)\n   \n   - **Director of Product** *(Development Workflows & Project Management)*\n     - **Git Actions** (repos, PRs, code reviews, repository updates) \n     - **JIRA Actions** (create/query tickets, issues, project tracking)\n       * Create: tasks, bugs, features/stories with priority\n       * Query: sprint tasks, backlog tasks, my assigned tasks\n   \n   - **Director of Engineering** *(Technical Expertise & Development)*\n     - **7 Expert Engineer Agents** with shared **RW Actions**:\n       - Software Architect, Frontend Developer, Backend Developer\n       - QA Test Engineer, Security Engineer, DevOps Engineer, Research Engineer\n     - **RW Actions** (unified file read, write, delete operations with AI classification)\n     - **Think** tool for coordination and planning\n\n### 🧩 Models & Architecture\n- **CTO Agent:** O3 (Model)\n- **Director of Operations:** O3 (General)\n- **Director of Product:** O3 (Product) \n- **Director of Engineering:** O3 (Engineer)\n- **7 Engineering Experts:** GPT-4.1-mini (Specialist)\n\n\n\n> **Usage:** CTO automatically routes requests through Director-level coordination—ask for emails/system operations, create/query JIRA tasks (sprint/backlog/assigned), manage git/PRs, or technical engineering solutions including file operations. Each Director manages tools and actions for their domain.",
         "height": 964,
         "width": 900,
         "color": 7
@@ -128,28 +128,6 @@
       ],
       "id": "2c64984a-4f06-498f-b697-23bcb62bb215",
       "name": "JIRA Actions"
-    },
-    {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        80,
-        -336
-      ],
-      "id": "51b176f6-9b55-481c-880d-403d7a10c73a",
-      "name": "Chat Actions"
-    },
-    {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        192,
-        -336
-      ],
-      "id": "1e91d5ad-9e84-494f-8f9a-06d18cba17c0",
-      "name": "CI/CD Actions"
     },
     {
       "parameters": {
@@ -735,28 +713,6 @@
       ]
     },
     "JIRA Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "Director of Product",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Chat Actions": {
-      "ai_tool": [
-        [
-          {
-            "node": "Director of Product",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "CI/CD Actions": {
       "ai_tool": [
         [
           {
