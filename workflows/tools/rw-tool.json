@@ -371,7 +371,7 @@
         ],
         [
           {
-            "node": "Write File",
+            "node": "Prepare Write Content",
             "type": "main",
             "index": 0
           }
@@ -379,6 +379,17 @@
         [
           {
             "node": "Delete File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Write Content": {
+      "main": [
+        [
+          {
+            "node": "Write File",
             "type": "main",
             "index": 0
           }
