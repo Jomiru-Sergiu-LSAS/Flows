@@ -629,9 +629,9 @@
       "parameters": {
         "model": {
           "__rl": true,
+          "value": "o3",
           "mode": "list",
-          "value": "gpt-4o",
-          "cachedResultName": "gpt-4o"
+          "cachedResultName": "o3"
         },
         "options": {}
       },
@@ -1180,7 +1180,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2f01977c-eb02-4634-b72a-71648b4eedfe",
+  "versionId": "d2bb027e-1a01-4718-9cfc-8473ce7c7653",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
