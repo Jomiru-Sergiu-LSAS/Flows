@@ -1,0 +1,449 @@
+{
+  "name": "wise-tool",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f47daa9c-af3d-442f-87e7-9325e9acd05c",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        432,
+        144
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 💰 Wise API Finance Tool\n\nHandles Wise currency operations:\n- **QUOTE**: Get FX exchange rates\n- **TRANSFER**: Send money (requires approval)\n- **BALANCE**: Check account balance\n\n**Flow:**\n1. Execute Workflow Trigger receives: operation, sourceCurrency, targetCurrency, amount\n2. Operation Router switches based on operation type\n3. For QUOTE → Get Exchange Rate → Format Response\n4. For TRANSFER → Get Quote → Slack Approval → Execute Transfer (if approved) → Format Response\n5. For BALANCE → Get Balance → Format Response\n\n**Note:** You'll need to:\n1. Set up Wise API credentials in n8n\n2. Configure Slack webhook for approvals\n3. Replace placeholder Wise API endpoints with actual ones\n4. Test with small amounts first",
+        "height": 520,
+        "width": 560,
+        "color": 6
+      },
+      "id": "42f78ea0-6897-49b7-b483-c8bd5a75e5e1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        192,
+        -448
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 3,
+        "output": "={{ (() => {\n  const op = String($json.operation ?? '').trim().toLowerCase();\n  const map = {\n    'quote': 0,\n    'transfer': 1,\n    'balance': 2\n  };\n  return map[op] ?? 0; // default to quote\n})() }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        656,
+        128
+      ],
+      "id": "d58b2ba9-6686-43d3-9fe2-20680a9b5057",
+      "name": "Operation Router"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.wise.com/v1/quotes",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wiseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_WISE_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "sourceCurrency",
+              "value": "={{ $json.sourceCurrency }}"
+            },
+            {
+              "name": "targetCurrency",
+              "value": "={{ $json.targetCurrency }}"
+            },
+            {
+              "name": "sourceAmount",
+              "value": "={{ $json.amount }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        -80
+      ],
+      "id": "2cbada7d-ef84-455b-a088-9f08752aa1a0",
+      "name": "Get Exchange Rate"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.wise.com/v1/quotes",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wiseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_WISE_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "sourceCurrency",
+              "value": "={{ $json.sourceCurrency }}"
+            },
+            {
+              "name": "targetCurrency",
+              "value": "={{ $json.targetCurrency }}"
+            },
+            {
+              "name": "sourceAmount",
+              "value": "={{ $json.amount }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        144
+      ],
+      "id": "0a4755e4-25e0-4554-8e6f-80bfafb4a074",
+      "name": "Get Quote for Transfer"
+    },
+    {
+      "parameters": {
+        "url": "https://api.wise.com/v1/borderless-accounts/YOUR_PROFILE_ID/balances",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wiseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_WISE_API_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        320
+      ],
+      "id": "4be73e01-0974-43d4-ae90-757fabb37102",
+      "name": "Get Balance"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst quote = items[0].json;\n\nconst rate = quote.rate || 0;\nconst sourceCurrency = quote.sourceCurrency || $json.sourceCurrency;\nconst targetCurrency = quote.targetCurrency || $json.targetCurrency;\nconst sourceAmount = quote.sourceAmount || $json.amount;\nconst targetAmount = quote.targetAmount || (sourceAmount * rate);\n\nreturn [\n  {\n    json: {\n      response: `Exchange Rate: 1 ${sourceCurrency} = ${rate} ${targetCurrency}\\n\\nYou send: ${sourceAmount} ${sourceCurrency}\\nThey receive: ${targetAmount.toFixed(2)} ${targetCurrency}\\n\\nRate ID: ${quote.id || 'N/A'}`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        -80
+      ],
+      "id": "7403fbe6-403a-465f-b811-22fa77bc2200",
+      "name": "Format Quote Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst balances = items[0].json;\n\nlet response = '💰 Account Balances:\\n\\n';\n\nif (Array.isArray(balances)) {\n  balances.forEach(bal => {\n    const currency = bal.currency || 'N/A';\n    const amount = bal.amount?.value || 0;\n    response += `${currency}: ${amount}\\n`;\n  });\n} else {\n  response = 'Unable to retrieve balances. Please check API credentials.';\n}\n\nreturn [\n  {\n    json: {\n      response: response\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        320
+      ],
+      "id": "bbc73227-05e3-4713-8b25-fc42f4593af0",
+      "name": "Format Balance Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst quote = items[0].json;\n\nconst rate = quote.rate || 0;\nconst sourceCurrency = quote.sourceCurrency || $json.sourceCurrency;\nconst targetCurrency = quote.targetCurrency || $json.targetCurrency;\nconst sourceAmount = quote.sourceAmount || $json.amount;\nconst targetAmount = quote.targetAmount || (sourceAmount * rate);\n\nreturn [\n  {\n    json: {\n      message: `🔔 TRANSFER APPROVAL REQUIRED\\n\\nYou are about to send:\\n${sourceAmount} ${sourceCurrency} → ${targetAmount.toFixed(2)} ${targetCurrency}\\n\\nExchange Rate: 1 ${sourceCurrency} = ${rate} ${targetCurrency}\\n\\nApprove or Reject?`,\n      quoteId: quote.id,\n      sourceCurrency: sourceCurrency,\n      targetCurrency: targetCurrency,\n      sourceAmount: sourceAmount,\n      targetAmount: targetAmount\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        144
+      ],
+      "id": "6bde04ef-77ce-4d5d-a927-3baf0dedd1a8",
+      "name": "Prepare Approval Request"
+    },
+    {
+      "parameters": {
+        "content": "⚠️ **PLACEHOLDER: Slack Approval**\n\nReplace this with actual Slack approval workflow:\n1. Send message to Slack with Approve/Reject buttons\n2. Wait for webhook response\n3. If approved, continue to Execute Transfer\n4. If rejected, skip to rejection message\n\nFor now, this node simulates AUTO-APPROVE for testing.\n\n**DO NOT USE IN PRODUCTION WITHOUT REAL APPROVAL GATE!**",
+        "height": 296,
+        "width": 408,
+        "color": 5
+      },
+      "id": "1ba8ef06-a43c-4bbe-97df-4a06582a7d66",
+      "name": "Approval Gate Placeholder",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        784,
+        -448
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// PLACEHOLDER: Simulate approval\n// In production, replace with actual Slack approval logic\n\nreturn [\n  {\n    json: {\n      ...$json,\n      approved: true,\n      approver: 'Sergiu (auto-approved for testing)'\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1312,
+        144
+      ],
+      "id": "8b2303f1-9fdf-4453-a22b-b08ae2d7959f",
+      "name": "Slack Approval (Placeholder)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.approved }}",
+              "value2": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        144
+      ],
+      "id": "da65d795-09ab-4a58-b365-b5dd1aac4d15",
+      "name": "Check Approval"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.wise.com/v1/transfers",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wiseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_WISE_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "targetAccount",
+              "value": "YOUR_RECIPIENT_ID"
+            },
+            {
+              "name": "quoteUuid",
+              "value": "={{ $json.quoteId }}"
+            },
+            {
+              "name": "customerTransactionId",
+              "value": "={{ $runIndex }}-{{ $now }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        48
+      ],
+      "id": "53100696-22b3-4f56-b5f2-fe448e5601da",
+      "name": "Execute Transfer"
+    },
+    {
+      "parameters": {
+        "jsCode": "const transfer = $json;\n\nreturn [\n  {\n    json: {\n      response: `✅ TRANSFER SUCCESSFUL\\n\\nTransfer ID: ${transfer.id || 'N/A'}\\nStatus: ${transfer.status || 'Completed'}\\n\\n${$('Prepare Approval Request').item.json.sourceAmount} ${$('Prepare Approval Request').item.json.sourceCurrency} → ${$('Prepare Approval Request').item.json.targetAmount} ${$('Prepare Approval Request').item.json.targetCurrency}\\n\\nApproved by: ${$json.approver || 'Sergiu'}`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        48
+      ],
+      "id": "7fe064c8-3b67-4cb1-8205-1ccfc8d565a4",
+      "name": "Format Transfer Success"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      response: `❌ TRANSFER REJECTED\\n\\nThe transfer request was not approved.\\n\\n${$('Prepare Approval Request').item.json.sourceAmount} ${$('Prepare Approval Request').item.json.sourceCurrency} → ${$('Prepare Approval Request').item.json.targetAmount} ${$('Prepare Approval Request').item.json.targetCurrency}\\n\\nNo funds were transferred.`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        240
+      ],
+      "id": "a465b136-5860-4fcb-b25f-05dba3e7d2c4",
+      "name": "Format Transfer Rejection"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Operation Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Operation Router": {
+      "main": [
+        [
+          {
+            "node": "Get Exchange Rate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Quote for Transfer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Balance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Exchange Rate": {
+      "main": [
+        [
+          {
+            "node": "Format Quote Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Balance": {
+      "main": [
+        [
+          {
+            "node": "Format Balance Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Quote for Transfer": {
+      "main": [
+        [
+          {
+            "node": "Prepare Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Slack Approval (Placeholder)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Approval (Placeholder)": {
+      "main": [
+        [
+          {
+            "node": "Check Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Approval": {
+      "main": [
+        [
+          {
+            "node": "Execute Transfer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Transfer Rejection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Transfer": {
+      "main": [
+        [
+          {
+            "node": "Format Transfer Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5b5995b2-f6c1-4884-9492-74756a87c454",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "We2gJ51rNiUXHNZs",
+  "tags": []
+}
