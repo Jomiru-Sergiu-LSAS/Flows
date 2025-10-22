@@ -155,7 +155,7 @@
       "credentials": {
         "openAiApi": {
           "id": "wwvhoLcIlADIQmDC",
-          "name": "OpenAi account"
+          "name": "OpenAi"
         }
       }
     },
@@ -417,23 +417,7 @@
     },
     "Win Operations": {
       "main": [
-        [
-          {
-            "node": "Run Claude",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Run React Dev",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Run Startup Apps",
-            "type": "main",
-            "index": 0
-          }
-        ],
+        [],
         [
           {
             "node": "Reboot System",
@@ -455,7 +439,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "39d84817-da11-4adb-8427-7039372917bc",
+  "versionId": "0b3e22c9-ba42-413b-83a7-63bb11b6b915",
   "meta": {
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
   },
