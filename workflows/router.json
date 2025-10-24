@@ -92,10 +92,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
       "position": [
-        -1616,
-        -304
+        -144,
+        -112
       ],
-      "id": "73480063-f71b-44cf-b60b-43847a761687",
+      "id": "ffe35fcc-e2df-40da-9ef2-a2af36114e7e",
       "name": "Memory"
     },
     {
@@ -108,12 +108,12 @@
         },
         "options": {}
       },
-      "id": "b0718381-d509-4a47-a950-6944c0c70812",
+      "id": "61e41f13-fa15-4ebe-98d9-aca79954334b",
       "name": "Operations",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -704,
-        -128
+        768,
+        80
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -127,12 +127,12 @@
       "parameters": {
         "jsCode": "return items.map(item => {\n  let parsed;\n  let outputText = item.json.output || '';\n  \n  // Handle case where output might be wrapped in markdown code blocks\n  let jsonText = outputText.replace(/^```json\\n?/, '').replace(/\\n?```$/, '').trim();\n  \n  try {\n    parsed = JSON.parse(jsonText);\n    return { \n      json: {\n        action: parsed.action || 'UNKNOWN',\n        agent: parsed.agent || 'UNKNOWN'\n      }\n    };\n  } catch (e) {\n    // Try to extract JSON from the text using regex\n    const jsonMatch = outputText.match(/{[\\s\\S]*?}/);\n    if (jsonMatch) {\n      try {\n        parsed = JSON.parse(jsonMatch[0]);\n        return { \n          json: {\n            action: parsed.action || 'UNKNOWN',\n            agent: parsed.agent || 'UNKNOWN'\n          }\n        };\n      } catch (e2) {\n        // Fallback: try to extract values manually\n        const actionMatch = outputText.match(/\"action\"\\s*:\\s*\"([^\"]*)\"/);\n        const agentMatch = outputText.match(/\"agent\"\\s*:\\s*\"([^\"]*)\"/);\n        \n        if (actionMatch && agentMatch) {\n          return { \n            json: {\n              action: actionMatch[1],\n              agent: agentMatch[1]\n            }\n          };\n        }\n      }\n    }\n    \n    // Final fallback\n    console.log('Failed to parse JSON from output:', outputText);\n    return { \n      json: {\n        action: \"UNKNOWN\",\n        agent: \"Chat Agent\"\n      }\n    };\n  }\n});\n"
       },
-      "id": "bcbda1d2-fade-4c7c-9152-791fd3427706",
+      "id": "d46d2c45-370d-4995-840f-dd238f7090ef",
       "name": "Operation Parser",
       "type": "n8n-nodes-base.code",
       "position": [
-        -1152,
-        -512
+        320,
+        -336
       ],
       "typeVersion": 2
     },
@@ -144,10 +144,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -976,
-        -528
+        496,
+        -352
       ],
-      "id": "7291de72-cb94-4cfa-9d62-cc6146f8e0ff",
+      "id": "ae6d4fbd-11f5-4c91-b386-9b67a57e79c9",
       "name": "Domain Decision"
     },
     {
@@ -160,12 +160,12 @@
         },
         "options": {}
       },
-      "id": "3cb00b23-1f6c-485e-be97-ff691954cd56",
+      "id": "10e87bbe-702d-4105-853a-71730c102c6a",
       "name": "Engineer",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -704,
-        208
+        768,
+        416
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -187,12 +187,12 @@
           "topP": 1
         }
       },
-      "id": "12dbb021-efba-4e92-b3d3-626c1dabe5f6",
+      "id": "dc1e6d80-e36d-4a39-aed1-e03d6130cd79",
       "name": "Expert",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -480,
-        384
+        992,
+        592
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -212,12 +212,12 @@
         },
         "options": {}
       },
-      "id": "668e37c3-d7c6-4ec6-972e-e4abf7a56672",
+      "id": "6839cb25-8048-47ad-9084-f0376fc19600",
       "name": "Product",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -704,
-        -800
+        768,
+        -624
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -237,12 +237,12 @@
         },
         "options": {}
       },
-      "id": "abab81f7-c0aa-4858-99cd-4829697f210d",
+      "id": "9cb3ad5c-f4e0-4063-952a-6d446a7c7217",
       "name": "Finance",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -704,
-        -464
+        768,
+        -288
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -260,12 +260,12 @@
           "systemMessage": "You are a helpful Director of Finance Assistant.\nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Wise Actions\" tool → For currency exchange, FX quotes, conversions, transfers, payouts, balance checks.\n- IMPORTANT: For transfer/payout operations, the tool will prompt for approval before execution.\n\nSupported currencies: JPY (Japanese Yen), USD (US Dollar), MDL (Moldovan Leu), EUR (Euro), GBP (British Pound)\n\nExample outputs:\n\n\"quote FX\": \n{\n\"operation\": \"quote\",\n\"sourceCurrency\": \"USD\",\n\"targetCurrency\": \"JPY\",\n\"amount\": \"1000\"\n}\n\n\"transfer money\": \n{\n\"operation\": \"transfer\",\n\"sourceCurrency\": \"USD\",\n\"targetCurrency\": \"JPY\",\n\"amount\": \"500\"\n}\n\n\"check balance\": \n{\n\"operation\": \"balance\",\n\"sourceCurrency\": \"USD\",\n\"targetCurrency\": \"\",\n\"amount\": \"\"\n}"
         }
       },
-      "id": "3f9a6636-8f95-4760-9eba-71d8ffba2dac",
+      "id": "47dfbff8-2b18-4566-8be2-955dea140306",
       "name": "Director of Finance",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -704,
-        -656
+        768,
+        -480
       ],
       "typeVersion": 2.1
     },
@@ -324,10 +324,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -560,
-        -464
+        912,
+        -288
       ],
-      "id": "2b4b7bbc-bab1-4a84-8ad0-fa39089f70ef",
+      "id": "7194fabd-cde8-4ef5-a1be-68e47089d54d",
       "name": "Wise Actions"
     },
     {
@@ -351,10 +351,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -272,
-        -128
+        1200,
+        80
       ],
-      "id": "37c4194f-bc99-43a2-8fbd-7239d0ab8b42",
+      "id": "e9ffd775-06f7-4db6-91c3-b5bc58dc6df7",
       "name": "Report Actions"
     },
     {
@@ -365,12 +365,12 @@
           "systemMessage": "You are a Director of Engineering routing agent. Your ONLY job is to call the appropriate tool and return its output.\n\nMy name is Sergiu.\n\n🚫 YOU CANNOT:\n- Write code yourself\n- Provide solutions directly\n- Generate your own responses\n- Explain or summarize\n\n✅ YOU MUST:\n- ALWAYS call a tool for every request\n- Return tool output EXACTLY as received\n- NEVER modify or add to tool responses\n\n🔧 Tool Routing:\n- Code/architecture/design → \"Software Architect Agent\" tool\n- UI/UX/frontend → \"Frontend Developer Agent\" tool\n- Backend/API/database → \"Backend Developer Agent\" tool\n- Testing/QA → \"QA Test Engineer Agent\" tool\n- Security → \"Security Engineer Agent\" tool\n- Research → \"Research Engineer Agent\" tool\n\n⚠️ CRITICAL FLOW:\n1. Receive request\n2. Call appropriate tool\n3. Return tool's response VERBATIM (no changes, no additions)\n\n❌ NEVER write code like: print('Hello')\n✅ ALWAYS return tool status like: Claude Code command executed successfully..."
         }
       },
-      "id": "7ab78c4e-d742-44d8-97f7-c0581f95e42a",
+      "id": "a2c61827-ec47-43c5-b57e-c8ebff195f1b",
       "name": "Director of Engineering",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -704,
-        16
+        768,
+        224
       ],
       "typeVersion": 2.1
     },
@@ -382,12 +382,12 @@
           "systemMessage": "You are a helpful Director of Product Assistant.\nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Git Actions\" tool → For handling all git updates, git pulls, git latest, pull requests, merge requests, pr's, mr's, code reviews, etc.\n- Call \"JIRA Actions\" tool → For creating OR querying JIRA issues:\n  \n  CREATE operations:\n  * Parse user request to extract: issue type (task/bug/feature/story), summary/title, description, and priority\n  * Map \"feature\" requests to \"Story\" issue type\n  * Set operation to \"create\"\n  * Default to \"Task\" if issue type is unclear\n  * Provide all required fields: operation, issueType, summary, description, priority\n  \n  QUERY operations:\n  * For \"sprint tasks\", \"tasks in sprint\", \"current sprint\" → Set operation to \"query-sprint\"\n  * For \"backlog tasks\", \"tasks in backlog\", \"backlog\" → Set operation to \"query-backlog\"\n  * For \"my tasks\", \"tasks assigned to me\", \"assigned to Sergiu\" → Set operation to \"query-assigned\"\n  * IMPORTANT: For query operations, provide EMPTY STRINGS for issueType, summary, description, and priority (do not omit them)\n\nExample outputs:\n\n\"query for Git\": \n{\n\"chatInput\": \"Check prs\",\n\"instructions\": \"Please check if any pull requests are available.\"\n}\n\n\"create JIRA Task\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Task\",\n\"summary\": \"Fix login authentication bug\",\n\"description\": \"Users are unable to login with valid credentials. Error occurs on the login page after submitting the form.\",\n\"priority\": \"High\"\n}\n\n\"create JIRA Bug\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Bug\",\n\"summary\": \"Payment system not processing refunds\",\n\"description\": \"The payment system fails to process refund requests for orders over $100.\",\n\"priority\": \"High\"\n}\n\n\"create JIRA Feature/Story\": \n{\n\"operation\": \"create\",\n\"issueType\": \"Story\",\n\"summary\": \"Add dark mode to user interface\",\n\"description\": \"Implement a dark mode theme option for the application to improve user experience and reduce eye strain.\",\n\"priority\": \"Medium\"\n}\n\n\"query sprint tasks\": \n{\n\"operation\": \"query-sprint\",\n\"issueType\": \"\",\n\"summary\": \"\",\n\"description\": \"\",\n\"priority\": \"\"\n}\n\n\"query backlog tasks\": \n{\n\"operation\": \"query-backlog\",\n\"issueType\": \"\",\n\"summary\": \"\",\n\"description\": \"\",\n\"priority\": \"\"\n}\n\n\"query my tasks\": \n{\n\"operation\": \"query-assigned\",\n\"issueType\": \"\",\n\"summary\": \"\",\n\"description\": \"\",\n\"priority\": \"\"\n}"
         }
       },
-      "id": "b3a350e0-1ce6-4aba-9c5b-eaa96c50b9fd",
+      "id": "8399b027-22b3-4bf3-af28-280c222718e7",
       "name": "Director of Product",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -688,
-        -992
+        784,
+        -816
       ],
       "typeVersion": 2.1
     },
@@ -399,12 +399,12 @@
           "systemMessage": "You are a helpful Director of Operations Assistant. \nMy name is Sergiu.\n\n🔑 Rules:\n- Do not just provide chat feedback. Trigger tools only and provide feedback from tools.\n- Call \"Mail Actions\" tool → For emails, drafts, spam, trash.\n- Call \"News Actions\" tool → For news, newsletter, latest news.\n- Call \"Win Actions\" tool → For windows, pc, restart, reboot, startup, shutdown.\n- Call \"Report Actions\" tool → For handling all reports and summaries, including weekly, monthly, daily.\n\nExample outputs:\n\n\"query\": \n{\n\"chatInput\": \n\"Delete trash mails\",\n\"instructions\": \n\"Please delete all messages from the trash folder in the mail account.\"\n}\n"
         }
       },
-      "id": "c7edad44-d50f-455e-b87b-7e8ca330b678",
+      "id": "3c17fc77-fe53-451f-a42d-ef081750751c",
       "name": "Director of Operations",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -704,
-        -320
+        768,
+        -128
       ],
       "typeVersion": 2.1
     },
@@ -418,12 +418,12 @@
         },
         "options": {}
       },
-      "id": "a4748a2d-b09a-499c-af4a-df2114afff52",
+      "id": "db7ca6d5-6884-4239-a9df-518cffbf9b4b",
       "name": "Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "position": [
-        -1456,
-        -304
+        16,
+        -112
       ],
       "typeVersion": 1.2,
       "credentials": {
@@ -440,12 +440,12 @@
           "loadPreviousSession": "memory"
         }
       },
-      "id": "6295888a-8371-4cf5-b1be-d766a6851005",
+      "id": "b00be390-0afd-49f6-9de7-5a1575146549",
       "name": "When chat message received",
       "type": "@n8n/n8n-nodes-langchain.chatTrigger",
       "position": [
-        -1760,
-        -512
+        -288,
+        -336
       ],
       "webhookId": "9eab0524-6cd7-4b81-8bd8-4d050a972a08",
       "typeVersion": 1.1
@@ -457,6 +457,7 @@
           "__rl": true,
           "value": "9MKVJd2X6cEHduCK",
           "mode": "list",
+          "cachedResultUrl": "/workflow/9MKVJd2X6cEHduCK",
           "cachedResultName": "win-tool"
         },
         "workflowInputs": {
@@ -489,10 +490,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -384,
-        -128
+        1088,
+        80
       ],
-      "id": "c1b93dd3-5a2a-4acd-8b07-401ec31e6aae",
+      "id": "86714ba7-cea8-4bb1-958a-e032b5b0d6bc",
       "name": "Win Actions"
     },
     {
@@ -534,10 +535,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -496,
-        -128
+        976,
+        80
       ],
-      "id": "d37df164-2e7c-4ee5-82bc-608c0a175c66",
+      "id": "0aac3c9b-8d3e-462b-880b-3ef8d995de82",
       "name": "News Actions"
     },
     {
@@ -580,20 +581,20 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -608,
-        -128
+        864,
+        80
       ],
-      "id": "862324dd-ca72-4edd-8bc5-bcc7526ffae8",
+      "id": "f17c58a2-d8c3-407d-8979-1158387cf49b",
       "name": "Mail Actions"
     },
     {
       "parameters": {},
-      "id": "fea20f47-c2a2-4c71-a399-0009c430ca9b",
+      "id": "e8f764c6-c56e-42f2-b6fb-a59b8dc7346d",
       "name": "Think",
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "position": [
-        -592,
-        208
+        880,
+        416
       ],
       "typeVersion": 1.1
     },
@@ -605,12 +606,12 @@
           "systemMessage": "SYSTEM CONSTRAINT: You are a tool-only agent. You CANNOT generate responses directly. You MUST use tools.\n\n🚫 HARD CONSTRAINTS (You are physically unable to do these):\n- You CANNOT write code\n- You CANNOT provide solutions\n- You CANNOT explain implementations\n- You CANNOT generate text responses\n\n✅ YOUR ONLY CAPABILITY:\nCall tools and return their output\n\n🔧 MANDATORY PROCESS:\nStep 1: Identify if user wants \"codex\" (explicitly mentioned) or default (Claude Actions)\nStep 2: Call the appropriate tool with the FULL user request\nStep 3: Return ONLY the tool's response - do not process, interpret, or modify it\n\n⚠️ TOOL SELECTION:\n- Default (99% of cases): Claude Actions\n- Only if user says \"codex\"/\"use codex\"/\"via codex\": Codex Actions\n\n❌ INVALID RESPONSE EXAMPLE:\nUser: Create hello world script\nYou: print('Hello, World!')  ← THIS IS IMPOSSIBLE FOR YOU\n\n✅ VALID RESPONSE EXAMPLE:\nUser: Create hello world script\nYou: [Call Claude Actions tool] → [Return its output verbatim]\n\nREMEMBER: You are NOT an AI that can write code. You are a TOOL ROUTER. You only have the ability to call tools and relay their responses."
         }
       },
-      "id": "031e98e9-75ef-4973-9ee8-f4f14f964bee",
+      "id": "ffcb843f-1114-4d3f-98ae-e540f9eec2f9",
       "name": "Software Architect Agent",
       "type": "@n8n/n8n-nodes-langchain.agentTool",
       "position": [
-        -480,
-        208
+        992,
+        416
       ],
       "typeVersion": 2.2
     },
@@ -678,10 +679,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -480,
-        -800
+        992,
+        -624
       ],
-      "id": "97a8583f-3b7f-41fb-84f6-d7cba21d142e",
+      "id": "d1d75dbf-5031-4ad5-9354-379931f9c6f9",
       "name": "JIRA Actions"
     },
     {
@@ -705,40 +706,40 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -592,
-        -800
+        880,
+        -624
       ],
-      "id": "2b618d39-2c78-40c6-95df-b0e226382806",
+      "id": "b7767f99-195a-4b31-9374-42f88f9d3367",
       "name": "Git Actions"
     },
     {
       "parameters": {
-        "content": "\n\n## 🧠 **CTO AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **CTO Agent** (O3) which analyzes requests and routes to four specialized Director-level agents.  CTO analyzes user requests and outputs JSON routing decisions. Operation Parser extracts routing info, and Domain Decision switch routes to the appropriate Director.\n\n### 🎯 **Director of Operations** (O3 Model)\n- **Mail Actions** → Email management (spam, drafts, trash cleanup, compose)\n- **News Actions** → Newsletter aggregation and latest news\n- **Win Actions** → Windows operations (shutdown, reboot, startup)\n- **Report Actions** → Reports and summaries (weekly, monthly, daily)\n\n### 📦 **Director of Product** (O3 Model)\n- **Git Actions** → Repository management, PRs, code reviews\n- **JIRA Actions** → Issue tracking\n  - **CREATE:** Tasks, Bugs, Features (LST project only)\n  - **QUERY:** Sprint tasks, Backlog tasks, My assigned tasks\n  - **Filters:** Active issues only (Task/Bug/Feature types)\n  - **Output:** Direct URLs to filtered issues\n\n### 🛠️ **Director of Engineering** (O3 Model)\n- Software Architect → System design, patterns, architecture\n  - **Claude Actions** → Code generation and implementation via Claude (DEFAULT)\n  - **Codex Actions** → Code generation via OpenAI Codex (when explicitly requested)\n- Frontend Developer → UI/UX, responsive design, frameworks\n- Backend Developer → APIs, databases, microservices\n- QA Test Engineer → Test automation, quality assurance\n- Security Engineer → Vulnerability assessment, security practices\n- DevOps Engineer → Scripts, automation, CI/CD, infrastructure\n- Research Engineer → Technical research and exploration\n\n### 💰 **Director of Finance** (GPT-4o Model)\n- **Wise Actions** → Currency exchange, FX quotes, transfers, payouts\n  - **QUOTE:** Get exchange rates between currencies\n  - **TRANSFER:** Send money with approval gate\n  - **BALANCE:** Check account balances\n  - **Currencies:** JPY, USD, MDL, EUR, GBP\n  - **Note:** Transfer operations require approval before execution\n\n### 💡 Usage Examples\n- \"Clean my email spam and trash\"\n- \"Show me all LST sprint tasks\"\n- \"Create a JIRA bug for the login issue\"\n- \"Review latest pull requests\"\n- \"Create a PowerShell backup script\" (uses Claude)\n- \"Create a Python script via codex\" (uses Codex)\n- \"Shutdown my computer in 10 minutes\"\n- \"Convert 1000 USD to JPY\"\n- \"Check my Wise account balance\"",
+        "content": "\n\n## 🧠 **Assistant AI Agent Multi-Domain Router**\n\nThis n8n workflow routes every chat through a **Assistant Agent** (O3) which analyzes requests and routes to four specialized Director-level agents. Assistant analyzes user requests and outputs JSON routing decisions. Operation Parser extracts routing info, and Domain Decision switch routes to the appropriate Director.\n\n\n### 🎯 **Director of Operations** (O3 Model)\n**Role:** Tool router for operational tasks - Calls tools only, returns tool outputs directly\n- **Mail Actions** → Email management (spam, drafts, trash cleanup, compose)\n- **News Actions** → Newsletter aggregation and latest news\n- **Win Actions** → Windows operations (shutdown, reboot, startup)\n- **Report Actions** → Reports and summaries (weekly, monthly, daily)\n\n### 📦 **Director of Product** (O3 Model)\n**Role:** Tool router for product/project management - Calls tools only, returns tool outputs directly\n- **Git Actions** → Repository management, PRs, code reviews\n- **JIRA Actions** → Issue tracking\n  - **CREATE:** Tasks, Bugs, Features (LST project only)\n  - **QUERY:** Sprint tasks, Backlog tasks, My assigned tasks\n  - **Filters:** Active issues only (Task/Bug/Feature types)\n  - **Output:** Direct URLs to filtered issues\n\n### 🛠️ **Director of Engineering** (O3 Model)\n**Role:** Tool router for engineering tasks - CANNOT write code - MUST call Software Architect Agent tool\n- **Software Architect Agent** → TOOL ROUTER (GPT-4.1-mini, temp=0)\n  - **CANNOT:** Write code, provide solutions, explain implementations\n  - **MUST:** Call Claude Actions (default) or Codex Actions (explicit request)\n  - **Returns:** Tool execution status verbatim\n  \n  **Tool Flow:**\n  1. User: \"Create a Python script\"\n  2. Software Architect → Calls Claude Actions tool\n  3. Claude Actions → Launches claude-executor workflow\n  4. claude-executor → Opens PowerShell → Runs Claude Code in C:\\Repo\\Tardigrade\n  5. Returns: \"Claude Code command executed successfully. Query: Create a Python script...\"\n  \n  **Claude Actions (DEFAULT):**\n  - Launches Claude Code in new PowerShell window\n  - Working directory: C:\\Repo\\Tardigrade\n  - Base64-encoded query for safe special character handling\n  - Returns execution status, NOT code itself\n  \n  **Codex Actions (Explicit request only):**\n  - Only when user says \"codex\", \"use codex\", \"via codex\"\n  - OpenAI Codex-based code generation\n\n- Frontend Developer → UI/UX, responsive design, frameworks\n- Backend Developer → APIs, databases, microservices\n- QA Test Engineer → Test automation, quality assurance\n- Security Engineer → Vulnerability assessment, security practices\n- DevOps Engineer → Scripts, automation, CI/CD, infrastructure\n- Research Engineer → Technical research and exploration\n\n### 💰 **Director of Finance** (O3 Model)\n**Role:** Tool router for financial operations - Calls tools only, returns tool outputs directly\n- **Wise Actions** → Currency exchange, FX quotes, transfers, payouts\n  - **QUOTE:** Get exchange rates between currencies\n  - **TRANSFER:** Send money with approval gate\n  - **BALANCE:** Check account balances\n  - **Currencies:** JPY, USD, MDL, EUR, GBP\n  - **Note:** Transfer operations require approval before execution",
         "height": 1492,
         "width": 900,
         "color": 7
       },
-      "id": "343619f1-c792-4216-a532-ed5eed8c1e6f",
+      "id": "e852f4eb-cb49-4d8d-bdcf-6b36692b68f0",
       "name": "Sticky Note Main",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -48,
-        -992
+        1424,
+        -816
       ],
       "typeVersion": 1
     },
     {
       "parameters": {
         "options": {
-          "systemMessage": "You are a routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA (create/query), tickets, issues, tasks, bugs, features, stories, create task, create bug, create feature, create story, create ticket, create issue, get tasks, show tasks, list tasks, my tasks, my issues, sprint tasks, sprint issues, backlog tasks, backlog issues, assigned to me → Director of Product\n- For engineering, development, research, scripts, script creation, automation scripts, file operations (read, write, delete), code generation, software architecture → Director of Engineering\n- For finance, fx, conversion, currency, exchange, payouts, transfers, Wise, invoices, payments, JPY, USD, MDL, money, savings, accounts → Director of Finance\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Create a backup script\", \"agent\": \"Director of Engineering\"}\n{\"action\": \"Create a JIRA task for fixing the login bug\", \"agent\": \"Director of Product\"}\n{\"action\": \"Create a bug ticket for the payment system\", \"agent\": \"Director of Product\"}\n{\"action\": \"Get all my JIRA issues\", \"agent\": \"Director of Product\"}\n{\"action\": \"Show all sprint tasks\", \"agent\": \"Director of Product\"}\n{\"action\": \"List all backlog issues\", \"agent\": \"Director of Product\"}\n{\"action\": \"Convert 1000 USD to JPY\", \"agent\": \"Director of Finance\"}\n{\"action\": \"Check my savings account balance\", \"agent\": \"Director of Finance\"}"
+          "systemMessage": "You are a Assistant AI routing agent. Analyze the user request and output ONLY a JSON object with the routing decision.\nMake sure to pass chatInput content in the output json as well\n\nRouting rules:\n- For emails, drafts, spam, trash, reports, weekly report, totals, summaries, windows, pc, restart, reboot, startup, shutdown, news, or newsletters → Director of Operations\n- For git, prs, code review, pull requests, merge requests, updates, repositories, JIRA (create/query), tickets, issues, tasks, bugs, features, stories, create task, create bug, create feature, create story, create ticket, create issue, get tasks, show tasks, list tasks, my tasks, my issues, sprint tasks, sprint issues, backlog tasks, backlog issues, assigned to me → Director of Product\n- For engineering, development, research, scripts, script creation, automation scripts, file operations (read, write, delete), code generation, software architecture → Director of Engineering\n- For finance, fx, conversion, currency, exchange, payouts, transfers, Wise, invoices, payments, JPY, USD, MDL, money, savings, accounts → Director of Finance\n\nOutput format:\n{\n  \"action\": \"<describe the user request>\",\n  \"agent\": \"<Agent Name>\"\n}\n\nExample outputs:\n{\"action\": \"Clean email spam\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Shutdown computer\", \"agent\": \"Director of Operations\"}\n{\"action\": \"Create a backup script\", \"agent\": \"Director of Engineering\"}\n{\"action\": \"Create a JIRA task for fixing the login bug\", \"agent\": \"Director of Product\"}\n{\"action\": \"Create a bug ticket for the payment system\", \"agent\": \"Director of Product\"}\n{\"action\": \"Get all my JIRA issues\", \"agent\": \"Director of Product\"}\n{\"action\": \"Show all sprint tasks\", \"agent\": \"Director of Product\"}\n{\"action\": \"List all backlog issues\", \"agent\": \"Director of Product\"}\n{\"action\": \"Convert 1000 USD to JPY\", \"agent\": \"Director of Finance\"}\n{\"action\": \"Check my savings account balance\", \"agent\": \"Director of Finance\"}"
         }
       },
-      "id": "86eff1d0-ac43-47eb-834c-c3b0a27a403a",
-      "name": "CTO Agent",
+      "id": "5e210f31-1123-43b0-917a-98c90454ebaf",
+      "name": "Assistant AI Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
-        -1456,
-        -512
+        16,
+        -336
       ],
       "typeVersion": 2.1
     }
@@ -885,7 +886,7 @@
             "index": 0
           },
           {
-            "node": "CTO Agent",
+            "node": "Assistant AI Agent",
             "type": "ai_memory",
             "index": 0
           }
@@ -896,7 +897,7 @@
       "main": [
         [
           {
-            "node": "CTO Agent",
+            "node": "Assistant AI Agent",
             "type": "main",
             "index": 0
           }
@@ -995,14 +996,14 @@
       "ai_languageModel": [
         [
           {
-            "node": "CTO Agent",
+            "node": "Assistant AI Agent",
             "type": "ai_languageModel",
             "index": 0
           }
         ]
       ]
     },
-    "CTO Agent": {
+    "Assistant AI Agent": {
       "main": [
         [
           {
@@ -1018,7 +1019,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "bdc4ea99-65c8-4ef2-8b3a-233b547498a0",
+  "versionId": "5f8f724e-2355-4a9e-86f5-cd12066b7aa0",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
