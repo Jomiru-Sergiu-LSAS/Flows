@@ -1,0 +1,133 @@
+{
+  "name": "codex-tool",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Base64 encode the query for safe PowerShell transfer (following rw-tool pattern)\nconst item = items[0].json;\n\n// Handle nested query structure (query.query) or flat structure (query)\nlet query = '';\n\nif (typeof item.query === 'string' && item.query.trim()) {\n  // Direct string query\n  query = item.query;\n} else if (item.query && typeof item.query === 'object' && !Array.isArray(item.query)) {\n  // Nested object - try to extract query.query\n  if (typeof item.query.query === 'string' && item.query.query.trim()) {\n    query = item.query.query;\n  } else {\n    // Try to stringify the object as fallback\n    query = JSON.stringify(item.query);\n  }\n} else {\n  query = 'No query provided';\n}\n\nconst base64Query = Buffer.from(query, 'utf8').toString('base64');\n\nreturn [{\n  json: {\n    query: query,\n    base64Query: base64Query,\n    originalInput: item  // Keep for debugging\n  }\n}];"
+      },
+      "id": "85af54aa-f4e9-4ccb-b37f-7cd0123f23b1",
+      "name": "Encode Query to Base64",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "result-001",
+              "name": "result",
+              "value": "=Codex command executed successfully.\n\nQuery: {{ $('Encode Query to Base64').item.json.query }}\n\nA new PowerShell window has been opened running Codex in C:\\Repo\\Tardigrade\n\nPlease check the Codex window for the execution results.",
+              "type": "string"
+            },
+            {
+              "id": "status-001",
+              "name": "status",
+              "value": "success",
+              "type": "string"
+            },
+            {
+              "id": "tool-001",
+              "name": "tool",
+              "value": "claude",
+              "type": "string"
+            },
+            {
+              "id": "query-001",
+              "name": "query",
+              "value": "={{ $('Encode Query to Base64').item.json.query }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "96debc7f-4e45-4ce3-b82f-673be08c6888",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        368,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -352,
+        -16
+      ],
+      "id": "e6392b5c-3b69-4c1d-bc35-7b897a2b4fd9",
+      "name": "Executed by other flow"
+    },
+    {
+      "parameters": {
+        "command": "=powershell -Command \"$base64 = '{{ $json.base64Query }}'; $query = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64)); Start-Process -FilePath 'powershell.exe' -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', \\\"cd C:\\Repo\\Tardigrade; codex /model 'gpt-5 minimal'; codex '$query'\\\"\""
+      },
+      "id": "a426c81f-3500-464a-a445-3a7962eea270",
+      "name": "Execute Codex Command",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -16
+      ]
+    }
+  ],
+  "pinData": {
+    "Executed by other flow": []
+  },
+  "connections": {
+    "Encode Query to Base64": {
+      "main": [
+        [
+          {
+            "node": "Execute Codex Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "Encode Query to Base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Codex Command": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b2e897e9-4227-40d3-8dc4-65964f5ba189",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "FROmo4h1l1HAibJV",
+  "tags": []
+}
