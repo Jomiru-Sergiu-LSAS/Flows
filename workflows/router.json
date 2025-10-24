@@ -34,56 +34,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        -256,
-        384
+        1216,
+        592
       ],
-      "id": "d40ac036-1c13-4fb5-a06d-a1b82fc738e5"
-    },
-    {
-      "parameters": {
-        "description": "Call this tool ONLY when the user explicitly requests to use 'codex' or 'openai codex'. Executes code generation via OpenAI Codex with specified model. Launches Codex via PowerShell in C:\\Repo\\Tardigrade directory.",
-        "workflowId": {
-          "__rl": true,
-          "value": "FROmo4h1l1HAibJV",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/FROmo4h1l1HAibJV",
-          "cachedResultName": "codex-executor"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "prompt": "={{ $fromAI('prompt', 'The complete task description or prompt to send to Codex for code generation.', 'string') }}",
-            "model": "={{ $fromAI('model', 'The Codex model to use (default: gpt-5 minimal). Examples: gpt-5 minimal, gpt-4o, etc.', 'string') }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "prompt",
-              "displayName": "Prompt",
-              "required": true,
-              "defaultValue": "",
-              "type": "string"
-            },
-            {
-              "id": "model",
-              "displayName": "Model",
-              "required": false,
-              "defaultValue": "gpt-5 minimal",
-              "type": "string"
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        }
-      },
-      "name": "Codex",
-      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
-      "typeVersion": 2.2,
-      "position": [
-        -368,
-        384
-      ],
-      "id": "d0637935-a9d3-46b8-b3cc-3588bbfded4e"
+      "id": "2418e3b1-adca-44e5-9fbb-5b565e9160db"
     },
     {
       "parameters": {
@@ -812,17 +766,6 @@
       ]
     },
     "Claude": {
-      "ai_tool": [
-        [
-          {
-            "node": "Software Architect Agent",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Codex": {
       "ai_tool": [
         [
           {
