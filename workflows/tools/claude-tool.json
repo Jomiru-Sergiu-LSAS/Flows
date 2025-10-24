@@ -1,0 +1,133 @@
+{
+  "name": "claude-tool",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Base64 encode the query for safe PowerShell transfer (following rw-tool pattern)\nconst item = items[0].json;\n\n// Handle nested query structure (query.query) or flat structure (query)\nlet query = '';\n\nif (typeof item.query === 'string' && item.query.trim()) {\n  // Direct string query\n  query = item.query;\n} else if (item.query && typeof item.query === 'object' && !Array.isArray(item.query)) {\n  // Nested object - try to extract query.query\n  if (typeof item.query.query === 'string' && item.query.query.trim()) {\n    query = item.query.query;\n  } else {\n    // Try to stringify the object as fallback\n    query = JSON.stringify(item.query);\n  }\n} else {\n  query = 'No query provided';\n}\n\nconst base64Query = Buffer.from(query, 'utf8').toString('base64');\n\nreturn [{\n  json: {\n    query: query,\n    base64Query: base64Query,\n    originalInput: item  // Keep for debugging\n  }\n}];"
+      },
+      "id": "179fc801-d25a-4228-9c0a-344db31da1c7",
+      "name": "Encode Query to Base64",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=powershell -Command \"$base64 = '{{ $json.base64Query }}'; $query = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($base64)); Start-Process -FilePath 'powershell.exe' -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', \\\"cd C:\\Repo\\Tardigrade; claude '$query'\\\"\""
+      },
+      "id": "4bc0e6c0-efbb-46f1-a3f4-27071566e82c",
+      "name": "Execute Claude Command",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        928,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "result-001",
+              "name": "result",
+              "value": "=Claude Code command executed successfully.\n\nQuery: {{ $('Encode Query to Base64').item.json.query }}\n\nA new PowerShell window has been opened running Claude Code in C:\\Repo\\Tardigrade\n\nPlease check the Claude Code window for the execution results.",
+              "type": "string"
+            },
+            {
+              "id": "status-001",
+              "name": "status",
+              "value": "success",
+              "type": "string"
+            },
+            {
+              "id": "tool-001",
+              "name": "tool",
+              "value": "claude",
+              "type": "string"
+            },
+            {
+              "id": "query-001",
+              "name": "query",
+              "value": "={{ $('Encode Query to Base64').item.json.query }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e922dd0f-ea7a-4832-b452-8adaf49f9c46",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1152,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        432,
+        256
+      ],
+      "id": "64df3a36-70f1-4293-ade3-e2f5a2052f42",
+      "name": "Executed by other flow"
+    }
+  ],
+  "pinData": {
+    "Executed by other flow": []
+  },
+  "connections": {
+    "Execute Claude Command": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executed by other flow": {
+      "main": [
+        [
+          {
+            "node": "Encode Query to Base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encode Query to Base64": {
+      "main": [
+        [
+          {
+            "node": "Execute Claude Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5672b934-ac33-49ef-93bc-3e0362095af1",
+  "meta": {
+    "instanceId": "3fdd671e7fc1859ff2383b05c6eea518207a3d971ca0642cd42531697f273a8c"
+  },
+  "id": "3LAN5noo5B3SW7tN",
+  "tags": []
+}
